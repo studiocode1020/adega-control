@@ -175,7 +175,7 @@ export default function DashboardPage() {
             </div>
             <div className="flex-1">
               <p className="text-sm text-muted-foreground">Patrimônio Total da Coleção</p>
-              <p className="text-3xl font-bold font-[family-name:var(--font-heading)] text-gold">
+              <p className="text-3xl font-bold text-gold">
                 {formatCurrency(kpis.stockValue)}
               </p>
               <p className="text-xs text-muted-foreground mt-1">
