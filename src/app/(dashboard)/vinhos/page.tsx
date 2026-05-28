@@ -14,6 +14,7 @@ import {
   User,
   UtensilsCrossed,
   Camera as CameraIcon,
+  Lightbulb,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,7 @@ import {
 import { Wine, WineType } from "@/types";
 import { getWines } from "@/lib/storage";
 import { formatCurrency, formatDate } from "@/lib/format";
+import { wineCuriosities } from "@/data/mock-curiosities";
 
 const WINE_TYPES: WineType[] = [
   "Tinto",
@@ -381,6 +383,25 @@ export default function VinhosPage() {
                       alt={`Rótulo ${selectedWine.name}`}
                       className="rounded-lg max-h-48 w-auto object-contain"
                     />
+                  </div>
+                )}
+
+                {/* Curiosidades IA */}
+                {wineCuriosities[selectedWine.id] && (
+                  <div className="pt-2 border-t border-border/50">
+                    <p className="text-xs text-muted-foreground mb-2 font-medium flex items-center gap-1">
+                      <Lightbulb className="h-3 w-3 text-gold" />
+                      Curiosidades
+                      <span className="text-[10px] bg-gold/15 text-gold px-1.5 py-0.5 rounded-full ml-1">IA</span>
+                    </p>
+                    <ul className="space-y-2">
+                      {wineCuriosities[selectedWine.id].map((curiosity, idx) => (
+                        <li key={idx} className="text-sm text-foreground/80 flex gap-2">
+                          <span className="text-gold shrink-0 mt-0.5">•</span>
+                          <span>{curiosity}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 )}
               </div>

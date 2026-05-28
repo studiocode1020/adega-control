@@ -15,6 +15,9 @@ import {
   Heart,
   Scan,
   Sparkles,
+  UtensilsCrossed,
+  GlassWater as GlassIcon,
+  CloudSun,
 } from "lucide-react";
 import {
   Sidebar,
@@ -41,6 +44,9 @@ const menuItems = [
   { title: "Wishlist", url: "/wishlist", icon: Heart, group: "colecao" },
   { title: "Scan IA", url: "/scan", icon: Scan, group: "colecao" },
   { title: "Recomendações", url: "/recomendacoes", icon: Sparkles, group: "colecao" },
+  { title: "Acordo Perfeito", url: "/acordo-perfeito", icon: UtensilsCrossed, group: "experiencia" },
+  { title: "Degustação", url: "/degustacao", icon: GlassIcon, group: "experiencia" },
+  { title: "Clima e Vinho", url: "/clima", icon: CloudSun, group: "experiencia" },
   { title: "Relatórios", url: "/relatorios", icon: BarChart3, group: "principal" },
 ];
 
@@ -94,6 +100,29 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.filter(i => i.group === "colecao").map((item) => {
+                const isActive = pathname === item.url ||
+                  (item.url !== "/" && pathname.startsWith(item.url));
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      render={<Link href={item.url} />}
+                      isActive={isActive}
+                      className={isActive ? "bg-wine/20 text-wine-light font-medium" : ""}
+                    >
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Experiência</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {menuItems.filter(i => i.group === "experiencia").map((item) => {
                 const isActive = pathname === item.url ||
                   (item.url !== "/" && pathname.startsWith(item.url));
                 return (

@@ -19,6 +19,9 @@ const pageTitles: Record<string, string> = {
   "/wishlist": "Lista de Desejos",
   "/scan": "Escanear Rótulo",
   "/recomendacoes": "Recomendações IA",
+  "/acordo-perfeito": "Acordo Perfeito",
+  "/degustacao": "Modo Degustação",
+  "/clima": "Clima e Vinho",
 };
 
 export function Header() {
