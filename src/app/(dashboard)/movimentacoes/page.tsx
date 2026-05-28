@@ -185,9 +185,9 @@ export default function MovimentacoesPage() {
                 <TableHead>Vinho</TableHead>
                 <TableHead className="text-center">Tipo</TableHead>
                 <TableHead className="text-center">Qtd</TableHead>
-                <TableHead>Fornecedor / Motivo</TableHead>
-                <TableHead>NF</TableHead>
-                <TableHead>Observações</TableHead>
+                <TableHead className="hidden sm:table-cell">Fornecedor / Motivo</TableHead>
+                <TableHead className="hidden md:table-cell">NF</TableHead>
+                <TableHead className="hidden lg:table-cell">Observações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -226,17 +226,17 @@ export default function MovimentacoesPage() {
                           {mov.type === "entrada" ? "+" : "-"}{mov.quantity}
                         </span>
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
+                      <TableCell className="text-sm text-muted-foreground hidden sm:table-cell">
                         {mov.type === "entrada"
                           ? mov.supplier || "—"
                           : mov.reason
                           ? reasonLabels[mov.reason]
                           : "—"}
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
+                      <TableCell className="text-sm text-muted-foreground hidden md:table-cell">
                         {mov.invoiceNumber || "—"}
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground max-w-[150px] truncate">
+                      <TableCell className="text-sm text-muted-foreground max-w-[150px] truncate hidden lg:table-cell">
                         {mov.notes || "—"}
                       </TableCell>
                     </TableRow>

@@ -116,8 +116,11 @@ export default function AdegaPage() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <div className="min-w-[700px]">
+          <p className="text-xs text-muted-foreground mb-3 sm:hidden flex items-center gap-1">
+            <span>↔</span> Deslize para ver a matriz completa
+          </p>
+          <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 pb-2">
+            <div className="min-w-[600px]">
               {/* Column Headers */}
               <div className="grid gap-1.5" style={{ gridTemplateColumns: `40px repeat(${columns.length}, 1fr)` }}>
                 <div />

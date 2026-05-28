@@ -26,7 +26,7 @@ export function Header() {
     <header className="flex h-14 items-center gap-3 border-b border-border px-4">
       <SidebarTrigger className="-ml-1" />
       <Separator orientation="vertical" className="h-5" />
-      <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold flex-1">
+      <h2 className="font-[family-name:var(--font-heading)] text-base sm:text-lg font-semibold flex-1 truncate">
         {title}
       </h2>
       <Button variant="ghost" size="icon" className="relative">

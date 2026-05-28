@@ -130,7 +130,7 @@ export default function RelatoriosPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[300px]">
+            <div className="h-[220px] sm:h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={monthlyData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
@@ -169,16 +169,20 @@ export default function RelatoriosPage() {
                     data={stockByType}
                     cx="50%"
                     cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
+                    innerRadius={45}
+                    outerRadius={80}
                     paddingAngle={3}
                     dataKey="value"
-                    label={({ name, value }) => `${name}: ${value}`}
+                    label={false}
                   >
                     {stockByType.map((entry, index) => (
                       <Cell key={index} fill={entry.color} />
                     ))}
                   </Pie>
+                  <Legend
+                    wrapperStyle={{ fontSize: 12 }}
+                    formatter={(value: string) => <span style={{ color: "#A09090" }}>{value}</span>}
+                  />
                   <RechartsTooltip
                     contentStyle={{
                       backgroundColor: "#1a1015",
@@ -204,7 +208,7 @@ export default function RelatoriosPage() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-[400px]">
+          <div className="h-[280px] sm:h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={topWines}
@@ -220,8 +224,8 @@ export default function RelatoriosPage() {
                 <YAxis
                   type="category"
                   dataKey="name"
-                  tick={{ fill: "#A09090", fontSize: 11 }}
-                  width={160}
+                  tick={{ fill: "#A09090", fontSize: 10 }}
+                  width={120}
                 />
                 <RechartsTooltip
                   contentStyle={{

@@ -185,7 +185,7 @@ export default function DashboardPage() {
                   <TableRow>
                     <TableHead>Vinho</TableHead>
                     <TableHead className="text-center">Atual</TableHead>
-                    <TableHead className="text-center">Mínimo</TableHead>
+                    <TableHead className="text-center hidden sm:table-cell">Mínimo</TableHead>
                     <TableHead className="text-right">Status</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -198,7 +198,7 @@ export default function DashboardPage() {
                       <TableCell className="text-center">
                         <span className="text-destructive font-bold">{wine.quantity}</span>
                       </TableCell>
-                      <TableCell className="text-center text-muted-foreground">
+                      <TableCell className="text-center text-muted-foreground hidden sm:table-cell">
                         {wine.minStock}
                       </TableCell>
                       <TableCell className="text-right">
