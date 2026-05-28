@@ -12,6 +12,8 @@ import {
   DollarSign,
   Package,
   User,
+  UtensilsCrossed,
+  Camera as CameraIcon,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -339,6 +341,46 @@ export default function VinhosPage() {
                         {selectedWine.location}
                       </span>
                     </span>
+                  </div>
+                )}
+
+                {/* Descrição */}
+                {selectedWine.description && (
+                  <div className="pt-2 border-t border-border/50">
+                    <p className="text-xs text-muted-foreground mb-1 font-medium">Descrição</p>
+                    <p className="text-sm text-foreground/80 italic">{selectedWine.description}</p>
+                  </div>
+                )}
+
+                {/* Harmonização */}
+                {selectedWine.pairingFood && selectedWine.pairingFood.length > 0 && (
+                  <div className="pt-2 border-t border-border/50">
+                    <p className="text-xs text-muted-foreground mb-2 font-medium flex items-center gap-1">
+                      <UtensilsCrossed className="h-3 w-3" />
+                      Harmonização
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {selectedWine.pairingFood.map((food, idx) => (
+                        <Badge key={idx} variant="outline" className="text-[11px] font-normal">
+                          {food}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Foto do Rótulo */}
+                {selectedWine.imageData && (
+                  <div className="pt-2 border-t border-border/50">
+                    <p className="text-xs text-muted-foreground mb-2 font-medium flex items-center gap-1">
+                      <CameraIcon className="h-3 w-3" />
+                      Foto do Rótulo
+                    </p>
+                    <img
+                      src={selectedWine.imageData}
+                      alt={`Rótulo ${selectedWine.name}`}
+                      className="rounded-lg max-h-48 w-auto object-contain"
+                    />
                   </div>
                 )}
               </div>

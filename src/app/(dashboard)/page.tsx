@@ -12,6 +12,7 @@ import {
   TrendingUp,
   TrendingDown,
   History,
+  Gem,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -164,6 +165,40 @@ export default function DashboardPage() {
           </Card>
         ))}
       </div>
+
+      {/* Patrimônio em Vinhos */}
+      <Card className="border-border/50 bg-gradient-to-r from-card to-wine/5">
+        <CardContent className="p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gold/10">
+              <Gem className="h-7 w-7 text-gold" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm text-muted-foreground">Patrimônio Total da Coleção</p>
+              <p className="text-3xl font-bold font-[family-name:var(--font-heading)] text-gold">
+                {formatCurrency(kpis.stockValue)}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {kpis.totalLabels} rótulos | {kpis.totalBottles} garrafas | Média de {formatCurrency(kpis.totalBottles > 0 ? kpis.stockValue / kpis.totalBottles : 0)} por garrafa
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3 text-center">
+              {(() => {
+                const wines = getWines();
+                const byType = new Map<string, number>();
+                wines.forEach(w => byType.set(w.type, (byType.get(w.type) || 0) + w.price * w.quantity));
+                const sorted = Array.from(byType.entries()).sort((a, b) => b[1] - a[1]).slice(0, 3);
+                return sorted.map(([type, value]) => (
+                  <div key={type} className="min-w-[80px]">
+                    <p className="text-[10px] text-muted-foreground">{type}</p>
+                    <p className="text-sm font-semibold text-foreground">{formatCurrency(value)}</p>
+                  </div>
+                ));
+              })()}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Alertas de Estoque Baixo */}

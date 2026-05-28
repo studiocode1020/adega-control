@@ -12,6 +12,9 @@ import {
   BarChart3,
   LogOut,
   GlassWater,
+  Heart,
+  Scan,
+  Sparkles,
 } from "lucide-react";
 import {
   Sidebar,
@@ -29,13 +32,16 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 
 const menuItems = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "Vinhos", url: "/vinhos", icon: Wine },
-  { title: "Entradas", url: "/entradas", icon: ArrowDownToLine },
-  { title: "Saídas", url: "/saidas", icon: ArrowUpFromLine },
-  { title: "Movimentações", url: "/movimentacoes", icon: History },
-  { title: "Adega", url: "/adega", icon: Grid3X3 },
-  { title: "Relatórios", url: "/relatorios", icon: BarChart3 },
+  { title: "Dashboard", url: "/", icon: LayoutDashboard, group: "principal" },
+  { title: "Vinhos", url: "/vinhos", icon: Wine, group: "principal" },
+  { title: "Entradas", url: "/entradas", icon: ArrowDownToLine, group: "principal" },
+  { title: "Saídas", url: "/saidas", icon: ArrowUpFromLine, group: "principal" },
+  { title: "Movimentações", url: "/movimentacoes", icon: History, group: "principal" },
+  { title: "Adega", url: "/adega", icon: Grid3X3, group: "principal" },
+  { title: "Wishlist", url: "/wishlist", icon: Heart, group: "colecao" },
+  { title: "Scan IA", url: "/scan", icon: Scan, group: "colecao" },
+  { title: "Recomendações", url: "/recomendacoes", icon: Sparkles, group: "colecao" },
+  { title: "Relatórios", url: "/relatorios", icon: BarChart3, group: "principal" },
 ];
 
 export function AppSidebar() {
@@ -61,10 +67,33 @@ export function AppSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Menu Principal</SidebarGroupLabel>
+          <SidebarGroupLabel>Gestão</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => {
+              {menuItems.filter(i => i.group === "principal").map((item) => {
+                const isActive = pathname === item.url ||
+                  (item.url !== "/" && pathname.startsWith(item.url));
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      render={<Link href={item.url} />}
+                      isActive={isActive}
+                      className={isActive ? "bg-wine/20 text-wine-light font-medium" : ""}
+                    >
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Minha Coleção</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {menuItems.filter(i => i.group === "colecao").map((item) => {
                 const isActive = pathname === item.url ||
                   (item.url !== "/" && pathname.startsWith(item.url));
                 return (

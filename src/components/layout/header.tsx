@@ -13,9 +13,12 @@ const pageTitles: Record<string, string> = {
   "/vinhos/novo": "Cadastrar Vinho",
   "/entradas": "Registro de Entradas",
   "/saidas": "Registro de Saídas",
-  "/movimentacoes": "Histórico de Movimentações",
+  "/movimentacoes": "Movimentações",
   "/adega": "Matriz da Adega",
   "/relatorios": "Relatórios",
+  "/wishlist": "Lista de Desejos",
+  "/scan": "Escanear Rótulo",
+  "/recomendacoes": "Recomendações IA",
 };
 
 export function Header() {

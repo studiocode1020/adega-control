@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft, Save, Camera, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -57,7 +57,20 @@ export default function NovoVinhoPage() {
   const [quantity, setQuantity] = useState("");
   const [minStock, setMinStock] = useState("");
   const [location, setLocation] = useState("");
+  const [description, setDescription] = useState("");
+  const [pairingFood, setPairingFood] = useState("");
+  const [imageData, setImageData] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setImageData(ev.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+  }
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -82,7 +95,10 @@ export default function NovoVinhoPage() {
         quantity: parseInt(quantity, 10) || 0,
         minStock: parseInt(minStock, 10) || 0,
         imageUrl: null,
+        imageData: imageData,
         location: location.trim() || null,
+        description: description.trim() || null,
+        pairingFood: pairingFood.trim() ? pairingFood.split(',').map(s => s.trim()).filter(Boolean) : [],
       });
 
       toast.success("Vinho cadastrado com sucesso!");
@@ -275,6 +291,64 @@ export default function NovoVinhoPage() {
                   onChange={(e) => setLocation(e.target.value)}
                 />
               </div>
+            </div>
+
+            {/* Descrição */}
+            <div className="space-y-2">
+              <Label htmlFor="description">Descrição</Label>
+              <textarea
+                id="description"
+                placeholder="Notas sobre o vinho, aromas, sabor..."
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={2}
+                className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              />
+            </div>
+
+            {/* Harmonização */}
+            <div className="space-y-2">
+              <Label htmlFor="pairing">Harmonização</Label>
+              <Input
+                id="pairing"
+                placeholder="Separe por vírgula: Picanha, Queijo provolone, Massas"
+                value={pairingFood}
+                onChange={(e) => setPairingFood(e.target.value)}
+              />
+              <p className="text-[11px] text-muted-foreground">Separe os pratos por vírgula</p>
+            </div>
+
+            {/* Foto do Rótulo */}
+            <div className="space-y-2">
+              <Label>Foto do Rótulo</Label>
+              {imageData ? (
+                <div className="relative inline-block">
+                  <img
+                    src={imageData}
+                    alt="Rótulo"
+                    className="rounded-lg max-h-40 object-contain border border-border"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setImageData(null)}
+                    className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-destructive text-white flex items-center justify-center hover:bg-destructive/80 transition-colors"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ) : (
+                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-lg cursor-pointer hover:border-wine/50 transition-colors">
+                  <Camera className="h-8 w-8 text-muted-foreground mb-2" />
+                  <span className="text-sm text-muted-foreground">Clique para tirar foto ou enviar</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    className="hidden"
+                    onChange={handleImageUpload}
+                  />
+                </label>
+              )}
             </div>
 
             {/* Buttons */}
