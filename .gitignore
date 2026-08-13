@@ -41,3 +41,6 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# diagnostico de bancada RFID (estado regeneravel)
+tools/rfid/assinaturas.json
