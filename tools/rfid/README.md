@@ -1,89 +1,123 @@
-# Bancada R200 — UHF RFID
+# Bancada FM-50X — UHF RFID
 
-Ferramenta de linha de comando pra conversar com o módulo leitor UHF RFID (chip R200,
-860–960 MHz) pelo adaptador USB-serial, direto do Mac. **Zero dependências** — não precisa
-`npm install` nem driver extra (o macOS já traz o CH34x desde o Big Sur).
+Ferramenta de linha de comando para o leitor UHF RFID da adega, via adaptador
+USB-serial. **Zero dependências** — não precisa `npm install` nem driver extra
+(o macOS já traz o CH34x desde o Big Sur).
 
 Nada aqui entra no build do Next.js; é ferramenta de bancada.
 
 ```bash
-node tools/rfid/r200.mjs            # ajuda
-node --test tools/rfid/protocolo.test.mjs   # testa o protocolo sem hardware
+node tools/rfid/fm50x.mjs                      # ajuda
+node --test tools/rfid/protocolo.test.mjs      # testa o protocolo sem hardware
 ```
 
-## Antes de ligar
+## O módulo
 
-- **Apoie o módulo em algo não-metálico** (madeira, papelão, livro). Antena cerâmica em cima
-  de mesa de metal desafina e o alcance despenca — não é defeito do módulo.
-- A face com o blindado prateado é a que irradia; aponte ela pra tag.
-- Alimentação vem da USB (5 V). Acima de ~22 dBm o módulo pode passar dos 500 mA e resetar
-  a porta. Se as leituras sumirem do nada, é isso — alimente com 5 V externos.
-- Confira os pads **EU / US** na borda esquerda da placa. A gente quer **US (902–928 MHz)**,
-  que é a faixa liberada pela Anatel aqui.
+**FM-50X Integrated Module** (Shenzhen Fonkan), montado na placa-mãe
+serigrafada `RFID_READER`. A lata blindada não traz número de peça — o modelo
+só aparece na documentação do fabricante.
 
-## Sequência
+| | |
+|---|---|
+| Frequência | 902–928 MHz (pad `US` selecionado — faixa da Anatel) |
+| Protocolo de ar | ISO 18000-6C / EPC Class1 Gen2 |
+| Potência | −2 a 25 dBm |
+| Alimentação | 3,5–5 V, **280 mA médio / 300 mA de pico** |
+| Lógica | TTL 3,3 V |
+| Alcance nominal | ~1,5 m, dependendo da tag |
+
+Conector `J1` (5 vias): `GND / EN / RX / TX / VCC`. O cabo que veio no kit
+inverte a ordem dos pinos, o que casa corretamente com o adaptador USB-TTL
+(`5V / RX / TX / 3.3V / GND`): VCC↔5V, GND↔GND, RX↔TX, TX↔RX, e **EN↔3,3 V**.
+
+`EN` é *enable* ativo em nível alto (`VEN(HI)` = 0,9 V até VIN), então os
+3,3 V do adaptador o habilitam. **A fiação do kit está correta como veio** —
+não mexa nela.
+
+## ⚠ O protocolo NÃO é o do R200
+
+Este módulo usa **protocolo ASCII a 38400 8N1**, não o protocolo binário
+`BB…7E` do R200/M100. Confundir os dois custou uma sessão inteira de
+diagnóstico.
+
+```
+envio     <comando><CR>                      CR = 0x0D
+resposta  <LF><letra do comando><dados><CR><LF>
+```
+
+Comando não reconhecido devolve `<LF>X<CR><LF>` — em hexadecimal, `0A 58 0D 0A`.
+Se você vir esse padrão se repetindo, **não é ruído de linha**: é o módulo
+dizendo que não entendeu, e quase certamente o protocolo ou o baud estão
+errados.
+
+Comandos principais:
+
+| comando | efeito |
+|---|---|
+| `V` | versão do firmware |
+| `S` | ID do leitor |
+| `Q` | lê uma tag |
+| `U` | inventário multi-tag |
+| `N0,00` / `N1,<val>` | lê / define potência (`00`–`1B` = −2 a 25 dBm) |
+| `N4,00` / `N5,<val>` | lê / define região (`01` = US 902–928) |
+| `R<bank>,<addr>,<len>` | lê memória da tag |
+
+Documentação completa em `Command format.pdf` e `Command list.pdf`, na pasta
+que a Fonkan enviou.
+
+## Sequência de bancada
+
+- **Apoie o módulo em algo não-metálico** (madeira, papelão, livro). Antena
+  cerâmica sobre metal desafina e o alcance despenca — não é defeito.
+- A face com o blindado prateado é a que irradia; aponte ela para a tag.
 
 ```bash
-node tools/rfid/r200.mjs ports        # 1. a porta apareceu?
-node tools/rfid/r200.mjs info         # 2. o módulo responde? qual região/potência?
-node tools/rfid/r200.mjs region us    # 3. se não estiver em US
-node tools/rfid/r200.mjs power 22
-node tools/rfid/r200.mjs scan         # 4. passe o cartão de teste, veja o EPC aparecer
+node tools/rfid/fm50x.mjs ports        # a porta apareceu?
+node tools/rfid/fm50x.mjs info         # firmware, ID, potência, região
+node tools/rfid/fm50x.mjs region us    # se não estiver em US
+node tools/rfid/fm50x.mjs power 25
+node tools/rfid/fm50x.mjs scan         # passe o cartão, veja o EPC aparecer
 ```
 
-## Quando o módulo não responde
+Se algo não responder, `raw` manda comando cru e mostra a resposta literal:
 
 ```bash
-node tools/rfid/r200.mjs diag       # a linha fala? em qual velocidade?
-node tools/rfid/r200.mjs loopback   # TX no RX: o adaptador e o cabo prestam?
+node tools/rfid/fm50x.mjs raw "V"
+node tools/rfid/fm50x.mjs monitor      # escuta pura, sem transmitir
 ```
-
-O `diag` reporta duas colunas separadas de propósito:
-
-- **ocioso** — bytes que chegaram *sem* eu transmitir nada. Se aparecer coisa aqui, o módulo
-  está falando sozinho (ou a linha está com ruído).
-- **após comando** — bytes que chegaram depois de mandar comando. É aqui que uma resposta real
-  aparece.
-
-Zero nas duas colunas em todas as velocidades = a linha está muda. Aí o `loopback` separa
-as duas metades do problema: desconecte o módulo, encoste o fio TX no fio RX do adaptador e
-rode. Se voltar idêntico, adaptador/cabo/software estão bons e a falha é do lado do módulo
-(alimentação, conector ou TX/RX trocados). Se não voltar nada, o problema é antes do módulo.
-
-> Cuidado ao mexer no `diag`: trocar o baud com a porta **aberta** faz o driver do CH343
-> cuspir bytes fantasma, periódicos e reproduzíveis, que parecem resposta do módulo. Por isso
-> o `diag` reabre a porta a cada velocidade em vez de reconfigurar. Já custou uma sessão de
-> diagnóstico atrás de um problema que não existia.
 
 ## O teste decisivo: alcance com garrafa cheia
 
-Líquido absorve UHF. Uma tag que lê a 2 m no ar pode não ler a 20 cm colada numa garrafa
-cheia — e é isso que decide a fase 2 do projeto:
+Líquido absorve UHF. Uma tag que lê a 1,5 m no ar pode não ler a 20 cm colada
+numa garrafa cheia — e é isso que decide a fase 2 do projeto:
 
 | resultado com garrafa cheia | caminho |
 | --- | --- |
-| lê bem a ~1 m ou mais | **portal na porta** — antena painel 8 dBi + sensor IR E18-D80NK pra direção |
+| lê bem a ~1 m ou mais | **portal na porta** — antena painel 8 dBi + sensor IR E18-D80NK para direção |
 | só lê perto (~20–30 cm) | **estação de scan** deliberada — a página `/scan` do app já existe |
 
 Cada medição grava uma linha em `medicoes.csv`:
 
 ```bash
-node tools/rfid/r200.mjs range "comum|gargalo|cheia|50cm" --seconds 10 --power 22
+node tools/rfid/fm50x.mjs range "comum|gargalo|cheia|50cm" --seconds 10
 ```
 
-Use o rótulo no formato `tipo-tag|posição|estado|distância` pra planilha sair analisável.
+Use o rótulo no formato `tipo-tag|posição|estado|distância`.
 
-**Matriz mínima** (~24 medições de 10 s, dá uns 15 min):
+**Matriz mínima** (~24 medições de 10 s, uns 15 min):
 
 - **referência**: `cartao|ar|-|100cm` — o melhor caso possível, calibra o resto
 - **tipo de tag**: `comum`, `antiliquido`
 - **posição**: `gargalo` (acima da linha do líquido), `corpo` (no rótulo)
-- **estado**: `vazia`, `cheia` — a mesma garrafa, pra isolar a variável
+- **estado**: `vazia`, `cheia` — a mesma garrafa, para isolar a variável
 - **distância**: `25cm`, `50cm`, `100cm`, `200cm` — pare de subir quando zerar
 
-Mantenha a tag **parada** durante os 10 s e a mão longe dela (o corpo humano absorve UHF
-quase tanto quanto o vinho).
+Mantenha a tag **parada** durante os 10 s e a mão longe dela (o corpo humano
+absorve UHF quase tanto quanto o vinho).
 
-O `range` classifica em `LE BEM` (≥5 leituras/s), `LE NO LIMITE` (≥1/s), `MARGINAL` e
-`NAO LE`. Pra portal na porta o critério é `LE BEM`, porque a garrafa vai passar em
-movimento e a janela de leitura é de fração de segundo.
+O `range` classifica em `LE BEM` (≥5 leituras/s), `LE NO LIMITE` (≥1/s),
+`MARGINAL` e `NAO LE`. Para portal na porta o critério é `LE BEM`, porque a
+garrafa passa em movimento e a janela de leitura é fração de segundo.
+
+Este protocolo não retorna RSSI, então a métrica é **taxa de leitura** — que
+é a mais relevante para a decisão de qualquer forma.

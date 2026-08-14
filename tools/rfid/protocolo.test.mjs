@@ -1,94 +1,68 @@
 /**
- * Testes da camada de protocolo do R200 — rodam sem hardware.
+ * Testes do protocolo ASCII do FM-50X — rodam sem hardware.
  *   node --test tools/rfid/protocolo.test.mjs
  */
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { build, Parser, parseTag } from './r200.mjs';
+import { Parser, parseTag, dbmParaValor, valorParaDbm } from './fm50x.mjs';
 
-const hex = (b) => b.toString('hex').toUpperCase();
-const esperado = (s) => s.replace(/ /g, '').toUpperCase();
+const bytes = (s) => Buffer.from(s, 'ascii');
 
-// Frames de referencia do protocolo R200/M100 — confere header, PL e checksum.
-test('monta os frames de comando conhecidos', () => {
-  assert.equal(hex(build(0x00, 0x28, [])), esperado('BB 00 28 00 00 28 7E'), 'stop poll');
-  assert.equal(hex(build(0x00, 0x22, [])), esperado('BB 00 22 00 00 22 7E'), 'single poll');
-  assert.equal(hex(build(0x00, 0xb7, [])), esperado('BB 00 B7 00 00 B7 7E'), 'get power');
-  assert.equal(
-    hex(build(0x00, 0xb6, [0x07, 0xd0])),
-    esperado('BB 00 B6 00 02 07 D0 8F 7E'),
-    'set power 20 dBm',
-  );
-  assert.equal(hex(build(0x00, 0x07, [0x02])), esperado('BB 00 07 00 01 02 0A 7E'), 'regiao US');
-  assert.equal(hex(build(0x00, 0x03, [0x00])), esperado('BB 00 03 00 01 00 04 7E'), 'info hardware');
-  assert.equal(
-    hex(build(0x00, 0x27, [0x22, 0x27, 0x10])),
-    esperado('BB 00 27 00 03 22 27 10 83 7E'),
-    'multi poll x10000',
-  );
+test('extrai resposta no formato <LF>payload<CR><LF>', () => {
+  const p = new Parser();
+  assert.deepEqual(p.push(bytes('\nS01234567\r\n')), ['S01234567']);
 });
 
-const EPC = 'E2000017221101441890B1C3';
+test('reconhece a resposta de comando desconhecido', () => {
+  // 0A 58 0D 0A — foi exatamente isso que o modulo devolveu aos comandos
+  // binarios do R200 durante o diagnostico, e que passou por ruido.
+  const p = new Parser();
+  assert.deepEqual(p.push(Buffer.from('0A580D0A', 'hex')), ['X']);
+});
 
-/** Notificacao de tag: RSSI(1) PC(2) EPC(12) CRC(2) */
-function notificacaoDeTag(rssi = 0xc7) {
-  return build(0x02, 0x22, [
-    rssi,
-    ...Buffer.from('3000', 'hex'),
-    ...Buffer.from(EPC, 'hex'),
-    ...Buffer.from('AB12', 'hex'),
-  ]);
-}
+test('junta resposta partida em varios chunks', () => {
+  const p = new Parser();
+  assert.deepEqual(p.push(bytes('\nV01')), []);
+  assert.deepEqual(p.push(bytes('02,FM-50X')), []);
+  assert.deepEqual(p.push(bytes('\r\n')), ['V0102,FM-50X']);
+});
 
-test('decodifica notificacao de tag', () => {
-  const [f] = new Parser().push(notificacaoDeTag());
-  assert.equal(f.type, 0x02);
-  assert.equal(f.cmd, 0x22);
+test('separa respostas coladas', () => {
+  const p = new Parser();
+  const r = p.push(bytes('\nU3000E28011AABB\r\n\nU3000E28011CCDD\r\n'));
+  assert.deepEqual(r, ['U3000E28011AABB', 'U3000E28011CCDD']);
+});
 
-  const tag = parseTag(f.params);
-  assert.equal(tag.epc, EPC);
+test('nao acumula lixo sem terminador', () => {
+  const p = new Parser();
+  p.push(Buffer.alloc(5000, 0x41)); // 5000 'A' sem CR/LF
+  assert.ok(p.buf.length <= 4096);
+});
+
+test('decodifica tag em PC + EPC + CRC', () => {
+  // U + PC(4) + EPC(24) + CRC(4)
+  const tag = parseTag('U3000E2000017221101441890B1C3AB12');
   assert.equal(tag.pc, '3000');
-  assert.equal(tag.rssi, -57, '0xC7 em complemento de dois');
+  assert.equal(tag.epc, 'E2000017221101441890B1C3');
+  assert.equal(tag.crc, 'AB12');
 });
 
-test('RSSI positivo nao vira negativo', () => {
-  const [f] = new Parser().push(notificacaoDeTag(0x2a));
-  assert.equal(parseTag(f.params).rssi, 42);
+test('sem tag no campo devolve null', () => {
+  assert.equal(parseTag('U'), null);
+  assert.equal(parseTag('Q'), null);
 });
 
-test('reenquadra lixo, fragmentacao e frames colados', () => {
-  const parser = new Parser();
-  // lixo (incluindo um 0xBB falso) + duas notificacoes, entregues de 3 em 3 bytes
-  const fluxo = Buffer.concat([
-    Buffer.from([0x00, 0xff, 0xbb, 0x01]),
-    notificacaoDeTag(),
-    notificacaoDeTag(),
-  ]);
-
-  const frames = [];
-  for (let i = 0; i < fluxo.length; i += 3) frames.push(...parser.push(fluxo.subarray(i, i + 3)));
-
-  assert.equal(frames.length, 2);
-  assert.equal(parseTag(frames[1].params).epc, EPC);
+test('resposta nao-hex nao vira tag', () => {
+  assert.equal(parseTag('VFM-50X'), null);
 });
 
-test('descarta frame com checksum invalido', () => {
-  const ruim = Buffer.from(notificacaoDeTag());
-  ruim[ruim.length - 2] ^= 0xff;
-  assert.deepEqual(new Parser().push(ruim), []);
-});
-
-test('descarta frame sem byte de fim', () => {
-  const ruim = Buffer.from(notificacaoDeTag());
-  ruim[ruim.length - 1] = 0x00;
-  assert.deepEqual(new Parser().push(ruim), []);
-});
-
-test('nao trava com PL absurdo', () => {
-  // 0xBB seguido de um PL gigante nao pode fazer o parser esperar pra sempre
-  const lixo = Buffer.concat([Buffer.from([0xbb, 0x02, 0x22, 0xff, 0xff]), notificacaoDeTag()]);
-  const frames = new Parser().push(lixo);
-  assert.equal(frames.length, 1);
-  assert.equal(parseTag(frames[0].params).epc, EPC);
+test('converte potencia entre dBm e o valor do comando N1', () => {
+  // faixa documentada: 00..1B equivale a -2..25 dBm
+  assert.equal(dbmParaValor(-2), '00');
+  assert.equal(dbmParaValor(25), '1B');
+  assert.equal(dbmParaValor(20), '16');
+  assert.equal(valorParaDbm('00'), -2);
+  assert.equal(valorParaDbm('1B'), 25);
+  assert.equal(valorParaDbm('16'), 20);
 });
