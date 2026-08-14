@@ -571,7 +571,24 @@ async function main() {
   process.exit(0);
 }
 
-export { Parser, parseTag, dbmParaValor, valorParaDbm, REGIOES };
+export {
+  Parser,
+  parseTag,
+  dbmParaValor,
+  valorParaDbm,
+  formatarPotencia,
+  REGIOES,
+  // usados pelo live.mjs
+  Device,
+  Coletor,
+  autodetectar,
+  listarPortas,
+  iniciarInventario,
+  lerPotencia,
+  lerRegiao,
+  espera,
+  BAUD,
+};
 
 const rodandoDireto = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 

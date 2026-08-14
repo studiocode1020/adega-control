@@ -86,6 +86,27 @@ node tools/rfid/fm50x.mjs raw "V"
 node tools/rfid/fm50x.mjs monitor      # escuta pura, sem transmitir
 ```
 
+## Painel ao vivo
+
+```bash
+node tools/rfid/live.mjs               # abre em http://localhost:7070
+```
+
+Lê a serial, roda inventário contínuo e transmite o estado para o navegador
+por SSE. Mostra leituras por segundo (janela móvel de 3 s), veredito ao vivo,
+lista de tags com contagem e há quanto tempo cada uma foi vista. Botão para
+zerar contadores entre medições.
+
+Útil durante o teste de alcance: você vê a leitura cair na hora ao afastar a
+garrafa, em vez de esperar o resumo de 10 s do `range`.
+
+> A topologia **dispositivo → servidor → tela** é de propósito a mesma que o
+> ESP32 vai usar depois. Quando a origem dos dados virar o gateway WiFi, a
+> tela continua igual — é o esboço da página `/scan` do app.
+
+Zero dependências: `http` nativo do Node e uma página embutida. Flags:
+`--http <porta>` e `--port /dev/cu.xxx`.
+
 ## O teste decisivo: alcance com garrafa cheia
 
 Líquido absorve UHF. Uma tag que lê a 1,5 m no ar pode não ler a 20 cm colada
