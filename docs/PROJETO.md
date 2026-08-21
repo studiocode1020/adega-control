@@ -53,7 +53,7 @@ O sistema pode atender perfis comerciais tambem, mas o foco primario e o colecio
 | Persistencia | localStorage (MVP) |
 | Deploy | Vercel |
 | Repositorio | github.com/studiocode1020/adega-control |
-| URL producao | https://adega-control.vercel.app |
+| URL producao | https://adega-control-vert.vercel.app |
 
 ### 5.2 Tema Visual
 
@@ -74,7 +74,7 @@ O sistema pode atender perfis comerciais tambem, mas o foco primario e o colecio
 | `/vinhos/novo` | Cadastro de Vinho | Formulario completo com 11+ campos, upload de foto do rotulo (camera no mobile), harmonizacao e descricao |
 | `/entradas` | Registro de Entradas | Formulario: vinho, quantidade, data, fornecedor, NF. Atualiza quantidade no localStorage |
 | `/saidas` | Registro de Saidas | Formulario: vinho, quantidade, data, motivo (venda/consumo/perda/devolucao). Valida estoque disponivel |
-| `/movimentacoes` | Historico | Tabela completa com filtros por tipo, vinho e busca textual. Colunas responsivas |
+| `/movimentacoes` | Historico | Tabela completa com filtros por tipo, vinho e busca textual. Cards de resumo: Saldo do Periodo, Total Entradas, Total Saidas (tudo em garrafas). Colunas responsivas |
 | `/adega` | Matriz Visual | Grid 8x12 com cores por tipo de vinho, tooltip no hover, click abre detalhes. Stats de ocupacao |
 | `/relatorios` | Relatorios | 3 graficos: barras (entradas vs saidas/mes), pizza (estoque por tipo), horizontal (top 10 por valor) |
 
@@ -90,7 +90,7 @@ O sistema pode atender perfis comerciais tambem, mas o foco primario e o colecio
 |------|--------|-----------|
 | `/acordo-perfeito` | Acordo Perfeito | Digita o prato, IA sugere vinho da adega. Chips rapidos, matching por pairingFood |
 | `/degustacao` | Modo Degustacao | 5 etapas guiadas (selecao, visual, olfativo, gustativo, avaliacao), timer, 5 estrelas |
-| `/clima` | Clima e Vinho | 4 cards de clima (quente/ameno/frio/especial), sugere vinhos adequados da adega |
+| `/clima` | Clima e Vinho | 4 cards de clima (quente/ameno/frio/especial), sugere 3 vinhos iniciais com botao "Ver mais sugestoes" para expandir todos os vinhos compativeis da adega |
 
 ### 5.4 Modelo de Dados
 
@@ -241,7 +241,7 @@ Este projeto usa a versao mais recente do shadcn/ui que e baseada em **base-ui**
 
 ```bash
 # Vercel CLI
-npx vercel --prod --yes --scope studiocode1020-3488s-projects
+npx vercel --prod --yes --scope angelomeirelles-projects
 
 # Ou via git push (se conectar GitHub na Vercel)
 git push origin master
@@ -304,4 +304,4 @@ git push origin master
 5. Para limpar dados mockados e re-seed: abrir DevTools > Application > Local Storage > limpar tudo e recarregar
 6. Sempre testar responsivo (mobile) antes de aprovar
 7. Angelo aprova localmente antes de subir para Vercel
-8. Deploy: `npx vercel --prod --yes --scope studiocode1020-3488s-projects`
+8. Deploy: `npx vercel --prod --yes --scope angelomeirelles-projects`

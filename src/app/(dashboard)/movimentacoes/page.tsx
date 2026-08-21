@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import {
-  History,
+  Scale,
   TrendingUp,
   TrendingDown,
   Search,
@@ -96,12 +96,14 @@ export default function MovimentacoesPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="border-border/50">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-wine/10">
-              <History className="h-5 w-5 text-wine-light" />
+            <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${totalEntradas - totalSaidas >= 0 ? "bg-success/10" : "bg-destructive/10"}`}>
+              <Scale className={`h-5 w-5 ${totalEntradas - totalSaidas >= 0 ? "text-success" : "text-destructive"}`} />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">Total Registros</p>
-              <p className="text-xl font-bold">{filtered.length}</p>
+              <p className="text-xs text-muted-foreground">Saldo do Período</p>
+              <p className={`text-xl font-bold ${totalEntradas - totalSaidas >= 0 ? "text-success" : "text-destructive"}`}>
+                {totalEntradas - totalSaidas >= 0 ? "+" : ""}{totalEntradas - totalSaidas} un.
+              </p>
             </div>
           </CardContent>
         </Card>

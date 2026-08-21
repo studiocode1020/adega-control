@@ -7,7 +7,7 @@ Leia este documento E o `docs/PROJETO.md` para entender completamente o projeto 
 ```bash
 npm run dev          # Dev server em localhost:3000
 npm run build        # Build de produção
-npx vercel --prod --yes --scope studiocode1020-3488s-projects  # Deploy na Vercel
+npx vercel --prod --yes --scope angelomeirelles-projects  # Deploy na Vercel
 ```
 
 ## Stack
@@ -16,7 +16,7 @@ npx vercel --prod --yes --scope studiocode1020-3488s-projects  # Deploy na Verce
 - shadcn/ui baseado em **base-ui** (NÃO radix) - `Select` onValueChange passa `string | null`, `Button` NÃO tem `asChild`, Tooltip usa `render` prop
 - localStorage para persistência (sem backend no MVP)
 - Recharts para gráficos
-- Deploy na Vercel: https://adega-control.vercel.app
+- Deploy na Vercel: https://adega-control-vert.vercel.app
 - Repo: https://github.com/studiocode1020/adega-control
 
 ## Regras Importantes

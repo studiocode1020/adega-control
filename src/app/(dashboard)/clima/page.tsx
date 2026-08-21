@@ -9,7 +9,10 @@ import {
   Thermometer,
   Wine as WineIcon,
   Snowflake,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -190,12 +193,13 @@ function getSuggestions(wines: Wine[], weather: WeatherType): Wine[] {
     sorted = [...sorted, ...remaining];
   }
 
-  return sorted.slice(0, 3);
+  return sorted;
 }
 
 export default function ClimaPage() {
   const [selected, setSelected] = useState<WeatherType | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [showAll, setShowAll] = useState(false);
   const [wines, setWines] = useState<Wine[]>([]);
 
   useEffect(() => {
@@ -205,6 +209,7 @@ export default function ClimaPage() {
   const handleSelect = useCallback((weather: WeatherType) => {
     setSelected(weather);
     setShowSuggestions(false);
+    setShowAll(false);
     const timer = setTimeout(() => {
       setShowSuggestions(true);
     }, 1500);
@@ -289,8 +294,9 @@ export default function ClimaPage() {
 
           {/* Wine suggestion cards */}
           {suggestions.length > 0 ? (
+            <>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {suggestions.map((wine, index) => (
+              {(showAll ? suggestions : suggestions.slice(0, 3)).map((wine, index) => (
                 <Card
                   key={wine.id}
                   className="border-border/50 animate-in fade-in slide-in-from-bottom-2 duration-500"
@@ -356,6 +362,29 @@ export default function ClimaPage() {
                 </Card>
               ))}
             </div>
+
+            {suggestions.length > 3 && (
+              <div className="flex justify-center">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowAll(!showAll)}
+                  className="gap-2"
+                >
+                  {showAll ? (
+                    <>
+                      <ChevronUp className="h-4 w-4" />
+                      Ver menos sugestões
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="h-4 w-4" />
+                      Ver mais sugestões ({suggestions.length - 3} vinhos)
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
+            </>
           ) : (
             <Card className="border-border/50">
               <CardContent className="p-6 text-center">
