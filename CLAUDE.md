@@ -1,5 +1,7 @@
 # Adega Control - Contexto para Claude
 
+@AGENTS.md
+
 Leia este documento E o `docs/PROJETO.md` para entender completamente o projeto antes de fazer qualquer alteração.
 
 ## Comandos
