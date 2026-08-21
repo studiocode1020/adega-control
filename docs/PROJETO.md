@@ -53,7 +53,7 @@ O sistema pode atender perfis comerciais tambem, mas o foco primario e o colecio
 | Persistencia | localStorage (MVP) |
 | Deploy | Vercel |
 | Repositorio | github.com/studiocode1020/adega-control |
-| URL producao | https://adega-control-vert.vercel.app |
+| URL producao | https://adega-control.vercel.app |
 
 ### 5.2 Tema Visual
 
@@ -241,7 +241,7 @@ Este projeto usa a versao mais recente do shadcn/ui que e baseada em **base-ui**
 
 ```bash
 # Vercel CLI
-npx vercel --prod --yes --scope angelomeirelles-projects
+npx vercel --prod --yes --scope studiocode1020-3488s-projects
 
 # Ou via git push (se conectar GitHub na Vercel)
 git push origin master
@@ -304,4 +304,4 @@ git push origin master
 5. Para limpar dados mockados e re-seed: abrir DevTools > Application > Local Storage > limpar tudo e recarregar
 6. Sempre testar responsivo (mobile) antes de aprovar
 7. Angelo aprova localmente antes de subir para Vercel
-8. Deploy: `npx vercel --prod --yes --scope angelomeirelles-projects`
+8. Deploy: `npx vercel --prod --yes --scope studiocode1020-3488s-projects`
