@@ -14,7 +14,7 @@ const pageTitles: Record<string, string> = {
   "/entradas": "Registro de Entradas",
   "/saidas": "Registro de Saídas",
   "/movimentacoes": "Movimentações",
-  "/adega": "Matriz da Adega",
+  "/adega": "Mapa da Adega",
   "/relatorios": "Relatórios",
   "/wishlist": "Lista de Desejos",
   "/scan": "Escanear Rótulo",

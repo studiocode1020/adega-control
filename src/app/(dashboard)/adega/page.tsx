@@ -61,13 +61,13 @@ export default function AdegaPage() {
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <Card className="border-border/50">
           <CardContent className="p-4 text-center">
-            <p className="text-xs text-muted-foreground">Posições Totais</p>
+            <p className="text-xs text-muted-foreground">Slots Totais</p>
             <p className="text-2xl font-bold">{total}</p>
           </CardContent>
         </Card>
         <Card className="border-border/50">
           <CardContent className="p-4 text-center">
-            <p className="text-xs text-muted-foreground">Ocupadas</p>
+            <p className="text-xs text-muted-foreground">Ocupados</p>
             <p className="text-2xl font-bold text-wine-light">{occupied}</p>
           </CardContent>
         </Card>
@@ -109,9 +109,9 @@ export default function AdegaPage() {
         <CardHeader className="pb-3">
           <CardTitle className="text-base font-medium flex items-center gap-2">
             <Grid3X3 className="h-4 w-4 text-gold" />
-            Matriz da Adega
+            Mapa da Adega
             <span className="text-xs text-muted-foreground font-normal ml-2">
-              {rows.length} linhas x {columns.length} colunas
+              {rows.length} fileiras x {columns.length} slots
             </span>
           </CardTitle>
         </CardHeader>
@@ -159,7 +159,7 @@ export default function AdegaPage() {
                           </TooltipTrigger>
                           <TooltipContent side="top" className="max-w-[200px]">
                             <p className="font-medium text-xs">
-                              Posição {row}{col}
+                              Slot {row}{col}
                             </p>
                             {wine ? (
                               <div className="text-xs text-muted-foreground mt-1">
@@ -168,7 +168,7 @@ export default function AdegaPage() {
                                 <p>{wine.quantity} garrafas</p>
                               </div>
                             ) : (
-                              <p className="text-xs text-muted-foreground">Vazio</p>
+                              <p className="text-xs text-muted-foreground">Slot vazio</p>
                             )}
                           </TooltipContent>
                         </Tooltip>
@@ -235,10 +235,6 @@ export default function AdegaPage() {
                     )}
                   </p>
                 </div>
-              </div>
-              <div>
-                <p className="text-muted-foreground text-xs">Localização</p>
-                <p className="font-medium">{selectedWine.location || "Não definida"}</p>
               </div>
             </div>
           )}

@@ -281,16 +281,7 @@ export default function NovoVinhoPage() {
                 />
               </div>
 
-              {/* Localiza\u00e7\u00e3o na Adega */}
-              <div className="space-y-2">
-                <Label htmlFor="location">Localiza\u00e7\u00e3o na Adega</Label>
-                <Input
-                  id="location"
-                  placeholder="Ex: A1, B3"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                />
-              </div>
+              {/* Campo de localização removido - adega usa slots organizados por tipo */}
             </div>
 
             {/* Descrição */}

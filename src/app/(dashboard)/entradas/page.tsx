@@ -125,18 +125,15 @@ export default function EntradasPage() {
                 </div>
               )}
 
-              <p className="text-xs text-muted-foreground">
-                Vinho não está na lista?{" "}
-                <Link href="/vinhos/novo">
-                  <Button
-                    type="button"
-                    variant="link"
-                    className="h-auto p-0 text-xs text-gold hover:text-gold/80"
-                  >
-                    Cadastrar novo vinho
-                  </Button>
-                </Link>
-              </p>
+              <Link href="/vinhos/novo">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full mt-2 text-sm border-gold/30 text-gold hover:bg-gold/10 hover:text-gold"
+                >
+                  + Cadastrar novo vinho
+                </Button>
+              </Link>
             </div>
 
             {/* Quantity + Date */}

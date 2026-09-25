@@ -299,18 +299,6 @@ export default function VinhosPage() {
                   />
                 </div>
 
-                {selectedWine.location && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground pt-1 border-t border-border/50">
-                    <MapPin className="h-3.5 w-3.5" />
-                    <span>
-                      Localização na adega:{" "}
-                      <span className="text-foreground font-medium">
-                        {selectedWine.location}
-                      </span>
-                    </span>
-                  </div>
-                )}
-
                 {/* Descrição */}
                 {selectedWine.description && (
                   <div className="pt-2 border-t border-border/50">
