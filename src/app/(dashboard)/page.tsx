@@ -345,10 +345,12 @@ export default function DashboardPage() {
     <div className="space-y-6">
       {/* KPI Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
-        {kpiCards.map((kpi) => (
+        {kpiCards.map((kpi, index) => (
           <Card
             key={kpi.title}
-            className="border-border/50 cursor-pointer hover:bg-muted/30 transition-all active:scale-[0.98]"
+            className={`border-border/50 cursor-pointer hover:bg-muted/30 transition-all active:scale-[0.98] ${
+              kpiCards.length % 2 !== 0 && index === kpiCards.length - 1 ? "col-span-2 sm:col-span-1" : ""
+            }`}
             onClick={() => setActiveKpi(kpi.detailKey)}
           >
             <CardContent className="p-3 sm:p-4">
