@@ -20,7 +20,7 @@ O professor chegou a produzir um documento tecnico de 29 paginas chamado **"VinM
 
 ## 3. Estrategia da StudioCode
 
-Angelo e Matheus decidiram criar um **MVP visual funcional** para apresentar ao cliente numa reuniao em 28/05/2026, com o objetivo de:
+Angelo e Matheus decidiram criar um **MVP visual funcional** para apresentar ao cliente, com o objetivo de:
 
 1. Mostrar que ja tinham algo funcional rodando (diferente do professor que so entregou documento)
 2. Demonstrar o diferencial: controle real de entrada/saida que o professor nao tinha
@@ -32,12 +32,14 @@ Angelo e Matheus decidiram criar um **MVP visual funcional** para apresentar ao 
 **IMPORTANTE**: O sistema NAO e apenas para quem vende vinho comercialmente. O publico principal e uma **pessoa que possui uma adega pessoal** e quer:
 
 - Controlar o que tem na adega
-- Saber onde cada garrafa esta
+- Organizar vinhos por slots na adega
 - Registrar quando entra e sai vinho
 - Ter funcionalidades interessantes como harmonizacao, degustacao, recomendacoes
 - Curtir a experiencia de colecionar
 
 O sistema pode atender perfis comerciais tambem, mas o foco primario e o colecionador/entusiasta.
+
+**MOBILE-FIRST**: O app e projetado prioritariamente para uso no celular, dentro da adega.
 
 ## 5. O Que Foi Construido (Estado Atual)
 
@@ -51,7 +53,7 @@ O sistema pode atender perfis comerciais tambem, mas o foco primario e o colecio
 | Componentes UI | shadcn/ui (base-ui, NAO radix) |
 | Graficos | Recharts |
 | Persistencia | localStorage (MVP) |
-| Deploy | Vercel |
+| Deploy | Vercel (CLI manual) |
 | Repositorio | github.com/studiocode1020/adega-control |
 | URL producao | https://adega-control.vercel.app |
 
@@ -62,20 +64,22 @@ O sistema pode atender perfis comerciais tambem, mas o foco primario e o colecio
 - Fonte titulos: Playfair Display
 - Fonte corpo: Inter
 - Valores numericos (precos, KPIs): fonte Inter (NAO Playfair)
+- **Logo personalizada**: garrafa de vinho em mosaico (bordo/dourado) em `public/logo.png`
+- **Design mobile-first**: cards em vez de tabelas, botoes grandes, touch-friendly
 
 ### 5.3 Paginas Implementadas (16 rotas)
 
 #### Grupo: Gestao
 | Rota | Pagina | Descricao |
 |------|--------|-----------|
-| `/login` | Login | Tela visual elegante, sem auth real. Credito "StudioCode" no rodape |
-| `/` | Dashboard | 6 KPIs, card de patrimonio da colecao com breakdown por tipo, alertas de estoque baixo, movimentacoes recentes |
-| `/vinhos` | Listagem de Vinhos | Tabela com filtros (busca, tipo, pais), badges de status. Click abre dialog com detalhes, harmonizacao, curiosidades IA e foto |
-| `/vinhos/novo` | Cadastro de Vinho | Formulario completo com 11+ campos, upload de foto do rotulo (camera no mobile), harmonizacao e descricao |
-| `/entradas` | Registro de Entradas | Formulario: vinho, quantidade, data, fornecedor, NF. Atualiza quantidade no localStorage |
-| `/saidas` | Registro de Saidas | Formulario: vinho, quantidade, data, motivo (venda/consumo/perda/devolucao). Valida estoque disponivel |
-| `/movimentacoes` | Historico | Tabela completa com filtros por tipo, vinho e busca textual. Cards de resumo: Saldo do Periodo, Total Entradas, Total Saidas (tudo em garrafas). Colunas responsivas |
-| `/adega` | Matriz Visual | Grid 8x12 com cores por tipo de vinho, tooltip no hover, click abre detalhes. Stats de ocupacao |
+| `/login` | Login | Tela visual elegante com logo, sem auth real. Credito "StudioCode" no rodape |
+| `/` | Dashboard | 5 KPIs clicaveis com popup detalhado, card de patrimonio da colecao, alertas de estoque baixo (cards com barra de progresso), movimentacoes recentes (cards timeline) |
+| `/vinhos` | Listagem de Vinhos | Cards mobile-friendly com filtros (busca, tipo, pais). Click abre dialog com detalhes, harmonizacao, curiosidades IA e foto |
+| `/vinhos/novo` | Cadastro de Vinho | Formulario com campos essenciais, upload de foto do rotulo (camera no mobile), harmonizacao e descricao |
+| `/entradas` | Registro de Entradas | Formulario com card de info do vinho selecionado, botao "Cadastrar novo vinho", icone calendario visivel |
+| `/saidas` | Registro de Saidas | Formulario com card de info do vinho, motivo (venda/consumo/perda/devolucao), valida estoque disponivel |
+| `/movimentacoes` | Historico | Cards timeline com filtros por tipo e vinho. Cards de resumo: Saldo do Periodo, Total Entradas, Total Saidas |
+| `/adega` | Mapa da Adega | Grid 8x12 de slots com cores por tipo de vinho, tooltip no hover, click abre detalhes. Stats de ocupacao |
 | `/relatorios` | Relatorios | 3 graficos: barras (entradas vs saidas/mes), pizza (estoque por tipo), horizontal (top 10 por valor) |
 
 #### Grupo: Minha Colecao
@@ -90,7 +94,7 @@ O sistema pode atender perfis comerciais tambem, mas o foco primario e o colecio
 |------|--------|-----------|
 | `/acordo-perfeito` | Acordo Perfeito | Digita o prato, IA sugere vinho da adega. Chips rapidos, matching por pairingFood |
 | `/degustacao` | Modo Degustacao | 5 etapas guiadas (selecao, visual, olfativo, gustativo, avaliacao), timer, 5 estrelas |
-| `/clima` | Clima e Vinho | 4 cards de clima (quente/ameno/frio/especial), sugere 3 vinhos iniciais com botao "Ver mais sugestoes" para expandir todos os vinhos compativeis da adega |
+| `/clima` | Clima e Vinho | 4 cards de clima (quente/ameno/frio/especial), sugere vinhos compativeis da adega |
 
 ### 5.4 Modelo de Dados
 
@@ -113,7 +117,7 @@ interface Wine {
   minStock: number;
   imageUrl: string | null;
   imageData: string | null; // base64 da foto do rotulo
-  location: string | null;  // posicao na adega, ex: "A1", "B3"
+  location: string | null;  // campo legado, nao mais usado na UI
   pairingFood: string[];    // harmonizacao
   description: string | null;
   createdAt: string;
@@ -133,10 +137,10 @@ interface Movement {
   createdAt: string;
 }
 
-// Posicao na adega (matriz 8x12)
+// Slot na adega (grid 8x12)
 interface CellarPosition {
-  row: string;      // A-H
-  column: number;   // 1-12
+  row: string;      // A-H (fileiras)
+  column: number;   // 1-12 (slots)
   wineId: string | null;
 }
 
@@ -161,9 +165,9 @@ interface WishlistItem {
 ### 5.5 Dados Mockados
 
 - **20 vinhos** realistas de 8 paises (Brasil, Portugal, Argentina, Chile, Franca, Italia, Australia, Nova Zelandia)
-- **40 movimentacoes** distribuidas nos ultimos 3 meses (marco, abril, maio 2026)
+- **40 movimentacoes** distribuidas nos ultimos 3 meses
 - **5 itens na wishlist** (Opus One, Sassicaia, Vega Sicilia, Penfolds Grange, Casa Valduga 130)
-- **Matriz da adega** 8x12 com ~55% de ocupacao
+- **Mapa da adega** 8x12 com ~55% de ocupacao
 - **Curiosidades** 3 por vinho, com informacoes reais e interessantes
 - **4 vinhos com estoque abaixo do minimo** para demonstrar alertas
 - Fornecedores mockados: "Distribuidora Grand Cru", "Wine Imports BR", "Porto Direct", etc.
@@ -174,18 +178,20 @@ interface WishlistItem {
 src/
 ├── app/
 │   ├── layout.tsx              # Layout raiz (fonts, metadata, Toaster, TooltipProvider)
+│   ├── loading.tsx             # Tela de carregamento global com logo
 │   ├── globals.css             # Tema escuro elegante customizado
 │   ├── login/page.tsx
 │   └── (dashboard)/
 │       ├── layout.tsx          # Sidebar + Header
+│       ├── loading.tsx         # Loading interno com logo
 │       ├── page.tsx            # Dashboard
 │       ├── vinhos/
-│       │   ├── page.tsx        # Listagem
+│       │   ├── page.tsx        # Listagem (cards)
 │       │   └── novo/page.tsx   # Cadastro
 │       ├── entradas/page.tsx
 │       ├── saidas/page.tsx
 │       ├── movimentacoes/page.tsx
-│       ├── adega/page.tsx      # Matriz visual
+│       ├── adega/page.tsx      # Mapa de slots
 │       ├── relatorios/page.tsx
 │       ├── wishlist/page.tsx
 │       ├── scan/page.tsx
@@ -201,18 +207,20 @@ src/
 ├── data/
 │   ├── mock-wines.ts           # 20 vinhos com harmonizacao e descricao
 │   ├── mock-movements.ts      # 40 movimentacoes
-│   ├── mock-cellar.ts         # Matriz 8x12
+│   ├── mock-cellar.ts         # Grid 8x12
 │   ├── mock-wishlist.ts       # 5 itens
 │   └── mock-curiosities.ts   # 3 curiosidades por vinho
 ├── hooks/
 │   ├── use-wines.ts           # CRUD vinhos (localStorage)
 │   ├── use-movements.ts      # CRUD movimentacoes + atualiza quantidade
-│   ├── use-cellar.ts         # Gestao da matriz
+│   ├── use-cellar.ts         # Gestao dos slots
 │   └── use-wishlist.ts       # CRUD wishlist
 ├── lib/
 │   ├── utils.ts              # cn() do shadcn
 │   ├── storage.ts            # Wrapper localStorage com inicializacao
 │   └── format.ts             # formatCurrency, formatDate, generateId
+├── public/
+│   └── logo.png              # Logo da aplicacao (garrafa mosaico)
 └── types/
     └── index.ts              # Wine, Movement, CellarPosition, WishlistItem
 ```
@@ -221,9 +229,17 @@ src/
 
 ### 6.1 shadcn/ui e base-ui
 
-Este projeto usa a versao mais recente do shadcn/ui que e baseada em **base-ui** (NÃO radix). Diferencas criticas:
+Este projeto usa a versao mais recente do shadcn/ui que e baseada em **base-ui** (NAO radix). Diferencas criticas:
 
 - `Select` onValueChange: passa `(value: string | null, eventDetails) => void` - SEMPRE guardar null com `(v) => v && setSomething(v)`
+- **BUG do SelectValue**: `SelectValue` exibe o `value` raw (ex: "all", "w1") em vez do label. **Workaround**: usar `<span>` manual dentro do `SelectTrigger` em vez de `<SelectValue>`. Exemplo:
+  ```jsx
+  <SelectTrigger>
+    <span className="flex flex-1 text-left truncate text-sm">
+      {value === "all" ? "Todos" : displayLabel}
+    </span>
+  </SelectTrigger>
+  ```
 - `Button`: NAO tem prop `asChild` - usar `<Link href="..."><Button>...</Button></Link>` em vez de `<Button asChild><Link>...</Link></Button>`
 - `Tooltip` TooltipTrigger: NAO tem `asChild` - usar diretamente como wrapper ou usar prop `render`
 - `SidebarMenuButton`: usa prop `render={<Link href="..." />}` em vez de `asChild`
@@ -240,12 +256,13 @@ Este projeto usa a versao mais recente do shadcn/ui que e baseada em **base-ui**
 ### 6.3 Deploy
 
 ```bash
-# Vercel CLI
+# Vercel CLI (deploy manual - NAO tem auto-deploy via GitHub)
 npx vercel --prod --yes --scope studiocode1020-3488s-projects
-
-# Ou via git push (se conectar GitHub na Vercel)
-git push origin master
 ```
+
+### 6.4 Conceito de Adega
+
+A adega e representada como um **grid de slots** (8 fileiras x 12 slots). Cada slot pode conter um vinho ou estar vazio. Os slots sao organizados por tipo de vinho (cor visual). **NAO existe conceito de "localizacao" fixa** — o campo `location` no modelo Wine e legado e nao aparece na UI.
 
 ## 7. O Que Pode Ser Implementado (Roadmap)
 
@@ -283,23 +300,30 @@ git push origin master
 | IA real | Integrar Google Gemini para scan de rotulos e curiosidades |
 | Notificacoes | Alerta de estoque baixo por email/WhatsApp |
 | Exportacao | Download de relatorios em Excel/PDF |
-| QR Code | Gerar QR codes por posicao na adega |
 
 ## 8. Decisoes de Design Tomadas
 
 1. **Tema escuro obrigatorio**: adegas sao ambientes escuros, tema escuro e mais confortavel de usar la dentro
-2. **Mobile-first**: o dono vai usar dentro da adega com o celular na mao
-3. **Dados mockados realistas**: vinhos que o cliente reconhece (Miolo, Casa Valduga, Casillero del Diablo...)
-4. **Sidebar com 3 grupos**: separa gestao operacional, colecao pessoal e experiencias interativas
-5. **Cores de vinho**: bordo para primaria, dourado para destaques, verde para sucesso, vermelho para alertas
-6. **IA simulada no MVP**: as features de IA (scan, recomendacoes, curiosidades, acordo perfeito) usam dados mockados. Na versao real, conectar com Gemini/GPT
-7. **Font Inter para valores**: valores monetarios e KPIs usam Inter (nao Playfair) para melhor legibilidade de numeros
+2. **Mobile-first**: o dono vai usar dentro da adega com o celular na mao — cards em vez de tabelas, botoes grandes, touch targets de no minimo 44px
+3. **Cards em vez de tabelas**: todas as listagens (vinhos, movimentacoes, alertas) usam cards para melhor leitura no mobile
+4. **KPIs clicaveis**: cada KPI do dashboard abre popup com detalhamento
+5. **Dados mockados realistas**: vinhos que o cliente reconhece (Miolo, Casa Valduga, Casillero del Diablo...)
+6. **Sidebar com 3 grupos**: separa gestao operacional, colecao pessoal e experiencias interativas
+7. **Cores de vinho**: bordo para primaria, dourado para destaques, verde para sucesso, vermelho para alertas
+8. **IA simulada no MVP**: as features de IA (scan, recomendacoes, curiosidades, acordo perfeito) usam dados mockados. Na versao real, conectar com Gemini/GPT
+9. **Font Inter para valores**: valores monetarios e KPIs usam Inter (nao Playfair) para melhor legibilidade de numeros
+10. **Sem localizacao fixa**: a adega usa slots organizados por tipo de vinho, sem conceito de "posicao A1"
+11. **Select com span manual**: workaround para bug do base-ui SelectValue que mostra value raw
 
 ## 9. Historico de Atualizacoes
 
 | Data | Descricao |
 |------|-----------|
-| 2026-09-25 | Revisao completa de textos: corrigidos ~50 acentos faltantes em 6 arquivos (acordo-perfeito, clima, recomendacoes, scan, wishlist, app-sidebar). Traduzido "Wishlist" para "Lista de Desejos" na sidebar. Traduzido "Preview" para "Foto do rotulo" no scan. Todos os labels, placeholders, mensagens e tooltips agora estao em portugues correto. |
+| 2026-09-25 | Revisao completa de textos: corrigidos ~50 acentos faltantes, traduzido "Wishlist" para "Lista de Desejos", todos os textos em portugues correto |
+| 2026-09-25 | Redesign mobile-first: Dashboard com KPIs clicaveis e cards, Vinhos e Movimentacoes com cards em vez de tabelas, Entradas/Saidas com card de info do vinho e botao cadastro, Degustacao com fix de overflow |
+| 2026-09-25 | Logo personalizada adicionada: sidebar, login e telas de loading |
+| 2026-09-25 | Removido conceito de localizacao: adega agora usa slots organizados por tipo |
+| 2026-09-25 | Fix Select base-ui: todos os selects usam span manual para exibir nomes corretos |
 
 ## 10. Como Continuar o Desenvolvimento
 
