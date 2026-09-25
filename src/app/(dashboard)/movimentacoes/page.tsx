@@ -85,7 +85,7 @@ export default function MovimentacoesPage() {
   return (
     <div className="space-y-6">
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
         <Card className="border-border/50">
           <CardContent className="p-4 flex items-center gap-3">
             <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${totalEntradas - totalSaidas >= 0 ? "bg-success/10" : "bg-destructive/10"}`}>
@@ -132,7 +132,7 @@ export default function MovimentacoesPage() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -185,7 +185,7 @@ export default function MovimentacoesPage() {
             const wine = wineMap.get(mov.wineId);
             const isEntry = mov.type === "entrada";
             return (
-              <div key={mov.id} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30 border border-border/30">
+              <div key={mov.id} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30 border border-border/30 active:scale-[0.99] transition-transform">
                 <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
                   isEntry ? "bg-success/15" : "bg-destructive/15"
                 }`}>
@@ -208,21 +208,21 @@ export default function MovimentacoesPage() {
                   </div>
                   {/* Additional details row */}
                   <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                    <Badge className={`${isEntry ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'} border-0 text-[10px]`}>
+                    <Badge className={`${isEntry ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'} border-0 text-xs`}>
                       {isEntry ? "Entrada" : "Saida"}
                     </Badge>
                     {mov.type === "entrada" && mov.supplier && (
-                      <span className="text-[11px] text-muted-foreground truncate">{mov.supplier}</span>
+                      <span className="text-xs text-muted-foreground truncate">{mov.supplier}</span>
                     )}
                     {mov.type === "saida" && mov.reason && (
-                      <span className="text-[11px] text-muted-foreground">{reasonLabels[mov.reason]}</span>
+                      <span className="text-xs text-muted-foreground">{reasonLabels[mov.reason]}</span>
                     )}
                     {mov.invoiceNumber && (
-                      <span className="text-[11px] text-muted-foreground">NF: {mov.invoiceNumber}</span>
+                      <span className="text-xs text-muted-foreground">NF: {mov.invoiceNumber}</span>
                     )}
                   </div>
                   {mov.notes && (
-                    <p className="text-[11px] text-muted-foreground/70 mt-1 truncate">{mov.notes}</p>
+                    <p className="text-xs text-muted-foreground/70 mt-1 truncate">{mov.notes}</p>
                   )}
                 </div>
               </div>

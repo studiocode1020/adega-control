@@ -235,7 +235,7 @@ export default function ClimaPage() {
       </div>
 
       {/* Weather selection grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {WEATHER_OPTIONS.map((option) => {
           const Icon = option.icon;
           const isSelected = selected === option.id;
@@ -246,8 +246,8 @@ export default function ClimaPage() {
               type="button"
               onClick={() => handleSelect(option.id)}
               className={`
-                relative flex flex-col items-center gap-2 rounded-xl p-5
-                transition-all duration-300 cursor-pointer text-center
+                relative flex flex-col items-center gap-2 rounded-xl p-4 sm:p-5
+                transition-all duration-300 cursor-pointer text-center active:scale-[0.97]
                 ${option.gradient} ${option.bgHover}
                 border border-border/50
                 ${isSelected

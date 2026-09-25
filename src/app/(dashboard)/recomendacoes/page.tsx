@@ -147,9 +147,9 @@ export default function RecomendacoesPage() {
       </Card>
 
       {/* Recommendations grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         {RECOMMENDATIONS.map((rec) => (
-          <Card key={rec.id} className="border-border/50">
+          <Card key={rec.id} className="border-border/50 active:scale-[0.99] transition-transform">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <Badge className="bg-gold/20 text-gold border-transparent">

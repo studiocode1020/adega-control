@@ -161,7 +161,7 @@ export function AppSidebar() {
             <p className="text-sm font-medium text-foreground truncate">Administrador</p>
             <p className="text-xs text-muted-foreground truncate">admin@adega.com</p>
           </div>
-          <Link href="/login" className="text-muted-foreground hover:text-foreground transition-colors">
+          <Link href="/login" className="text-muted-foreground hover:text-foreground transition-colors flex items-center justify-center min-h-[44px] min-w-[44px]">
             <LogOut className="h-4 w-4" />
           </Link>
         </div>

@@ -117,8 +117,8 @@ export default function VinhosPage() {
             {filteredWines.length} de {wines.length} rótulos cadastrados
           </p>
         </div>
-        <Link href="/vinhos/novo">
-          <Button className="bg-wine hover:bg-wine/90 text-white">
+        <Link href="/vinhos/novo" className="w-full sm:w-auto">
+          <Button className="bg-wine hover:bg-wine/90 text-white w-full sm:w-auto">
             <Plus className="h-4 w-4 mr-2" />
             Cadastrar Vinho
           </Button>
@@ -175,7 +175,7 @@ export default function VinhosPage() {
               <Button
                 variant="ghost"
                 onClick={handleClearFilters}
-                className="text-muted-foreground hover:text-foreground"
+                className="text-muted-foreground hover:text-foreground min-h-[44px]"
               >
                 Limpar filtros
               </Button>
@@ -212,7 +212,7 @@ export default function VinhosPage() {
                       {wine.year} &middot; {wine.country}
                     </p>
                   </div>
-                  <Badge className={`${WINE_TYPE_COLORS[wine.type]} border-0 text-[10px] shrink-0`}>
+                  <Badge className={`${WINE_TYPE_COLORS[wine.type]} border-0 text-xs shrink-0`}>
                     {wine.type}
                   </Badge>
                 </div>
@@ -220,7 +220,7 @@ export default function VinhosPage() {
                   <span className="text-sm text-gold font-medium">{formatCurrency(wine.price)}</span>
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-muted-foreground">{wine.quantity} garrafas</span>
-                    <Badge className={`${isLowStock ? 'bg-destructive/20 text-destructive' : 'bg-success/20 text-success'} border-0 text-[10px]`}>
+                    <Badge className={`${isLowStock ? 'bg-destructive/20 text-destructive' : 'bg-success/20 text-success'} border-0 text-xs`}>
                       {isLowStock ? "Baixo" : "OK"}
                     </Badge>
                   </div>
@@ -233,7 +233,7 @@ export default function VinhosPage() {
 
       {/* Wine Detail Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
           {selectedWine && (
             <>
               <DialogHeader>
@@ -316,7 +316,7 @@ export default function VinhosPage() {
                     </p>
                     <div className="flex flex-wrap gap-1.5">
                       {selectedWine.pairingFood.map((food, idx) => (
-                        <Badge key={idx} variant="outline" className="text-[11px] font-normal">
+                        <Badge key={idx} variant="outline" className="text-xs font-normal">
                           {food}
                         </Badge>
                       ))}
@@ -345,7 +345,7 @@ export default function VinhosPage() {
                     <p className="text-xs text-muted-foreground mb-2 font-medium flex items-center gap-1">
                       <Lightbulb className="h-3 w-3 text-gold" />
                       Curiosidades
-                      <span className="text-[10px] bg-gold/15 text-gold px-1.5 py-0.5 rounded-full ml-1">IA</span>
+                      <span className="text-xs bg-gold/15 text-gold px-1.5 py-0.5 rounded-full ml-1">IA</span>
                     </p>
                     <ul className="space-y-2">
                       {wineCuriosities[selectedWine.id].map((curiosity, idx) => (
@@ -377,7 +377,7 @@ function DetailItem({
 }) {
   return (
     <div className="space-y-1">
-      <p className="text-[11px] text-muted-foreground flex items-center gap-1.5">
+      <p className="text-xs text-muted-foreground flex items-center gap-1.5">
         <Icon className="h-3 w-3" />
         {label}
       </p>

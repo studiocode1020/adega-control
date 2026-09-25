@@ -230,13 +230,13 @@ export default function AcordoPerfeitoPage() {
             <p className="text-xs text-muted-foreground mb-2">
               Sugestões rápidas:
             </p>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-2">
               {QUICK_SUGGESTIONS.map((chip) => (
                 <button
                   key={chip}
                   type="button"
                   onClick={() => handleChipClick(chip)}
-                  className="inline-flex items-center rounded-full border border-border/50 bg-muted/40 px-3 py-1 text-xs text-muted-foreground hover:bg-wine/10 hover:text-wine-light hover:border-wine/30 transition-colors cursor-pointer"
+                  className="inline-flex items-center rounded-full border border-border/50 bg-muted/40 px-3.5 py-2 text-sm text-muted-foreground hover:bg-wine/10 hover:text-wine-light hover:border-wine/30 active:scale-95 transition-all cursor-pointer"
                 >
                   {chip}
                 </button>

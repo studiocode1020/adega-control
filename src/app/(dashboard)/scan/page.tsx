@@ -124,7 +124,7 @@ export default function ScanPage() {
               <button
                 type="button"
                 onClick={() => inputRef.current?.click()}
-                className="w-full border-2 border-dashed border-muted-foreground/30 rounded-xl py-16 flex flex-col items-center justify-center gap-3 hover:border-wine-light/50 hover:bg-muted/30 transition-colors cursor-pointer"
+                className="w-full border-2 border-dashed border-muted-foreground/30 rounded-xl py-16 flex flex-col items-center justify-center gap-3 hover:border-wine-light/50 hover:bg-muted/30 active:scale-[0.99] transition-all cursor-pointer min-h-[180px]"
               >
                 <Camera className="h-10 w-10 text-muted-foreground/60" />
                 <span className="text-sm text-muted-foreground">
@@ -152,7 +152,7 @@ export default function ScanPage() {
                   <Button
                     variant="link"
                     onClick={handleReset}
-                    className="text-muted-foreground"
+                    className="text-muted-foreground min-h-[44px]"
                   >
                     Trocar imagem
                   </Button>
@@ -264,7 +264,7 @@ export default function ScanPage() {
               <Button
                 variant="outline"
                 size="lg"
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto min-h-[44px]"
                 onClick={handleReset}
               >
                 <Scan className="h-4 w-4 mr-2" />

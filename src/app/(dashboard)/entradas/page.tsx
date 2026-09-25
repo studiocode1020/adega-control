@@ -131,6 +131,7 @@ export default function EntradasPage() {
                 <Button
                   type="button"
                   variant="outline"
+                  size="lg"
                   className="w-full mt-2 text-sm border-gold/30 text-gold hover:bg-gold/10 hover:text-gold"
                 >
                   + Cadastrar novo vinho
@@ -206,6 +207,7 @@ export default function EntradasPage() {
             <Button
               type="submit"
               disabled={isSubmitting}
+              size="lg"
               className="w-full bg-wine hover:bg-wine-light text-white"
             >
               <ArrowDownToLine className="h-4 w-4 mr-2" />

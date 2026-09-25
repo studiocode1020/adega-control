@@ -156,7 +156,7 @@ export default function DegustacaoPage() {
                 value={selectedWineId}
                 onValueChange={(v) => v && setSelectedWineId(v)}
               >
-                <SelectTrigger className="w-full h-10 min-w-0">
+                <SelectTrigger className="w-full h-11 min-w-0">
                   <span className="flex flex-1 text-left truncate text-sm">
                     {selectedWine ? `${selectedWine.name} (${selectedWine.year})` : "Selecione um vinho..."}
                   </span>
@@ -326,7 +326,7 @@ export default function DegustacaoPage() {
                 {c.chips.map((chip) => (
                   <span
                     key={chip}
-                    className="inline-flex items-center rounded-full border border-border/50 bg-muted/30 px-3 py-1.5 text-xs font-medium text-muted-foreground"
+                    className="inline-flex items-center rounded-full border border-border/50 bg-muted/30 px-3.5 py-2 text-sm font-medium text-muted-foreground"
                   >
                     {chip}
                   </span>
@@ -399,7 +399,7 @@ export default function DegustacaoPage() {
                   key={star}
                   type="button"
                   onClick={() => setRating(star)}
-                  className="p-1 transition-transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+                  className="p-2 transition-transform hover:scale-110 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
                   aria-label={`${star} estrela${star > 1 ? "s" : ""}`}
                 >
                   <Star

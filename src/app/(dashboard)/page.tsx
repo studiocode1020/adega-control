@@ -305,7 +305,7 @@ export default function DashboardPage() {
                 <div key={wine.id} className="p-2.5 rounded-lg bg-muted/30 border border-border/30">
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-medium truncate">{wine.name}</p>
-                    <Badge variant="destructive" className="text-[10px] shrink-0 ml-2">
+                    <Badge variant="destructive" className="text-xs shrink-0 ml-2">
                       {wine.quantity === 0 ? "Esgotado" : "Baixo"}
                     </Badge>
                   </div>
@@ -344,14 +344,14 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       {/* KPI Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
         {kpiCards.map((kpi) => (
           <Card
             key={kpi.title}
-            className="border-border/50 cursor-pointer hover:bg-muted/30 transition-colors"
+            className="border-border/50 cursor-pointer hover:bg-muted/30 transition-all active:scale-[0.98]"
             onClick={() => setActiveKpi(kpi.detailKey)}
           >
-            <CardContent className="p-4">
+            <CardContent className="p-3 sm:p-4">
               <div className="flex items-center gap-3">
                 <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${kpi.bgColor}`}>
                   <kpi.icon className={`h-5 w-5 ${kpi.color}`} />
@@ -360,7 +360,7 @@ export default function DashboardPage() {
                   <p className="text-xs text-muted-foreground truncate">{kpi.title}</p>
                   <p className="text-lg font-bold text-foreground truncate">{kpi.value}</p>
                   {kpi.subtitle && (
-                    <p className="text-[10px] text-muted-foreground">{kpi.subtitle}</p>
+                    <p className="text-xs text-muted-foreground">{kpi.subtitle}</p>
                   )}
                 </div>
               </div>
@@ -371,7 +371,7 @@ export default function DashboardPage() {
 
       {/* KPI Detail Dialog */}
       <Dialog open={activeKpi !== null} onOpenChange={(open) => { if (!open) setActiveKpi(null); }}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{activeKpi ? dialogTitles[activeKpi] : ""}</DialogTitle>
           </DialogHeader>
@@ -403,7 +403,7 @@ export default function DashboardPage() {
                 const sorted = Array.from(byType.entries()).sort((a, b) => b[1] - a[1]).slice(0, 3);
                 return sorted.map(([type, value]) => (
                   <div key={type} className="min-w-[80px]">
-                    <p className="text-[10px] text-muted-foreground">{type}</p>
+                    <p className="text-xs text-muted-foreground">{type}</p>
                     <p className="text-sm font-semibold text-foreground">{formatCurrency(value)}</p>
                   </div>
                 ));
@@ -446,7 +446,7 @@ export default function DashboardPage() {
                           <span className="text-xs font-medium text-destructive shrink-0">{wine.quantity}/{wine.minStock}</span>
                         </div>
                       </div>
-                      <Badge variant="destructive" className="text-[10px] shrink-0">
+                      <Badge variant="destructive" className="text-xs shrink-0">
                         {wine.quantity === 0 ? "Esgotado" : "Baixo"}
                       </Badge>
                     </div>
@@ -467,7 +467,7 @@ export default function DashboardPage() {
               </CardTitle>
               <Link
                 href="/movimentacoes"
-                className="text-xs text-wine-light hover:text-wine transition-colors"
+                className="text-xs text-wine-light hover:text-wine transition-colors py-2 px-1 min-h-[44px] flex items-center"
               >
                 Ver todas
               </Link>
@@ -481,7 +481,7 @@ export default function DashboardPage() {
             ) : (
               <div className="space-y-3">
                 {kpis.recentMovements.map((mov) => (
-                  <div key={mov.id} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30 border border-border/30">
+                  <div key={mov.id} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30 border border-border/30 active:scale-[0.99] transition-transform">
                     <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
                       mov.type === "entrada" ? "bg-success/15" : "bg-destructive/15"
                     }`}>

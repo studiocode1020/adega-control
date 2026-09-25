@@ -125,13 +125,13 @@ export default function WishlistPage() {
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger
             render={
-              <Button className="bg-wine hover:bg-wine-light text-white">
+              <Button className="bg-wine hover:bg-wine-light text-white w-full sm:w-auto">
                 <Plus className="h-4 w-4" />
                 Adicionar Vinho
               </Button>
             }
           />
-          <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <Plus className="h-5 w-5 text-wine-light" />
@@ -293,6 +293,7 @@ export default function WishlistPage() {
 
               <Button
                 type="submit"
+                size="lg"
                 className="w-full bg-wine hover:bg-wine-light text-white"
               >
                 <Plus className="h-4 w-4" />
@@ -304,7 +305,7 @@ export default function WishlistPage() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         <Card className="border-border/50">
           <CardContent className="p-4 text-center">
             <Heart className="h-5 w-5 text-wine-light mx-auto mb-1" />
@@ -348,7 +349,7 @@ export default function WishlistPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {items.map((item) => (
             <Card
               key={item.id}
@@ -434,10 +435,10 @@ export default function WishlistPage() {
                 )}
 
                 {/* Actions */}
-                <div className="flex items-center gap-2 pt-1">
+                <div className="flex items-center gap-2 pt-2">
                   <Button
                     variant={item.purchased ? "outline" : "default"}
-                    size="sm"
+                    size="default"
                     className={
                       item.purchased
                         ? ""
@@ -459,7 +460,7 @@ export default function WishlistPage() {
                   </Button>
                   <Button
                     variant="destructive"
-                    size="icon-sm"
+                    size="icon"
                     onClick={() => {
                       removeItem(item.id);
                       toast.success(`"${item.name}" removido da lista.`);

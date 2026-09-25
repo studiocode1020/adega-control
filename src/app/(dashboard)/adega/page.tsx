@@ -58,7 +58,7 @@ export default function AdegaPage() {
   return (
     <div className="space-y-6">
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
         <Card className="border-border/50">
           <CardContent className="p-4 text-center">
             <p className="text-xs text-muted-foreground">Slots Totais</p>
@@ -146,9 +146,9 @@ export default function AdegaPage() {
                           <TooltipTrigger
                             onClick={() => wine && setSelectedWine(wine)}
                             className={`
-                              aspect-square rounded-md border transition-all duration-200 flex items-center justify-center
+                              aspect-square rounded-md border transition-all duration-200 flex items-center justify-center min-h-[36px] min-w-[36px]
                               ${wine
-                                ? `${colors!.bg} ${colors!.border} ${colors!.glow} hover:scale-105 cursor-pointer`
+                                ? `${colors!.bg} ${colors!.border} ${colors!.glow} hover:scale-105 active:scale-95 cursor-pointer`
                                 : "border-dashed border-muted-foreground/20 hover:border-muted-foreground/40"
                               }
                             `}
@@ -184,7 +184,7 @@ export default function AdegaPage() {
 
       {/* Wine Detail Dialog */}
       <Dialog open={!!selectedWine} onOpenChange={() => setSelectedWine(null)}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <WineIcon className="h-5 w-5 text-wine-light" />
@@ -231,7 +231,7 @@ export default function AdegaPage() {
                   <p className="font-medium">
                     {selectedWine.quantity} garrafas
                     {selectedWine.quantity <= selectedWine.minStock && (
-                      <Badge variant="destructive" className="ml-2 text-[10px]">Baixo</Badge>
+                      <Badge variant="destructive" className="ml-2 text-xs">Baixo</Badge>
                     )}
                   </p>
                 </div>

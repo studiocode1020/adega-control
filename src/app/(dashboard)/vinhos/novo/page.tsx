@@ -14,7 +14,6 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
 import { useWines } from "@/hooks/use-wines";
 import type { WineType } from "@/types";
@@ -22,7 +21,7 @@ import type { WineType } from "@/types";
 const WINE_TYPES: WineType[] = [
   "Tinto",
   "Branco",
-  "Ros\u00e9",
+  "Rosé",
   "Espumante",
   "Sobremesa",
   "Fortificado",
@@ -33,12 +32,12 @@ const COUNTRIES = [
   "Portugal",
   "Argentina",
   "Chile",
-  "Fran\u00e7a",
-  "It\u00e1lia",
+  "França",
+  "Itália",
   "Espanha",
-  "Austr\u00e1lia",
-  "Nova Zel\u00e2ndia",
-  "\u00c1frica do Sul",
+  "Austrália",
+  "Nova Zelândia",
+  "África do Sul",
   "Estados Unidos",
 ];
 
@@ -56,7 +55,6 @@ export default function NovoVinhoPage() {
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
   const [minStock, setMinStock] = useState("");
-  const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
   const [pairingFood, setPairingFood] = useState("");
   const [imageData, setImageData] = useState<string | null>(null);
@@ -76,7 +74,7 @@ export default function NovoVinhoPage() {
     e.preventDefault();
 
     if (!name.trim() || !year.trim()) {
-      toast.error("Preencha os campos obrigat\u00f3rios.");
+      toast.error("Preencha os campos obrigatórios.");
       return;
     }
 
@@ -96,7 +94,7 @@ export default function NovoVinhoPage() {
         minStock: parseInt(minStock, 10) || 0,
         imageUrl: null,
         imageData: imageData,
-        location: location.trim() || null,
+        location: null,
         description: description.trim() || null,
         pairingFood: pairingFood.trim() ? pairingFood.split(',').map(s => s.trim()).filter(Boolean) : [],
       });
@@ -117,8 +115,9 @@ export default function NovoVinhoPage() {
           size="icon"
           onClick={() => router.back()}
           aria-label="Voltar"
+          className="min-h-[44px] min-w-[44px]"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-5 w-5" />
         </Button>
         <div>
           <h1 className="text-2xl font-bold text-foreground">Novo Vinho</h1>
@@ -131,7 +130,7 @@ export default function NovoVinhoPage() {
       <Card className="border-border/50">
         <CardHeader>
           <CardTitle className="text-base font-medium">
-            Informa\u00e7\u00f5es do Vinho
+            Informações do Vinho
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -151,10 +150,10 @@ export default function NovoVinhoPage() {
                 />
               </div>
 
-              {/* Safra/Ano */}
+              {/* Safra */}
               <div className="space-y-2">
                 <Label htmlFor="year">
-                  Safra/Ano <span className="text-destructive">*</span>
+                  Safra <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="year"
@@ -173,7 +172,9 @@ export default function NovoVinhoPage() {
                   onValueChange={(value) => value && setType(value as WineType)}
                 >
                   <SelectTrigger id="type">
-                    <SelectValue placeholder="Selecione o tipo" />
+                    <span className="flex flex-1 text-left truncate text-sm">
+                      {type || "Selecione o tipo"}
+                    </span>
                   </SelectTrigger>
                   <SelectContent>
                     {WINE_TYPES.map((t) => (
@@ -185,12 +186,14 @@ export default function NovoVinhoPage() {
                 </Select>
               </div>
 
-              {/* Pa\u00eds */}
+              {/* País */}
               <div className="space-y-2">
-                <Label htmlFor="country">Pa\u00eds</Label>
+                <Label htmlFor="country">País</Label>
                 <Select value={country} onValueChange={(v) => v && setCountry(v)}>
                   <SelectTrigger id="country">
-                    <SelectValue placeholder="Selecione o pa\u00eds" />
+                    <span className="flex flex-1 text-left truncate text-sm">
+                      {country || "Selecione o país"}
+                    </span>
                   </SelectTrigger>
                   <SelectContent>
                     {COUNTRIES.map((c) => (
@@ -202,9 +205,9 @@ export default function NovoVinhoPage() {
                 </Select>
               </div>
 
-              {/* Regi\u00e3o */}
+              {/* Região */}
               <div className="space-y-2">
-                <Label htmlFor="region">Regi\u00e3o</Label>
+                <Label htmlFor="region">Região</Label>
                 <Input
                   id="region"
                   placeholder="Ex: Vale Central"
@@ -235,9 +238,9 @@ export default function NovoVinhoPage() {
                 />
               </div>
 
-              {/* Pre\u00e7o */}
+              {/* Preço */}
               <div className="space-y-2">
-                <Label htmlFor="price">Pre\u00e7o</Label>
+                <Label htmlFor="price">Preço</Label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
                     R$
@@ -268,9 +271,9 @@ export default function NovoVinhoPage() {
                 />
               </div>
 
-              {/* Estoque M\u00ednimo */}
+              {/* Estoque Mínimo */}
               <div className="space-y-2">
-                <Label htmlFor="minStock">Estoque M\u00ednimo</Label>
+                <Label htmlFor="minStock">Estoque Mínimo</Label>
                 <Input
                   id="minStock"
                   type="number"
@@ -280,8 +283,6 @@ export default function NovoVinhoPage() {
                   onChange={(e) => setMinStock(e.target.value)}
                 />
               </div>
-
-              {/* Campo de localização removido - adega usa slots organizados por tipo */}
             </div>
 
             {/* Descrição */}
@@ -306,7 +307,7 @@ export default function NovoVinhoPage() {
                 value={pairingFood}
                 onChange={(e) => setPairingFood(e.target.value)}
               />
-              <p className="text-[11px] text-muted-foreground">Separe os pratos por vírgula</p>
+              <p className="text-xs text-muted-foreground">Separe os pratos por vírgula</p>
             </div>
 
             {/* Foto do Rótulo */}
@@ -322,13 +323,13 @@ export default function NovoVinhoPage() {
                   <button
                     type="button"
                     onClick={() => setImageData(null)}
-                    className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-destructive text-white flex items-center justify-center hover:bg-destructive/80 transition-colors"
+                    className="absolute -top-3 -right-3 h-8 w-8 rounded-full bg-destructive text-white flex items-center justify-center hover:bg-destructive/80 active:scale-90 transition-all"
                   >
-                    <X className="h-3 w-3" />
+                    <X className="h-4 w-4" />
                   </button>
                 </div>
               ) : (
-                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-lg cursor-pointer hover:border-wine/50 transition-colors">
+                <label className="flex flex-col items-center justify-center w-full min-h-[120px] border-2 border-dashed border-border rounded-lg cursor-pointer hover:border-wine/50 active:scale-[0.99] transition-all">
                   <Camera className="h-8 w-8 text-muted-foreground mb-2" />
                   <span className="text-sm text-muted-foreground">Clique para tirar foto ou enviar</span>
                   <input
@@ -343,18 +344,21 @@ export default function NovoVinhoPage() {
             </div>
 
             {/* Buttons */}
-            <div className="flex items-center justify-end gap-3 pt-4 border-t border-border/50">
+            <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 pt-4 border-t border-border/50">
               <Button
                 type="button"
                 variant="outline"
+                size="lg"
                 onClick={() => router.push("/vinhos")}
                 disabled={isSubmitting}
+                className="w-full sm:w-auto"
               >
                 Cancelar
               </Button>
               <Button
                 type="submit"
-                className="bg-wine hover:bg-wine-light text-white"
+                size="lg"
+                className="bg-wine hover:bg-wine-light text-white w-full sm:w-auto"
                 disabled={isSubmitting}
               >
                 <Save className="h-4 w-4 mr-2" />
