@@ -160,6 +160,19 @@ interface WishlistItem {
   purchased: boolean;
   createdAt: string;
 }
+
+// Notificacao do sensor RFID
+interface SensorNotification {
+  id: string;
+  tagId: string;           // ID da tag RFID
+  wineId: string | null;   // vinho mapeado (null se tag desconhecida)
+  wineName: string | null;
+  type: 'entrada' | 'saida';
+  quantity: number;         // sempre 1 (deteccao individual)
+  detectedAt: string;
+  status: 'pending' | 'confirmed' | 'rejected';
+  confirmedAt: string | null;
+}
 ```
 
 ### 5.5 Dados Mockados
@@ -170,6 +183,7 @@ interface WishlistItem {
 - **Mapa da adega** 8x12 com ~55% de ocupacao
 - **Curiosidades** 3 por vinho, com informacoes reais e interessantes
 - **4 vinhos com estoque abaixo do minimo** para demonstrar alertas
+- **4 notificacoes do sensor** mockadas (3 vinhos conhecidos + 1 tag desconhecida)
 - Fornecedores mockados: "Distribuidora Grand Cru", "Wine Imports BR", "Porto Direct", etc.
 
 ### 5.6 Estrutura de Pastas
@@ -209,12 +223,14 @@ src/
 │   ├── mock-movements.ts      # 40 movimentacoes
 │   ├── mock-cellar.ts         # Grid 8x12
 │   ├── mock-wishlist.ts       # 5 itens
-│   └── mock-curiosities.ts   # 3 curiosidades por vinho
+│   ├── mock-curiosities.ts   # 3 curiosidades por vinho
+│   └── mock-notifications.ts # 4 deteccoes RFID simuladas
 ├── hooks/
 │   ├── use-wines.ts           # CRUD vinhos (localStorage)
 │   ├── use-movements.ts      # CRUD movimentacoes + atualiza quantidade
 │   ├── use-cellar.ts         # Gestao dos slots
-│   └── use-wishlist.ts       # CRUD wishlist
+│   ├── use-wishlist.ts       # CRUD wishlist
+│   └── use-notifications.ts  # Notificacoes do sensor RFID (confirm/reject/addFromSensor)
 ├── lib/
 │   ├── utils.ts              # cn() do shadcn
 │   ├── storage.ts            # Wrapper localStorage com inicializacao
@@ -225,9 +241,40 @@ src/
     └── index.ts              # Wine, Movement, CellarPosition, WishlistItem
 ```
 
-## 6. Detalhes Tecnicos Importantes
+## 6. Sistema Embarcado RFID (Em Desenvolvimento)
 
-### 6.1 shadcn/ui e base-ui
+### 6.1 Visao Geral
+
+A interface web sera conectada a um **sistema embarcado** com sensor RFID que detecta automaticamente a entrada e saida de vinhos na adega. Cada garrafa tera uma **tag RFID** associada.
+
+### 6.2 Fluxo de Funcionamento
+
+1. Sensor RFID detecta uma tag (garrafa entrando ou saindo)
+2. Sistema envia notificacao para a plataforma web
+3. **Sininho** no header mostra notificacao pendente
+4. Usuario abre o painel de notificacoes e ve a deteccao
+5. Usuario clica **"Confirmar"** ou **"Rejeitar"**
+6. Se confirmado: cria movimentacao, atualiza estoque, adega, relatorios
+7. Se rejeitado: descarta a deteccao
+
+### 6.3 O Que Ja Esta Pronto (Frontend)
+
+- **Tipo `SensorNotification`**: com tagId, wineId, status (pending/confirmed/rejected)
+- **Hook `useNotifications`**: confirm(), reject(), clearResolved(), **addFromSensor()** - esta ultima sera chamada pela conexao com o sensor
+- **Painel do sininho**: Sheet lateral com lista de notificacoes pendentes, botoes confirmar/rejeitar, toast de feedback
+- **4 notificacoes mockadas** para demonstracao
+- **Ao confirmar**: automaticamente cria Movement e atualiza quantidade do vinho
+
+### 6.4 O Que Falta (Backend/Hardware - Matheus)
+
+- Definir protocolo de comunicacao sensor → web (WebSocket, API REST, MQTT)
+- Mapear tags RFID para vinhos no cadastro
+- Implementar endpoint/listener que chama `addFromSensor()` quando sensor envia dados
+- Leitor RFID FM-50X ja tem ferramentas de bancada em `tools/rfid/`
+
+## 7. Detalhes Tecnicos Importantes
+
+### 7.1 shadcn/ui e base-ui
 
 Este projeto usa a versao mais recente do shadcn/ui que e baseada em **base-ui** (NAO radix). Diferencas criticas:
 
@@ -245,7 +292,7 @@ Este projeto usa a versao mais recente do shadcn/ui que e baseada em **base-ui**
 - `SidebarMenuButton`: usa prop `render={<Link href="..." />}` em vez de `asChild`
 - `Dialog` DialogTrigger: usar prop `render` em vez de `asChild`
 
-### 6.2 localStorage
+### 7.2 localStorage
 
 - Chaves: `adega-wines`, `adega-movements`, `adega-cellar`, `adega-wishlist`
 - Inicializacao controlada por `adega-initialized-v2`
@@ -253,20 +300,20 @@ Este projeto usa a versao mais recente do shadcn/ui que e baseada em **base-ui**
 - Funcao `initializeData()` e chamada automaticamente nos getters
 - Checagem `isClient()` para SSR safety
 
-### 6.3 Deploy
+### 7.3 Deploy
 
 ```bash
 # Vercel CLI (deploy manual - NAO tem auto-deploy via GitHub)
 npx vercel --prod --yes --scope studiocode1020-3488s-projects
 ```
 
-### 6.4 Conceito de Adega
+### 7.4 Conceito de Adega
 
 A adega e representada como um **grid de slots** (8 fileiras x 12 slots). Cada slot pode conter um vinho ou estar vazio. Os slots sao organizados por tipo de vinho (cor visual). **NAO existe conceito de "localizacao" fixa** — o campo `location` no modelo Wine e legado e nao aparece na UI.
 
-## 7. O Que Pode Ser Implementado (Roadmap)
+## 8. O Que Pode Ser Implementado (Roadmap)
 
-### 7.1 Features Ja Discutidas e Aprovadas como Ideias
+### 8.1 Features Ja Discutidas e Aprovadas como Ideias
 
 | Feature | Descricao | Status |
 |---------|-----------|--------|
@@ -289,7 +336,7 @@ A adega e representada como um **grid de slots** (8 fileiras x 12 slots). Cada s
 | Calculadora de Evento | Quantas garrafas para X convidados | Ideia |
 | Temperatura Ideal | Info de temperatura de servico por tipo | Ideia |
 
-### 7.2 Evolucao Tecnica para Versao Real
+### 8.2 Evolucao Tecnica para Versao Real
 
 | Item | Descricao |
 |------|-----------|
@@ -301,7 +348,7 @@ A adega e representada como um **grid de slots** (8 fileiras x 12 slots). Cada s
 | Notificacoes | Alerta de estoque baixo por email/WhatsApp |
 | Exportacao | Download de relatorios em Excel/PDF |
 
-## 8. Decisoes de Design Tomadas
+## 9. Decisoes de Design Tomadas
 
 1. **Tema escuro obrigatorio**: adegas sao ambientes escuros, tema escuro e mais confortavel de usar la dentro
 2. **Mobile-first**: o dono vai usar dentro da adega com o celular na mao — cards em vez de tabelas, botoes grandes, touch targets de no minimo 44px
@@ -315,7 +362,7 @@ A adega e representada como um **grid de slots** (8 fileiras x 12 slots). Cada s
 10. **Sem localizacao fixa**: a adega usa slots organizados por tipo de vinho, sem conceito de "posicao A1"
 11. **Select com span manual**: workaround para bug do base-ui SelectValue que mostra value raw
 
-## 9. Historico de Atualizacoes
+## 10. Historico de Atualizacoes
 
 | Data | Descricao |
 |------|-----------|
@@ -324,8 +371,12 @@ A adega e representada como um **grid de slots** (8 fileiras x 12 slots). Cada s
 | 2026-09-25 | Logo personalizada adicionada: sidebar, login e telas de loading |
 | 2026-09-25 | Removido conceito de localizacao: adega agora usa slots organizados por tipo |
 | 2026-09-25 | Fix Select base-ui: todos os selects usam span manual para exibir nomes corretos |
+| 2026-09-25 | Otimizacao mobile completa: touch targets 44px, inputs/botoes maiores, dialogs com scroll |
+| 2026-09-25 | Textos unicode corrigidos no cadastro (Pais, Regiao, Preco, Minimo), "Safra/Ano" → "Safra" |
+| 2026-09-25 | Grids impares: ultimo card ocupa largura total no mobile (Dashboard, Movimentacoes, Relatorios, Wishlist) |
+| 2026-09-25 | Sistema de notificacoes RFID: sininho com painel lateral, confirmar/rejeitar deteccoes, hook addFromSensor pronto para integracao |
 
-## 10. Como Continuar o Desenvolvimento
+## 11. Como Continuar o Desenvolvimento
 
 1. Fazer `git pull` para pegar a versao mais recente
 2. `npm install` para garantir dependencias
