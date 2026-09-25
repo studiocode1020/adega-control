@@ -19,22 +19,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import {
   Dialog,
   DialogContent,
@@ -150,7 +141,9 @@ export default function VinhosPage() {
 
             <Select value={typeFilter} onValueChange={(v) => setTypeFilter(v ?? "all")}>
               <SelectTrigger className="w-full sm:w-[180px]">
-                <SelectValue placeholder="Tipo" />
+                <span className="flex flex-1 text-left truncate text-sm">
+                  {typeFilter === "all" ? "Todos os tipos" : typeFilter}
+                </span>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos os tipos</SelectItem>
@@ -164,7 +157,9 @@ export default function VinhosPage() {
 
             <Select value={countryFilter} onValueChange={(v) => setCountryFilter(v ?? "all")}>
               <SelectTrigger className="w-full sm:w-[180px]">
-                <SelectValue placeholder="País" />
+                <span className="flex flex-1 text-left truncate text-sm">
+                  {countryFilter === "all" ? "Todos os países" : countryFilter}
+                </span>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos os países</SelectItem>
@@ -189,82 +184,52 @@ export default function VinhosPage() {
         </CardContent>
       </Card>
 
-      {/* Table */}
-      <Card className="border-border/50">
-        <CardContent className="p-0">
-          {filteredWines.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <WineIcon className="h-12 w-12 text-muted-foreground/40 mb-4" />
-              <p className="text-sm font-medium text-muted-foreground">
-                Nenhum vinho encontrado
-              </p>
-              <p className="text-xs text-muted-foreground/70 mt-1">
-                Tente ajustar os filtros de busca
-              </p>
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nome</TableHead>
-                  <TableHead className="hidden sm:table-cell">Safra</TableHead>
-                  <TableHead>Tipo</TableHead>
-                  <TableHead className="hidden md:table-cell">País</TableHead>
-                  <TableHead className="text-right">Preço</TableHead>
-                  <TableHead className="text-center">Estoque</TableHead>
-                  <TableHead className="text-center">Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredWines.map((wine) => {
-                  const isLowStock = wine.quantity <= wine.minStock;
-                  return (
-                    <TableRow
-                      key={wine.id}
-                      className="cursor-pointer"
-                      onClick={() => handleRowClick(wine)}
-                    >
-                      <TableCell className="font-medium text-foreground">
-                        {wine.name}
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell text-muted-foreground">
-                        {wine.year}
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          className={`${WINE_TYPE_COLORS[wine.type]} border-0 text-[10px]`}
-                        >
-                          {wine.type}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell text-muted-foreground">
-                        {wine.country}
-                      </TableCell>
-                      <TableCell className="text-right text-muted-foreground">
-                        {formatCurrency(wine.price)}
-                      </TableCell>
-                      <TableCell className="text-center font-medium">
-                        {wine.quantity}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {isLowStock ? (
-                          <Badge className="bg-destructive/20 text-destructive border-0 text-[10px]">
-                            Baixo
-                          </Badge>
-                        ) : (
-                          <Badge className="bg-success/20 text-success border-0 text-[10px]">
-                            OK
-                          </Badge>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
+      {/* Wine Cards */}
+      {filteredWines.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16 text-center rounded-lg border border-border/50 bg-card">
+          <WineIcon className="h-12 w-12 text-muted-foreground/40 mb-4" />
+          <p className="text-sm font-medium text-muted-foreground">
+            Nenhum vinho encontrado
+          </p>
+          <p className="text-xs text-muted-foreground/70 mt-1">
+            Tente ajustar os filtros de busca
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {filteredWines.map((wine) => {
+            const isLowStock = wine.quantity <= wine.minStock;
+            return (
+              <div
+                key={wine.id}
+                onClick={() => handleRowClick(wine)}
+                className="p-3 rounded-lg bg-muted/30 border border-border/30 cursor-pointer hover:bg-muted/50 transition-colors active:scale-[0.99]"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium truncate">{wine.name}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {wine.year} &middot; {wine.country}
+                    </p>
+                  </div>
+                  <Badge className={`${WINE_TYPE_COLORS[wine.type]} border-0 text-[10px] shrink-0`}>
+                    {wine.type}
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between mt-2 pt-2 border-t border-border/20">
+                  <span className="text-sm text-gold font-medium">{formatCurrency(wine.price)}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground">{wine.quantity} garrafas</span>
+                    <Badge className={`${isLowStock ? 'bg-destructive/20 text-destructive' : 'bg-success/20 text-success'} border-0 text-[10px]`}>
+                      {isLowStock ? "Baixo" : "OK"}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Wine Detail Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -397,7 +362,7 @@ export default function VinhosPage() {
                     <ul className="space-y-2">
                       {wineCuriosities[selectedWine.id].map((curiosity, idx) => (
                         <li key={idx} className="text-sm text-foreground/80 flex gap-2">
-                          <span className="text-gold shrink-0 mt-0.5">•</span>
+                          <span className="text-gold shrink-0 mt-0.5">&bull;</span>
                           <span>{curiosity}</span>
                         </li>
                       ))}

@@ -7,24 +7,16 @@ import {
   TrendingDown,
   Search,
   Filter,
+  History,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
 import { Wine, Movement } from "@/types";
 import { getWines, getMovements } from "@/lib/storage";
@@ -100,7 +92,7 @@ export default function MovimentacoesPage() {
               <Scale className={`h-5 w-5 ${totalEntradas - totalSaidas >= 0 ? "text-success" : "text-destructive"}`} />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">Saldo do Período</p>
+              <p className="text-xs text-muted-foreground">Saldo do Periodo</p>
               <p className={`text-xl font-bold ${totalEntradas - totalSaidas >= 0 ? "text-success" : "text-destructive"}`}>
                 {totalEntradas - totalSaidas >= 0 ? "+" : ""}{totalEntradas - totalSaidas} un.
               </p>
@@ -124,7 +116,7 @@ export default function MovimentacoesPage() {
               <TrendingDown className="h-5 w-5 text-destructive" />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">Total Saídas</p>
+              <p className="text-xs text-muted-foreground">Total Saidas</p>
               <p className="text-xl font-bold text-destructive">{totalSaidas} un.</p>
             </div>
           </CardContent>
@@ -152,17 +144,21 @@ export default function MovimentacoesPage() {
             </div>
             <Select value={filterType} onValueChange={(v) => setFilterType(v ?? "all")}>
               <SelectTrigger>
-                <SelectValue placeholder="Tipo" />
+                <span className="flex flex-1 text-left truncate text-sm">
+                  {filterType === "all" ? "Todos os tipos" : filterType === "entrada" ? "Entradas" : "Saidas"}
+                </span>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos os tipos</SelectItem>
                 <SelectItem value="entrada">Entradas</SelectItem>
-                <SelectItem value="saida">Saídas</SelectItem>
+                <SelectItem value="saida">Saidas</SelectItem>
               </SelectContent>
             </Select>
             <Select value={filterWine} onValueChange={(v) => setFilterWine(v ?? "all")}>
               <SelectTrigger>
-                <SelectValue placeholder="Vinho" />
+                <span className="flex flex-1 text-left truncate text-sm">
+                  {filterWine === "all" ? "Todos os vinhos" : (wineMap.get(filterWine)?.name ?? "Vinho")}
+                </span>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos os vinhos</SelectItem>
@@ -177,78 +173,63 @@ export default function MovimentacoesPage() {
         </CardContent>
       </Card>
 
-      {/* Table */}
-      <Card className="border-border/50">
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Data</TableHead>
-                <TableHead>Vinho</TableHead>
-                <TableHead className="text-center">Tipo</TableHead>
-                <TableHead className="text-center">Qtd</TableHead>
-                <TableHead className="hidden sm:table-cell">Fornecedor / Motivo</TableHead>
-                <TableHead className="hidden md:table-cell">NF</TableHead>
-                <TableHead className="hidden lg:table-cell">Observações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filtered.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                    Nenhuma movimentação encontrada.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                filtered.map((mov) => {
-                  const wine = wineMap.get(mov.wineId);
-                  return (
-                    <TableRow key={mov.id}>
-                      <TableCell className="text-sm whitespace-nowrap">
-                        {formatDate(mov.date)}
-                      </TableCell>
-                      <TableCell className="font-medium text-sm max-w-[180px] truncate">
-                        {wine?.name || "—"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {mov.type === "entrada" ? (
-                          <Badge className="bg-success/20 text-success-light border-0 text-[10px]">
-                            <TrendingUp className="h-3 w-3 mr-1" />
-                            Entrada
-                          </Badge>
-                        ) : (
-                          <Badge className="bg-destructive/20 text-destructive border-0 text-[10px]">
-                            <TrendingDown className="h-3 w-3 mr-1" />
-                            Saída
-                          </Badge>
-                        )}
-                      </TableCell>
-                      <TableCell className="text-center font-bold">
-                        <span className={mov.type === "entrada" ? "text-success" : "text-destructive"}>
-                          {mov.type === "entrada" ? "+" : "-"}{mov.quantity}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-sm text-muted-foreground hidden sm:table-cell">
-                        {mov.type === "entrada"
-                          ? mov.supplier || "—"
-                          : mov.reason
-                          ? reasonLabels[mov.reason]
-                          : "—"}
-                      </TableCell>
-                      <TableCell className="text-sm text-muted-foreground hidden md:table-cell">
-                        {mov.invoiceNumber || "—"}
-                      </TableCell>
-                      <TableCell className="text-sm text-muted-foreground max-w-[150px] truncate hidden lg:table-cell">
-                        {mov.notes || "—"}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      {/* Movement Cards */}
+      <div className="space-y-3">
+        {filtered.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <History className="h-10 w-10 text-muted-foreground/30 mb-3" />
+            <p className="text-sm text-muted-foreground">Nenhuma movimentacao encontrada.</p>
+          </div>
+        ) : (
+          filtered.map((mov) => {
+            const wine = wineMap.get(mov.wineId);
+            const isEntry = mov.type === "entrada";
+            return (
+              <div key={mov.id} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30 border border-border/30">
+                <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
+                  isEntry ? "bg-success/15" : "bg-destructive/15"
+                }`}>
+                  {isEntry
+                    ? <TrendingUp className="h-4 w-4 text-success" />
+                    : <TrendingDown className="h-4 w-4 text-destructive" />
+                  }
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium truncate">{wine?.name || "\u2014"}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{formatDate(mov.date)}</p>
+                    </div>
+                    <span className={`text-sm font-bold shrink-0 ${
+                      isEntry ? "text-success" : "text-destructive"
+                    }`}>
+                      {isEntry ? "+" : "-"}{mov.quantity}
+                    </span>
+                  </div>
+                  {/* Additional details row */}
+                  <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                    <Badge className={`${isEntry ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'} border-0 text-[10px]`}>
+                      {isEntry ? "Entrada" : "Saida"}
+                    </Badge>
+                    {mov.type === "entrada" && mov.supplier && (
+                      <span className="text-[11px] text-muted-foreground truncate">{mov.supplier}</span>
+                    )}
+                    {mov.type === "saida" && mov.reason && (
+                      <span className="text-[11px] text-muted-foreground">{reasonLabels[mov.reason]}</span>
+                    )}
+                    {mov.invoiceNumber && (
+                      <span className="text-[11px] text-muted-foreground">NF: {mov.invoiceNumber}</span>
+                    )}
+                  </div>
+                  {mov.notes && (
+                    <p className="text-[11px] text-muted-foreground/70 mt-1 truncate">{mov.notes}</p>
+                  )}
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
     </div>
   );
 }

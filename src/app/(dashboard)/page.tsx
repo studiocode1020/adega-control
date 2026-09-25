@@ -5,7 +5,6 @@ import Link from "next/link";
 import {
   Wine,
   Package,
-  DollarSign,
   ArrowDownToLine,
   ArrowUpFromLine,
   AlertTriangle,
@@ -17,13 +16,11 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Wine as WineType, Movement } from "@/types";
 import { getWines, getMovements } from "@/lib/storage";
 import { formatCurrency, formatDate } from "@/lib/format";
@@ -37,6 +34,10 @@ interface KpiData {
   lowStockCount: number;
   lowStockWines: WineType[];
   recentMovements: (Movement & { wineName: string })[];
+  winesByType: Record<string, number>;
+  bottlesByType: Record<string, number>;
+  monthEntryDetails: (Movement & { wineName: string })[];
+  monthExitDetails: (Movement & { wineName: string })[];
 }
 
 function computeKpis(wines: WineType[], movements: Movement[]): KpiData {
@@ -65,6 +66,30 @@ function computeKpis(wines: WineType[], movements: Movement[]): KpiData {
     .slice(0, 6)
     .map((m) => ({ ...m, wineName: wineMap.get(m.wineId) || "Desconhecido" }));
 
+  // Wines grouped by type (count of labels per type)
+  const winesByType: Record<string, number> = {};
+  wines.forEach((w) => {
+    winesByType[w.type] = (winesByType[w.type] || 0) + 1;
+  });
+
+  // Total bottles grouped by type
+  const bottlesByType: Record<string, number> = {};
+  wines.forEach((w) => {
+    bottlesByType[w.type] = (bottlesByType[w.type] || 0) + w.quantity;
+  });
+
+  // Month entry details
+  const monthEntryDetails = monthMovements
+    .filter((m) => m.type === "entrada")
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .map((m) => ({ ...m, wineName: wineMap.get(m.wineId) || "Desconhecido" }));
+
+  // Month exit details
+  const monthExitDetails = monthMovements
+    .filter((m) => m.type === "saida")
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .map((m) => ({ ...m, wineName: wineMap.get(m.wineId) || "Desconhecido" }));
+
   return {
     totalLabels: wines.length,
     totalBottles: wines.reduce((sum, w) => sum + w.quantity, 0),
@@ -74,11 +99,23 @@ function computeKpis(wines: WineType[], movements: Movement[]): KpiData {
     lowStockCount: lowStockWines.length,
     lowStockWines,
     recentMovements,
+    winesByType,
+    bottlesByType,
+    monthEntryDetails,
+    monthExitDetails,
   };
 }
 
+const exitReasonLabels: Record<string, string> = {
+  venda: "Venda",
+  consumo: "Consumo",
+  perda: "Perda",
+  devolucao: "Devolução",
+};
+
 export default function DashboardPage() {
   const [kpis, setKpis] = useState<KpiData | null>(null);
+  const [activeKpi, setActiveKpi] = useState<string | null>(null);
 
   useEffect(() => {
     const wines = getWines();
@@ -101,6 +138,7 @@ export default function DashboardPage() {
       icon: Wine,
       color: "text-wine-light",
       bgColor: "bg-wine/10",
+      detailKey: "labels",
     },
     {
       title: "Garrafas em Estoque",
@@ -108,13 +146,7 @@ export default function DashboardPage() {
       icon: Package,
       color: "text-gold",
       bgColor: "bg-gold/10",
-    },
-    {
-      title: "Valor do Estoque",
-      value: formatCurrency(kpis.stockValue),
-      icon: DollarSign,
-      color: "text-gold-light",
-      bgColor: "bg-gold/10",
+      detailKey: "bottles",
     },
     {
       title: "Entradas do Mês",
@@ -123,6 +155,7 @@ export default function DashboardPage() {
       icon: ArrowDownToLine,
       color: "text-success",
       bgColor: "bg-success/10",
+      detailKey: "entries",
     },
     {
       title: "Saídas do Mês",
@@ -131,6 +164,7 @@ export default function DashboardPage() {
       icon: ArrowUpFromLine,
       color: "text-destructive",
       bgColor: "bg-destructive/10",
+      detailKey: "exits",
     },
     {
       title: "Estoque Baixo",
@@ -139,15 +173,184 @@ export default function DashboardPage() {
       icon: AlertTriangle,
       color: kpis.lowStockCount > 0 ? "text-destructive" : "text-success",
       bgColor: kpis.lowStockCount > 0 ? "bg-destructive/10" : "bg-success/10",
+      detailKey: "lowStock",
     },
   ];
+
+  function renderKpiDialogContent() {
+    if (!kpis || !activeKpi) return null;
+
+    switch (activeKpi) {
+      case "labels": {
+        const entries = Object.entries(kpis.winesByType).sort((a, b) => b[1] - a[1]);
+        return (
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              {kpis.totalLabels} rótulos no total
+            </p>
+            <div className="space-y-2">
+              {entries.map(([type, count]) => (
+                <div key={type} className="flex items-center justify-between p-2 rounded-lg bg-muted/30 border border-border/30">
+                  <span className="text-sm font-medium">{type}</span>
+                  <span className="text-sm text-muted-foreground">{count} {count === 1 ? "rótulo" : "rótulos"}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      case "bottles": {
+        const entries = Object.entries(kpis.bottlesByType).sort((a, b) => b[1] - a[1]);
+        const maxBottles = Math.max(...entries.map(([, v]) => v), 1);
+        return (
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              {kpis.totalBottles} garrafas no total
+            </p>
+            <div className="space-y-2.5">
+              {entries.map(([type, count]) => {
+                const pct = Math.round((count / maxBottles) * 100);
+                return (
+                  <div key={type} className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">{type}</span>
+                      <span className="text-sm text-muted-foreground">{count}</span>
+                    </div>
+                    <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-wine"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      }
+
+      case "entries": {
+        const details = kpis.monthEntryDetails;
+        if (details.length === 0) {
+          return (
+            <p className="text-sm text-muted-foreground text-center py-4">
+              Nenhuma entrada registrada este mês.
+            </p>
+          );
+        }
+        return (
+          <div className="space-y-2 max-h-72 overflow-y-auto">
+            {details.map((mov) => (
+              <div key={mov.id} className="flex items-center gap-3 p-2 rounded-lg bg-muted/30 border border-border/30">
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-success/15">
+                  <TrendingUp className="h-3.5 w-3.5 text-success" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">{mov.wineName}</p>
+                  <p className="text-xs text-muted-foreground">{formatDate(mov.date)}</p>
+                </div>
+                <span className="text-sm font-bold text-success shrink-0">+{mov.quantity}</span>
+              </div>
+            ))}
+          </div>
+        );
+      }
+
+      case "exits": {
+        const details = kpis.monthExitDetails;
+        if (details.length === 0) {
+          return (
+            <p className="text-sm text-muted-foreground text-center py-4">
+              Nenhuma saída registrada este mês.
+            </p>
+          );
+        }
+        return (
+          <div className="space-y-2 max-h-72 overflow-y-auto">
+            {details.map((mov) => (
+              <div key={mov.id} className="flex items-center gap-3 p-2 rounded-lg bg-muted/30 border border-border/30">
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-destructive/15">
+                  <TrendingDown className="h-3.5 w-3.5 text-destructive" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">{mov.wineName}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {formatDate(mov.date)}
+                    {mov.reason ? ` \u00b7 ${exitReasonLabels[mov.reason] || mov.reason}` : ""}
+                  </p>
+                </div>
+                <span className="text-sm font-bold text-destructive shrink-0">-{mov.quantity}</span>
+              </div>
+            ))}
+          </div>
+        );
+      }
+
+      case "lowStock": {
+        const wines = kpis.lowStockWines;
+        if (wines.length === 0) {
+          return (
+            <p className="text-sm text-muted-foreground text-center py-4">
+              Todos os vinhos estão com estoque adequado.
+            </p>
+          );
+        }
+        return (
+          <div className="space-y-2 max-h-72 overflow-y-auto">
+            {wines.map((wine) => {
+              const percentage = wine.minStock > 0 ? Math.min((wine.quantity / wine.minStock) * 100, 100) : 0;
+              return (
+                <div key={wine.id} className="p-2.5 rounded-lg bg-muted/30 border border-border/30">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-medium truncate">{wine.name}</p>
+                    <Badge variant="destructive" className="text-[10px] shrink-0 ml-2">
+                      {wine.quantity === 0 ? "Esgotado" : "Baixo"}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-0.5">{wine.type} · {wine.country}</p>
+                  <div className="mt-2 flex items-center gap-2">
+                    <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                      <div
+                        className={`h-full rounded-full ${wine.quantity === 0 ? "bg-destructive" : "bg-destructive/70"}`}
+                        style={{ width: `${percentage}%` }}
+                      />
+                    </div>
+                    <span className="text-xs font-medium text-destructive shrink-0">
+                      {wine.quantity}/{wine.minStock}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        );
+      }
+
+      default:
+        return null;
+    }
+  }
+
+  const dialogTitles: Record<string, string> = {
+    labels: "Total de Rótulos",
+    bottles: "Garrafas em Estoque",
+    entries: "Entradas do Mês",
+    exits: "Saídas do Mês",
+    lowStock: "Estoque Baixo",
+  };
 
   return (
     <div className="space-y-6">
       {/* KPI Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         {kpiCards.map((kpi) => (
-          <Card key={kpi.title} className="border-border/50">
+          <Card
+            key={kpi.title}
+            className="border-border/50 cursor-pointer hover:bg-muted/30 transition-colors"
+            onClick={() => setActiveKpi(kpi.detailKey)}
+          >
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
                 <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${kpi.bgColor}`}>
@@ -165,6 +368,16 @@ export default function DashboardPage() {
           </Card>
         ))}
       </div>
+
+      {/* KPI Detail Dialog */}
+      <Dialog open={activeKpi !== null} onOpenChange={(open) => { if (!open) setActiveKpi(null); }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{activeKpi ? dialogTitles[activeKpi] : ""}</DialogTitle>
+          </DialogHeader>
+          {renderKpiDialogContent()}
+        </DialogContent>
+      </Dialog>
 
       {/* Patrimônio em Vinhos */}
       <Card className="border-border/50 bg-gradient-to-r from-card to-wine/5">
@@ -215,36 +428,31 @@ export default function DashboardPage() {
                 Todos os vinhos estão com estoque adequado.
               </p>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Vinho</TableHead>
-                    <TableHead className="text-center">Atual</TableHead>
-                    <TableHead className="text-center hidden sm:table-cell">Mínimo</TableHead>
-                    <TableHead className="text-right">Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {kpis.lowStockWines.map((wine) => (
-                    <TableRow key={wine.id}>
-                      <TableCell className="font-medium text-sm">
-                        {wine.name}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <span className="text-destructive font-bold">{wine.quantity}</span>
-                      </TableCell>
-                      <TableCell className="text-center text-muted-foreground hidden sm:table-cell">
-                        {wine.minStock}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Badge variant="destructive" className="text-[10px]">
-                          {wine.quantity === 0 ? "Esgotado" : "Baixo"}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <div className="space-y-3">
+                {kpis.lowStockWines.map((wine) => {
+                  const percentage = wine.minStock > 0 ? Math.min((wine.quantity / wine.minStock) * 100, 100) : 0;
+                  return (
+                    <div key={wine.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/30">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">{wine.name}</p>
+                        <p className="text-xs text-muted-foreground">{wine.type} · {wine.country}</p>
+                        <div className="mt-2 flex items-center gap-2">
+                          <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                            <div
+                              className={`h-full rounded-full ${wine.quantity === 0 ? "bg-destructive" : "bg-destructive/70"}`}
+                              style={{ width: `${percentage}%` }}
+                            />
+                          </div>
+                          <span className="text-xs font-medium text-destructive shrink-0">{wine.quantity}/{wine.minStock}</span>
+                        </div>
+                      </div>
+                      <Badge variant="destructive" className="text-[10px] shrink-0">
+                        {wine.quantity === 0 ? "Esgotado" : "Baixo"}
+                      </Badge>
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </CardContent>
         </Card>
@@ -266,48 +474,38 @@ export default function DashboardPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Data</TableHead>
-                  <TableHead>Vinho</TableHead>
-                  <TableHead className="text-center">Tipo</TableHead>
-                  <TableHead className="text-right">Qtd</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            {kpis.recentMovements.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-4">
+                Nenhuma movimentação registrada.
+              </p>
+            ) : (
+              <div className="space-y-3">
                 {kpis.recentMovements.map((mov) => (
-                  <TableRow key={mov.id}>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {formatDate(mov.date)}
-                    </TableCell>
-                    <TableCell className="font-medium text-sm max-w-[150px] truncate">
-                      {mov.wineName}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {mov.type === "entrada" ? (
-                        <Badge className="bg-success/20 text-success-light border-0 text-[10px]">
-                          <TrendingUp className="h-3 w-3 mr-1" />
-                          Entrada
-                        </Badge>
-                      ) : (
-                        <Badge className="bg-destructive/20 text-destructive border-0 text-[10px]">
-                          <TrendingDown className="h-3 w-3 mr-1" />
-                          Saída
-                        </Badge>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-right font-medium">
+                  <div key={mov.id} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30 border border-border/30">
+                    <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
+                      mov.type === "entrada" ? "bg-success/15" : "bg-destructive/15"
+                    }`}>
+                      {mov.type === "entrada"
+                        ? <TrendingUp className="h-4 w-4 text-success" />
+                        : <TrendingDown className="h-4 w-4 text-destructive" />
+                      }
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{mov.wineName}</p>
+                      <p className="text-xs text-muted-foreground">{formatDate(mov.date)}</p>
+                    </div>
+                    <span className={`text-sm font-bold shrink-0 ${
+                      mov.type === "entrada" ? "text-success" : "text-destructive"
+                    }`}>
                       {mov.type === "entrada" ? "+" : "-"}{mov.quantity}
-                    </TableCell>
-                  </TableRow>
+                    </span>
+                  </div>
                 ))}
-              </TableBody>
-            </Table>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
     </div>
   );
 }
-

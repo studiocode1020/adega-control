@@ -156,8 +156,8 @@ export default function DegustacaoPage() {
                 value={selectedWineId}
                 onValueChange={(v) => v && setSelectedWineId(v)}
               >
-                <SelectTrigger className="w-full h-10">
-                  <SelectValue placeholder="Selecione um vinho..." />
+                <SelectTrigger className="w-full h-10 min-w-0">
+                  <SelectValue placeholder="Selecione um vinho..." className="truncate" />
                 </SelectTrigger>
                 <SelectContent>
                   {wines.map((wine) => (
@@ -170,12 +170,12 @@ export default function DegustacaoPage() {
             </div>
 
             {selectedWine && (
-              <div className="rounded-lg border border-border/50 bg-muted/30 p-4 space-y-2 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-                <div className="flex items-center gap-2 text-sm font-medium">
-                  <WineIcon className="h-4 w-4 text-wine-light" />
-                  <span>{selectedWine.name}</span>
+              <div className="rounded-lg border border-border/50 bg-muted/30 p-4 space-y-2 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 overflow-hidden">
+                <div className="flex items-center gap-2 text-sm font-medium min-w-0">
+                  <WineIcon className="h-4 w-4 text-wine-light shrink-0" />
+                  <span className="truncate">{selectedWine.name}</span>
                 </div>
-                <div className="text-sm text-muted-foreground">
+                <div className="text-sm text-muted-foreground truncate">
                   {selectedWine.producer} &middot; {selectedWine.region},{" "}
                   {selectedWine.country} &middot; {selectedWine.year}
                 </div>
@@ -190,12 +190,12 @@ export default function DegustacaoPage() {
             )}
 
             <Button
-              className="w-full h-11 bg-wine hover:bg-wine-light text-white text-base"
+              className="w-full h-11 bg-wine hover:bg-wine-light text-white text-base whitespace-nowrap"
               disabled={!selectedWineId}
               onClick={startTasting}
             >
               Iniciar Degusta\u00E7\u00E3o
-              <ChevronRight className="ml-1 h-4 w-4" />
+              <ChevronRight className="ml-1 h-4 w-4 shrink-0" />
             </Button>
           </CardContent>
         </Card>
@@ -265,11 +265,11 @@ export default function DegustacaoPage() {
           <CardHeader>
             {/* Progress bar */}
             <div className="mb-4 space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span className="font-medium text-muted-foreground">
+              <div className="flex items-center justify-between gap-2 text-sm min-w-0">
+                <span className="font-medium text-muted-foreground truncate min-w-0">
                   {c.label}
                 </span>
-                <div className="flex items-center gap-1.5 font-mono text-gold">
+                <div className="flex items-center gap-1.5 font-mono text-gold shrink-0">
                   <Clock className="h-3.5 w-3.5" />
                   <span>{formatTime(timer)}</span>
                 </div>
@@ -282,12 +282,12 @@ export default function DegustacaoPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 min-w-0">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wine/10">
                 <Icon className="h-5 w-5 text-wine-light" />
               </div>
-              <div>
-                <CardTitle className="text-lg text-wine-light">
+              <div className="min-w-0">
+                <CardTitle className="text-lg text-wine-light truncate">
                   {step === "visual" && "An\u00E1lise Visual"}
                   {step === "olfativo" && "An\u00E1lise Olfativa"}
                   {step === "gustativo" && "An\u00E1lise Gustativa"}
@@ -374,12 +374,12 @@ export default function DegustacaoPage() {
         <CardContent className="space-y-6">
           {/* Wine info */}
           {selectedWine && (
-            <div className="rounded-lg border border-border/50 bg-muted/30 p-4 space-y-1">
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <WineIcon className="h-4 w-4 text-wine-light" />
-                <span>{selectedWine.name}</span>
+            <div className="rounded-lg border border-border/50 bg-muted/30 p-4 space-y-1 overflow-hidden">
+              <div className="flex items-center gap-2 text-sm font-medium min-w-0">
+                <WineIcon className="h-4 w-4 text-wine-light shrink-0" />
+                <span className="truncate">{selectedWine.name}</span>
               </div>
-              <div className="text-sm text-muted-foreground">
+              <div className="text-sm text-muted-foreground truncate">
                 {selectedWine.type} &middot; {selectedWine.year} &middot;{" "}
                 {selectedWine.region}, {selectedWine.country}
               </div>

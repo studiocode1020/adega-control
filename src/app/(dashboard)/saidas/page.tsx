@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useMemo, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowUpFromLine } from "lucide-react";
+import Link from "next/link";
+import { ArrowUpFromLine, Wine as WineIcon } from "lucide-react";
 import { toast } from "sonner";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -125,6 +126,35 @@ export default function SaidasPage() {
                   ))}
                 </SelectContent>
               </Select>
+
+              {selectedWine && (
+                <div className="mt-2 rounded-lg border border-wine/30 bg-wine/5 p-3 flex items-start gap-3">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-wine/10">
+                    <WineIcon className="h-4 w-4 text-wine-light" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-semibold text-sm text-foreground truncate">
+                      {selectedWine.name}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {selectedWine.type} &middot; {selectedWine.year} &middot; Disponível: {maxQuantity} un.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              <p className="text-xs text-muted-foreground">
+                Vinho não está na lista?{" "}
+                <Link href="/vinhos/novo">
+                  <Button
+                    type="button"
+                    variant="link"
+                    className="h-auto p-0 text-xs text-gold hover:text-gold/80"
+                  >
+                    Cadastrar novo vinho
+                  </Button>
+                </Link>
+              </p>
             </div>
 
             {/* Quantity + Date */}
@@ -155,6 +185,7 @@ export default function SaidasPage() {
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
                   required
+                  className="[&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:brightness-200"
                 />
               </div>
             </div>

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, useMemo, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowDownToLine } from "lucide-react";
+import Link from "next/link";
+import { ArrowDownToLine, Wine as WineIcon } from "lucide-react";
 import { toast } from "sonner";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,6 +38,11 @@ export default function EntradasPage() {
   useEffect(() => {
     setWines(getWines());
   }, []);
+
+  const selectedWine = useMemo(
+    () => wines.find((w) => w.id === wineId) ?? null,
+    [wines, wineId]
+  );
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -102,6 +108,35 @@ export default function EntradasPage() {
                   ))}
                 </SelectContent>
               </Select>
+
+              {selectedWine && (
+                <div className="mt-2 rounded-lg border border-wine/30 bg-wine/5 p-3 flex items-start gap-3">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-wine/10">
+                    <WineIcon className="h-4 w-4 text-wine-light" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-semibold text-sm text-foreground truncate">
+                      {selectedWine.name}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {selectedWine.type} &middot; {selectedWine.year} &middot; Estoque atual: {selectedWine.quantity} un.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              <p className="text-xs text-muted-foreground">
+                Vinho não está na lista?{" "}
+                <Link href="/vinhos/novo">
+                  <Button
+                    type="button"
+                    variant="link"
+                    className="h-auto p-0 text-xs text-gold hover:text-gold/80"
+                  >
+                    Cadastrar novo vinho
+                  </Button>
+                </Link>
+              </p>
             </div>
 
             {/* Quantity + Date */}
@@ -126,6 +161,7 @@ export default function EntradasPage() {
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
                   required
+                  className="[&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:brightness-200"
                 />
               </div>
             </div>
