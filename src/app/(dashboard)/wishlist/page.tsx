@@ -49,7 +49,7 @@ const priorityConfig: Record<
   { label: string; className: string }
 > = {
   alta: { label: "Alta", className: "bg-destructive/20 text-destructive border-destructive/30" },
-  media: { label: "Media", className: "bg-gold/20 text-gold border-gold/30" },
+  media: { label: "Média", className: "bg-gold/20 text-gold border-gold/30" },
   baixa: { label: "Baixa", className: "bg-muted text-muted-foreground border-border" },
 };
 
@@ -103,7 +103,7 @@ export default function WishlistPage() {
       notes: form.notes.trim() || null,
     });
 
-    toast.success(`"${form.name}" adicionado a lista de desejos!`);
+    toast.success(`"${form.name}" adicionado à lista de desejos!`);
     setForm(defaultForm);
     setDialogOpen(false);
   }
@@ -187,10 +187,10 @@ export default function WishlistPage() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="wl-country">Pais</Label>
+                  <Label htmlFor="wl-country">País</Label>
                   <Input
                     id="wl-country"
-                    placeholder="Ex: Franca"
+                    placeholder="Ex: França"
                     value={form.country}
                     onChange={(e) =>
                       setForm((f) => ({ ...f, country: e.target.value }))
@@ -201,7 +201,7 @@ export default function WishlistPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="wl-region">Regiao</Label>
+                  <Label htmlFor="wl-region">Região</Label>
                   <Input
                     id="wl-region"
                     placeholder="Ex: Bordeaux"
@@ -237,7 +237,7 @@ export default function WishlistPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="wl-price">Preco estimado (R$)</Label>
+                  <Label htmlFor="wl-price">Preço estimado (R$)</Label>
                   <Input
                     id="wl-price"
                     type="number"
@@ -272,7 +272,7 @@ export default function WishlistPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="alta">Alta</SelectItem>
-                    <SelectItem value="media">Media</SelectItem>
+                    <SelectItem value="media">Média</SelectItem>
                     <SelectItem value="baixa">Baixa</SelectItem>
                   </SelectContent>
                 </Select>
@@ -283,7 +283,7 @@ export default function WishlistPage() {
                 <textarea
                   id="wl-notes"
                   className="flex w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30 min-h-[80px] resize-y"
-                  placeholder="Observacoes sobre o vinho..."
+                  placeholder="Observações sobre o vinho..."
                   value={form.notes}
                   onChange={(e) =>
                     setForm((f) => ({ ...f, notes: e.target.value }))
@@ -340,10 +340,10 @@ export default function WishlistPage() {
           <CardContent className="p-12 text-center">
             <Heart className="h-12 w-12 text-muted-foreground/30 mx-auto mb-4" />
             <p className="text-muted-foreground">
-              Sua lista de desejos esta vazia.
+              Sua lista de desejos está vazia.
             </p>
             <p className="text-sm text-muted-foreground mt-1">
-              Adicione vinhos que voce deseja adquirir.
+              Adicione vinhos que você deseja adquirir.
             </p>
           </CardContent>
         </Card>
@@ -389,7 +389,7 @@ export default function WishlistPage() {
                   {item.country && (
                     <div>
                       <span className="text-muted-foreground text-xs">
-                        Pais/Regiao
+                        País/Região
                       </span>
                       <p className="truncate">
                         {item.country}

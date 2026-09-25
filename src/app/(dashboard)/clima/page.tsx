@@ -55,7 +55,7 @@ const WEATHER_OPTIONS: WeatherOption[] = [
   {
     id: "mild",
     label: "Dia ameno",
-    subtitle: "Agradavel, clima perfeito",
+    subtitle: "Agradável, clima perfeito",
     temp: "18-25\u00b0C",
     icon: CloudSun,
     gradient:
@@ -79,7 +79,7 @@ const WEATHER_OPTIONS: WeatherOption[] = [
   {
     id: "special",
     label: "Noite especial",
-    subtitle: "Jantar, celebracao, momento especial",
+    subtitle: "Jantar, celebração, momento especial",
     temp: "",
     icon: Moon,
     gradient:
@@ -91,9 +91,9 @@ const WEATHER_OPTIONS: WeatherOption[] = [
 ];
 
 const WEATHER_MESSAGES: Record<WeatherType, string> = {
-  hot: "Em dias quentes, nada como um vinho fresco e leve. A temperatura ideal de servico e ainda mais importante \u2014 mantenha bem gelado!",
-  mild: "O clima ameno pede versatilidade. Um tinto medio ou um branco aromatico sao escolhas certeiras.",
-  cold: "O frio pede vinhos que aquecam a alma. Tintos encorpados e fortificados sao perfeitos para este momento.",
+  hot: "Em dias quentes, nada como um vinho fresco e leve. A temperatura ideal de serviço é ainda mais importante \u2014 mantenha bem gelado!",
+  mild: "O clima ameno pede versatilidade. Um tinto médio ou um branco aromático são escolhas certeiras.",
+  cold: "O frio pede vinhos que aqueçam a alma. Tintos encorpados e fortificados são perfeitos para este momento.",
   special:
     "Momentos especiais merecem garrafas especiais. Comece com espumante e evolua para seu melhor tinto.",
 };
@@ -117,7 +117,7 @@ function getServingTip(weather: WeatherType, wineType: WineType): string {
       if (wineType === "Fortificado") return "Abra a garrafa 30 minutos antes para decantar";
       return "Abra a garrafa 30 minutos antes para decantar";
     case "mild":
-      return "Sirva na temperatura ambiente \u2014 esta perfeita para este vinho";
+      return "Sirva na temperatura ambiente \u2014 está perfeita para este vinho";
     case "special":
       return "Deixe respirar por 20 minutos para revelar todos os aromas";
     default:
@@ -230,7 +230,7 @@ export default function ClimaPage() {
           <h1 className="text-xl font-bold">Clima e Vinho</h1>
         </div>
         <p className="text-sm text-muted-foreground">
-          O tempo la fora influencia o vinho perfeito. Selecione como esta o dia.
+          O tempo lá fora influencia o vinho perfeito. Selecione como está o dia.
         </p>
       </div>
 
@@ -393,7 +393,7 @@ export default function ClimaPage() {
                   Nenhum vinho encontrado na sua adega para este clima.
                 </p>
                 <p className="text-xs text-muted-foreground/70 mt-1">
-                  Cadastre novos vinhos para receber sugestoes personalizadas.
+                  Cadastre novos vinhos para receber sugestões personalizadas.
                 </p>
               </CardContent>
             </Card>
@@ -419,11 +419,11 @@ export default function ClimaPage() {
           <div className="flex items-start gap-3">
             <Thermometer className="h-5 w-5 text-gold shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-medium mb-1">Voce sabia?</p>
+              <p className="text-sm font-medium mb-1">Você sabia?</p>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                A temperatura de servico pode mudar completamente a percepcao de
+                A temperatura de serviço pode mudar completamente a percepção de
                 um vinho. Um tinto servido gelado demais perde aromas, enquanto
-                um branco quente fica pesado e alcoolico.
+                um branco quente fica pesado e alcoólico.
               </p>
             </div>
           </div>

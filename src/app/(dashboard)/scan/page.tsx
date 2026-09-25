@@ -108,10 +108,10 @@ export default function ScanPage() {
       <div>
         <div className="flex items-center gap-2 mb-1">
           <Scan className="h-5 w-5 text-wine-light" />
-          <h1 className="text-xl font-bold">Escanear Rotulo</h1>
+          <h1 className="text-xl font-bold">Escanear Rótulo</h1>
         </div>
         <p className="text-sm text-muted-foreground">
-          Use a camera ou envie uma foto do rotulo para identificar o vinho
+          Use a câmera ou envie uma foto do rótulo para identificar o vinho
           automaticamente
         </p>
       </div>
@@ -128,7 +128,7 @@ export default function ScanPage() {
               >
                 <Camera className="h-10 w-10 text-muted-foreground/60" />
                 <span className="text-sm text-muted-foreground">
-                  Clique para tirar foto ou enviar imagem
+                  Clique para tirar foto ou enviar uma imagem
                 </span>
               </button>
             ) : (
@@ -136,7 +136,7 @@ export default function ScanPage() {
                 <div className="relative w-full max-w-sm mx-auto">
                   <img
                     src={preview}
-                    alt="Preview do rotulo"
+                    alt="Foto do rótulo"
                     className="w-full rounded-lg object-cover max-h-72"
                   />
                 </div>
@@ -193,7 +193,7 @@ export default function ScanPage() {
             <div className="flex items-center gap-2 mb-2">
               <Badge className="bg-success/20 text-success border-transparent">
                 <CheckCircle className="h-3 w-3 mr-1" />
-                Identificado com {SIMULATED_RESULT.confidence}% de confianca
+                Identificado com {SIMULATED_RESULT.confidence}% de confiança
               </Badge>
             </div>
             <CardTitle className="flex items-center gap-2 text-lg">
@@ -210,12 +210,12 @@ export default function ScanPage() {
                 { label: "Nome", value: SIMULATED_RESULT.name },
                 { label: "Safra", value: SIMULATED_RESULT.year },
                 { label: "Tipo", value: SIMULATED_RESULT.type },
-                { label: "Pais", value: SIMULATED_RESULT.country },
-                { label: "Regiao", value: SIMULATED_RESULT.region },
+                { label: "País", value: SIMULATED_RESULT.country },
+                { label: "Região", value: SIMULATED_RESULT.region },
                 { label: "Produtor", value: SIMULATED_RESULT.producer },
                 { label: "Uva", value: SIMULATED_RESULT.grape },
                 {
-                  label: "Preco estimado",
+                  label: "Preço estimado",
                   value: SIMULATED_RESULT.price,
                   highlight: true,
                 },
@@ -236,7 +236,7 @@ export default function ScanPage() {
             {/* Harmonizacao */}
             <div>
               <p className="text-xs text-muted-foreground mb-2">
-                Harmonizacao
+                Harmonização
               </p>
               <div className="flex flex-wrap gap-1.5">
                 {SIMULATED_RESULT.pairings.map((pairing) => (
@@ -280,9 +280,9 @@ export default function ScanPage() {
         <CardContent className="p-4 flex gap-3 items-start">
           <Sparkles className="h-5 w-5 text-gold shrink-0 mt-0.5" />
           <p className="text-xs text-muted-foreground leading-relaxed">
-            A inteligencia artificial analisa o rotulo e cruza com nossa base de
+            A inteligência artificial analisa o rótulo e cruza com nossa base de
             dados de mais de 50.000 vinhos para identificar automaticamente
-            todas as informacoes.
+            todas as informações.
           </p>
         </CardContent>
       </Card>

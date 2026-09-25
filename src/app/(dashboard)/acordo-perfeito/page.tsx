@@ -36,13 +36,13 @@ const QUICK_SUGGESTIONS = [
 
 const LOADING_MESSAGES = [
   "Analisando seu prato...",
-  "Consultando harmonizacoes...",
+  "Consultando harmonizações...",
   "Selecionando o melhor da sua adega...",
 ];
 
 const MATCH_LABELS = [
-  "Harmonizacao perfeita",
-  "Excelente opcao",
+  "Harmonização perfeita",
+  "Excelente opção",
   "Boa alternativa",
 ];
 
@@ -60,13 +60,13 @@ function getTypeExplanation(type: WineType): string {
     case "Tinto":
       return "taninos que equilibram a gordura e intensificam os sabores";
     case "Branco":
-      return "acidez refrescante que limpa o paladar e realca os sabores delicados";
+      return "acidez refrescante que limpa o paladar e realça os sabores delicados";
     case "Rosé":
       return "versatilidade e frescor que acompanha pratos leves";
     case "Espumante":
-      return "efervescencia que limpa o paladar a cada gole";
+      return "efervescência que limpa o paladar a cada gole";
     default:
-      return "complexidade aromatica que eleva a experiencia gastronomica";
+      return "complexidade aromática que eleva a experiência gastronômica";
   }
 }
 
@@ -196,7 +196,7 @@ export default function AcordoPerfeitoPage() {
           <h1 className="text-xl font-bold">Acordo Perfeito</h1>
         </div>
         <p className="text-sm text-muted-foreground">
-          Diga o que voce vai preparar e encontramos o vinho ideal da sua adega
+          Diga o que você vai preparar e encontramos o vinho ideal da sua adega
         </p>
       </div>
 
@@ -208,7 +208,7 @@ export default function AcordoPerfeitoPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
               <Input
                 className="h-12 pl-10 text-base"
-                placeholder="O que voce vai preparar? Ex: risoto de cogumelos, churrasco, sushi..."
+                placeholder="O que você vai preparar? Ex: risoto de cogumelos, churrasco, sushi..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
@@ -228,7 +228,7 @@ export default function AcordoPerfeitoPage() {
           {/* Quick suggestion chips */}
           <div>
             <p className="text-xs text-muted-foreground mb-2">
-              Sugestoes rapidas:
+              Sugestões rápidas:
             </p>
             <div className="flex flex-wrap gap-1.5">
               {QUICK_SUGGESTIONS.map((chip) => (
@@ -279,8 +279,8 @@ export default function AcordoPerfeitoPage() {
                     Nenhum vinho encontrado na sua adega
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Tente buscar por outro prato ou adicione mais vinhos a sua
-                    colecao com harmonizacoes cadastradas.
+                    Tente buscar por outro prato ou adicione mais vinhos à sua
+                    coleção com harmonizações cadastradas.
                   </p>
                 </div>
               </CardContent>
@@ -292,7 +292,7 @@ export default function AcordoPerfeitoPage() {
                 <h2 className="text-sm font-medium">
                   {results[0].score > 0
                     ? `Encontramos ${results.length} ${results.length === 1 ? "vinho" : "vinhos"} para "${query}"`
-                    : `Nenhuma harmonizacao exata, mas sugerimos este Tinto da sua adega`}
+                    : `Nenhuma harmonização exata, mas sugerimos este Tinto da sua adega`}
                 </h2>
               </div>
 
@@ -351,7 +351,7 @@ export default function AcordoPerfeitoPage() {
                           </div>
                           <div>
                             <p className="text-xs text-muted-foreground">
-                              Preco
+                              Preço
                             </p>
                             <p className="text-sm font-medium text-gold">
                               {formatCurrency(wine.price)}
@@ -370,7 +370,7 @@ export default function AcordoPerfeitoPage() {
                         {wine.pairingFood.length > 0 && (
                           <div>
                             <p className="text-xs text-muted-foreground mb-1.5">
-                              Harmonizacoes
+                              Harmonizações
                             </p>
                             <div className="flex flex-wrap gap-1.5">
                               {matchedFoods.map((food) => (
@@ -414,8 +414,8 @@ export default function AcordoPerfeitoPage() {
                           <span className="text-muted-foreground">
                             {wine.quantity}{" "}
                             {wine.quantity === 1
-                              ? "garrafa disponivel"
-                              : "garrafas disponiveis"}
+                              ? "garrafa disponível"
+                              : "garrafas disponíveis"}
                           </span>
                         </div>
                       </CardContent>
@@ -434,7 +434,7 @@ export default function AcordoPerfeitoPage() {
           <Lightbulb className="h-5 w-5 text-gold shrink-0 mt-0.5" />
           <p className="text-sm text-muted-foreground leading-relaxed">
             <span className="font-medium text-foreground">Dica:</span> quanto
-            mais detalhado o prato, melhor a sugestao. Experimente incluir o
+            mais detalhado o prato, melhor a sugestão. Experimente incluir o
             tipo de preparo e ingredientes principais.
           </p>
         </CardContent>

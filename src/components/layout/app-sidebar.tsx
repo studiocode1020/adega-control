@@ -41,7 +41,7 @@ const menuItems = [
   { title: "Saídas", url: "/saidas", icon: ArrowUpFromLine, group: "principal" },
   { title: "Movimentações", url: "/movimentacoes", icon: History, group: "principal" },
   { title: "Adega", url: "/adega", icon: Grid3X3, group: "principal" },
-  { title: "Wishlist", url: "/wishlist", icon: Heart, group: "colecao" },
+  { title: "Lista de Desejos", url: "/wishlist", icon: Heart, group: "colecao" },
   { title: "Scan IA", url: "/scan", icon: Scan, group: "colecao" },
   { title: "Recomendações", url: "/recomendacoes", icon: Sparkles, group: "colecao" },
   { title: "Acordo Perfeito", url: "/acordo-perfeito", icon: UtensilsCrossed, group: "experiencia" },

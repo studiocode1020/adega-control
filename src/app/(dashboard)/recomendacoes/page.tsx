@@ -17,8 +17,8 @@ import { formatCurrency } from "@/lib/format";
 const TASTE_TAGS = [
   "Tintos encorpados",
   "Terroir europeu",
-  "Safras classicas",
-  "Boa relacao custo-beneficio",
+  "Safras clássicas",
+  "Boa relação custo-benefício",
 ];
 
 const RECOMMENDATIONS = [
@@ -34,7 +34,7 @@ const RECOMMENDATIONS = [
     price: 980,
     compatibility: 98,
     reason:
-      "Voce aprecia Sangiovese (Tignanello) e vinhos italianos. Este e o apice da uva na Toscana.",
+      "Você aprecia Sangiovese (Tignanello) e vinhos italianos. Este é o ápice da uva na Toscana.",
     pairings: ["Bistecca alla fiorentina", "Parmigiano Reggiano", "Pasta al ragu", "Ossobuco"],
   },
   {
@@ -49,7 +49,7 @@ const RECOMMENDATIONS = [
     price: 280,
     compatibility: 96,
     reason:
-      "Sua colecao tem forte presenca portuguesa. Este Douro vai complementar perfeitamente o Quinta do Crasto.",
+      "Sua coleção tem forte presença portuguesa. Este Douro vai complementar perfeitamente o Quinta do Crasto.",
     pairings: ["Bacalhau assado", "Cabrito", "Queijo Serra da Estrela"],
   },
   {
@@ -64,7 +64,7 @@ const RECOMMENDATIONS = [
     price: 195,
     compatibility: 95,
     reason:
-      "Seu gosto por Malbec argentino e claro. Zuccardi e a nova referencia de Mendoza.",
+      "Seu gosto por Malbec argentino é claro. Zuccardi é a nova referência de Mendoza.",
     pairings: ["Asado", "Empanadas", "Provoleta", "Chimichurri"],
   },
   {
@@ -79,7 +79,7 @@ const RECOMMENDATIONS = [
     price: 350,
     compatibility: 92,
     reason:
-      "Sua colecao tem poucos brancos premium. Este Chablis seria uma adicao equilibrada.",
+      "Sua coleção tem poucos brancos premium. Este Chablis seria uma adição equilibrada.",
     pairings: ["Frutos do mar", "Sushi", "Queijo de cabra"],
   },
 ];
@@ -94,14 +94,14 @@ export default function RecomendacoesPage() {
       next.add(id);
       return next;
     });
-    toast.success("Adicionado a lista de desejos!");
+    toast.success("Adicionado à lista de desejos!");
   }, []);
 
   const handleRefresh = useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
       setRefreshing(false);
-      toast.success("Recomendacoes atualizadas!");
+      toast.success("Recomendações atualizadas!");
     }, 2000);
   }, []);
 
@@ -111,11 +111,11 @@ export default function RecomendacoesPage() {
       <div>
         <div className="flex items-center gap-2 mb-1">
           <Sparkles className="h-5 w-5 text-gold" />
-          <h1 className="text-xl font-bold">Recomendacoes IA</h1>
+          <h1 className="text-xl font-bold">Recomendações IA</h1>
         </div>
         <p className="text-sm text-muted-foreground">
-          Baseado nos vinhos da sua colecao, a inteligencia artificial sugere
-          novos rotulos para voce experimentar
+          Baseado nos vinhos da sua coleção, a inteligência artificial sugere
+          novos rótulos para você experimentar
         </p>
       </div>
 
@@ -127,7 +127,7 @@ export default function RecomendacoesPage() {
             Seu Perfil de Gosto
           </CardTitle>
           <CardDescription>
-            Baseado em 20 rotulos na sua adega
+            Baseado em 20 rótulos na sua adega
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -139,8 +139,8 @@ export default function RecomendacoesPage() {
             ))}
           </div>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Voce tem preferencia por vinhos tintos (60% da adega), com destaque
-            para uvas Cabernet Sauvignon e Malbec. Seus vinhos vem
+            Você tem preferência por vinhos tintos (60% da adega), com destaque
+            para uvas Cabernet Sauvignon e Malbec. Seus vinhos vêm
             predominantemente de Portugal, Argentina e Brasil.
           </p>
         </CardContent>
@@ -154,7 +154,7 @@ export default function RecomendacoesPage() {
               <div className="flex items-center justify-between">
                 <Badge className="bg-gold/20 text-gold border-transparent">
                   <Star className="h-3 w-3 mr-1" />
-                  {rec.compatibility}% compativel
+                  {rec.compatibility}% compatível
                 </Badge>
                 <Badge variant="secondary" className="text-xs font-normal">
                   {rec.type}
@@ -176,7 +176,7 @@ export default function RecomendacoesPage() {
                   <p className="text-sm font-medium">{rec.grape}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Preco estimado</p>
+                  <p className="text-xs text-muted-foreground">Preço estimado</p>
                   <p className="text-sm font-medium text-gold">
                     {formatCurrency(rec.price)}
                   </p>
@@ -195,7 +195,7 @@ export default function RecomendacoesPage() {
               {/* Harmonizacao */}
               <div>
                 <p className="text-xs text-muted-foreground mb-1.5">
-                  Harmonizacao
+                  Harmonização
                 </p>
                 <p className="text-xs text-muted-foreground/80">
                   {rec.pairings.join(" \u00b7 ")}
@@ -218,8 +218,8 @@ export default function RecomendacoesPage() {
                   }`}
                 />
                 {wishlist.has(rec.id)
-                  ? "Adicionado a Wishlist"
-                  : "Adicionar a Wishlist"}
+                  ? "Adicionado à Lista de Desejos"
+                  : "Adicionar à Lista de Desejos"}
               </Button>
             </CardContent>
           </Card>
@@ -231,11 +231,11 @@ export default function RecomendacoesPage() {
         <CardContent className="p-6 flex flex-col sm:flex-row items-center gap-4">
           <div className="flex-1 text-center sm:text-left">
             <h3 className="text-sm font-medium mb-1">
-              Quer mais recomendacoes?
+              Quer mais recomendações?
             </h3>
             <p className="text-xs text-muted-foreground">
-              Quanto mais vinhos voce cadastrar e avaliar, mais precisas ficam
-              as sugestoes.
+              Quanto mais vinhos você cadastrar e avaliar, mais precisas ficam
+              as sugestões.
             </p>
           </div>
           <Button
@@ -247,7 +247,7 @@ export default function RecomendacoesPage() {
             <RefreshCw
               className={`h-4 w-4 mr-2 ${refreshing ? "animate-spin" : ""}`}
             />
-            {refreshing ? "Atualizando..." : "Atualizar Recomendacoes"}
+            {refreshing ? "Atualizando..." : "Atualizar Recomendações"}
           </Button>
         </CardContent>
       </Card>
