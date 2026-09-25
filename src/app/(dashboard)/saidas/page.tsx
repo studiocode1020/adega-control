@@ -116,7 +116,9 @@ export default function SaidasPage() {
               <Label htmlFor="wine">Vinho</Label>
               <Select value={wineId} onValueChange={(v) => v && setWineId(v)}>
                 <SelectTrigger id="wine" className="w-full">
-                  <SelectValue placeholder="Selecione um vinho" />
+                  <span className="flex flex-1 text-left truncate text-sm">
+                    {selectedWine ? `${selectedWine.name} (${selectedWine.quantity} un.)` : "Selecione um vinho"}
+                  </span>
                 </SelectTrigger>
                 <SelectContent>
                   {wines.map((wine) => (
@@ -195,7 +197,9 @@ export default function SaidasPage() {
                 onValueChange={(val) => val && setReason(val as ExitReason)}
               >
                 <SelectTrigger id="reason" className="w-full">
-                  <SelectValue placeholder="Selecione o motivo" />
+                  <span className="flex flex-1 text-left truncate text-sm">
+                    {reason ? EXIT_REASONS.find(r => r.value === reason)?.label || reason : "Selecione o motivo"}
+                  </span>
                 </SelectTrigger>
                 <SelectContent>
                   {EXIT_REASONS.map((r) => (

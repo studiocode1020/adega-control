@@ -157,7 +157,9 @@ export default function DegustacaoPage() {
                 onValueChange={(v) => v && setSelectedWineId(v)}
               >
                 <SelectTrigger className="w-full h-10 min-w-0">
-                  <SelectValue placeholder="Selecione um vinho..." className="truncate" />
+                  <span className="flex flex-1 text-left truncate text-sm">
+                    {selectedWine ? `${selectedWine.name} (${selectedWine.year})` : "Selecione um vinho..."}
+                  </span>
                 </SelectTrigger>
                 <SelectContent>
                   {wines.map((wine) => (
