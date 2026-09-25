@@ -295,7 +295,13 @@ git push origin master
 6. **IA simulada no MVP**: as features de IA (scan, recomendacoes, curiosidades, acordo perfeito) usam dados mockados. Na versao real, conectar com Gemini/GPT
 7. **Font Inter para valores**: valores monetarios e KPIs usam Inter (nao Playfair) para melhor legibilidade de numeros
 
-## 9. Como Continuar o Desenvolvimento
+## 9. Historico de Atualizacoes
+
+| Data | Descricao |
+|------|-----------|
+| 2026-09-25 | Revisao completa de textos: corrigidos ~50 acentos faltantes em 6 arquivos (acordo-perfeito, clima, recomendacoes, scan, wishlist, app-sidebar). Traduzido "Wishlist" para "Lista de Desejos" na sidebar. Traduzido "Preview" para "Foto do rotulo" no scan. Todos os labels, placeholders, mensagens e tooltips agora estao em portugues correto. |
+
+## 10. Como Continuar o Desenvolvimento
 
 1. Fazer `git pull` para pegar a versao mais recente
 2. `npm install` para garantir dependencias
