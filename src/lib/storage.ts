@@ -1,4 +1,4 @@
-import { Wine, Movement, CellarPosition, WishlistItem } from '@/types';
+import { Wine, Movement, CellarPosition, WishlistItem, SensorNotification } from '@/types';
 import { mockWines } from '@/data/mock-wines';
 import { mockMovements } from '@/data/mock-movements';
 import { mockCellarPositions } from '@/data/mock-cellar';
@@ -9,6 +9,7 @@ const KEYS = {
   movements: 'adega-movements',
   cellar: 'adega-cellar',
   wishlist: 'adega-wishlist',
+  notifications: 'adega-notifications',
   initialized: 'adega-initialized-v2',
 } as const;
 
@@ -74,4 +75,16 @@ export function getWishlist(): WishlistItem[] {
 export function setWishlist(items: WishlistItem[]) {
   if (!isClient()) return;
   localStorage.setItem(KEYS.wishlist, JSON.stringify(items));
+}
+
+export function getNotifications(): SensorNotification[] {
+  if (!isClient()) return [];
+  initializeData();
+  const data = localStorage.getItem(KEYS.notifications);
+  return data ? JSON.parse(data) : [];
+}
+
+export function setNotifications(notifications: SensorNotification[]) {
+  if (!isClient()) return;
+  localStorage.setItem(KEYS.notifications, JSON.stringify(notifications));
 }

@@ -56,3 +56,16 @@ export interface WishlistItem {
   purchased: boolean;
   createdAt: string;
 }
+
+// Sensor notification - detection from RFID sensor
+export interface SensorNotification {
+  id: string;
+  tagId: string;           // RFID tag ID (will be mapped to wine later)
+  wineId: string | null;   // mapped wine ID (null if unknown tag)
+  wineName: string | null;  // wine name for display
+  type: 'entrada' | 'saida'; // detected direction
+  quantity: number;         // always 1 (individual detection)
+  detectedAt: string;       // ISO timestamp
+  status: 'pending' | 'confirmed' | 'rejected';
+  confirmedAt: string | null;
+}
