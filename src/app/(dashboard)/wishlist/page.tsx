@@ -305,7 +305,7 @@ export default function WishlistPage() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
         <Card className="border-border/50">
           <CardContent className="p-4 text-center">
             <Heart className="h-5 w-5 text-wine-light mx-auto mb-1" />
@@ -324,7 +324,7 @@ export default function WishlistPage() {
             </p>
           </CardContent>
         </Card>
-        <Card className="border-border/50">
+        <Card className="border-border/50 col-span-2 sm:col-span-1">
           <CardContent className="p-4 text-center">
             <Star className="h-5 w-5 text-destructive mx-auto mb-1" />
             <p className="text-xs text-muted-foreground">Prioridade alta</p>

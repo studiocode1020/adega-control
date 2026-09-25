@@ -92,7 +92,7 @@ export default function MovimentacoesPage() {
               <Scale className={`h-5 w-5 ${totalEntradas - totalSaidas >= 0 ? "text-success" : "text-destructive"}`} />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">Saldo do Periodo</p>
+              <p className="text-xs text-muted-foreground">Saldo do Período</p>
               <p className={`text-xl font-bold ${totalEntradas - totalSaidas >= 0 ? "text-success" : "text-destructive"}`}>
                 {totalEntradas - totalSaidas >= 0 ? "+" : ""}{totalEntradas - totalSaidas} un.
               </p>
@@ -110,13 +110,13 @@ export default function MovimentacoesPage() {
             </div>
           </CardContent>
         </Card>
-        <Card className="border-border/50">
+        <Card className="border-border/50 col-span-2 sm:col-span-1">
           <CardContent className="p-4 flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-destructive/10">
               <TrendingDown className="h-5 w-5 text-destructive" />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">Total Saidas</p>
+              <p className="text-xs text-muted-foreground">Total Saídas</p>
               <p className="text-xl font-bold text-destructive">{totalSaidas} un.</p>
             </div>
           </CardContent>

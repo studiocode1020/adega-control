@@ -111,7 +111,7 @@ export default function RelatoriosPage() {
             <p className="text-2xl font-bold text-gold">{totalBottles}</p>
           </CardContent>
         </Card>
-        <Card className="border-border/50">
+        <Card className="border-border/50 col-span-2 sm:col-span-1">
           <CardContent className="p-4 text-center">
             <p className="text-xs text-muted-foreground">Valor Total</p>
             <p className="text-2xl font-bold text-gold-light">{formatCurrency(totalValue)}</p>
