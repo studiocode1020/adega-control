@@ -73,7 +73,9 @@ export function AppSidebar() {
         </Link>
       </SidebarHeader>
 
-      <Separator className="mx-4 w-auto" />
+      <div className="px-4">
+        <Separator className="bg-border/50" />
+      </div>
 
       <SidebarContent>
         <SidebarGroup>
@@ -148,7 +150,7 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="p-4">
-        <Separator className="mb-4" />
+        <Separator className="mb-4 bg-border/50" />
         <div className="flex items-center gap-3">
           <Avatar className="h-9 w-9 border border-border">
             <AvatarFallback className="bg-wine text-white text-sm font-medium">
