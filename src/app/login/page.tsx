@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { GlassWater, Eye, EyeOff } from "lucide-react";
+import Image from "next/image";
+import { Eye, EyeOff } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,9 +32,14 @@ export default function LoginPage() {
       <Card className="relative z-10 w-full max-w-md mx-4 border-wine/20 bg-card/80 backdrop-blur-sm shadow-2xl">
         <CardHeader className="text-center space-y-4 pb-2">
           <div className="flex justify-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-wine to-wine-light shadow-lg shadow-wine/20">
-              <GlassWater className="h-8 w-8 text-white" />
-            </div>
+            <Image
+              src="/logo.png"
+              alt="Adega Control"
+              width={80}
+              height={80}
+              className="h-20 w-20 object-contain drop-shadow-lg"
+              priority
+            />
           </div>
           <div>
             <h1 className="font-[family-name:var(--font-heading)] text-3xl font-bold text-foreground">

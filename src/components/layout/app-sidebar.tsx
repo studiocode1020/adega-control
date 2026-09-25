@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 import {
   LayoutDashboard,
   Wine,
@@ -11,7 +12,6 @@ import {
   Grid3X3,
   BarChart3,
   LogOut,
-  GlassWater,
   Heart,
   Scan,
   Sparkles,
@@ -57,9 +57,13 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader className="p-4">
         <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-wine text-white">
-            <GlassWater className="h-6 w-6" />
-          </div>
+          <Image
+            src="/logo.png"
+            alt="Adega Control"
+            width={40}
+            height={40}
+            className="h-10 w-10 object-contain"
+          />
           <div>
             <h1 className="font-[family-name:var(--font-heading)] text-lg font-bold text-foreground">
               Adega Control
