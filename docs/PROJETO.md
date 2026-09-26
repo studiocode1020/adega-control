@@ -73,7 +73,7 @@ O sistema pode atender perfis comerciais tambem, mas o foco primario e o colecio
 | Rota | Pagina | Descricao |
 |------|--------|-----------|
 | `/login` | Login | Tela visual elegante com logo, sem auth real. Credito "StudioCode" no rodape |
-| `/` | Dashboard | 5 KPIs clicaveis com popup detalhado, card de patrimonio da colecao, alertas de estoque baixo (cards com barra de progresso), movimentacoes recentes (cards timeline) |
+| `/` | Home | Saudacao, card de patrimonio da colecao com olhinho show/hide (estilo bancario), 5 KPIs clicaveis com popup detalhado, alertas de estoque baixo, movimentacoes recentes |
 | `/vinhos` | Listagem de Vinhos | Cards mobile-friendly com filtros (busca, tipo, pais). Click abre dialog com detalhes, harmonizacao, curiosidades IA e foto |
 | `/vinhos/novo` | Cadastro de Vinho | Formulario com campos essenciais, upload de foto do rotulo (camera no mobile), harmonizacao e descricao |
 | `/entradas` | Registro de Entradas | Formulario com card de info do vinho selecionado, botao "Cadastrar novo vinho", icone calendario visivel |
@@ -366,6 +366,7 @@ A adega e representada como um **grid de slots** (8 fileiras x 12 slots). Cada s
 13. **FAB central (+)**: botao elevado no centro da bottom nav para acoes mais frequentes (entrada, saida, cadastro, scan)
 14. **Header de app**: logo + titulo na home, titulo da pagina nas demais. Sem hamburger/sidebar trigger
 15. **Paginas sem h1**: titulo ja esta no header de app, paginas so mostram subtitulo/descricao
+16. **Olhinho show/hide**: patrimonio da colecao tem toggle estilo bancario (Eye/EyeOff) para ocultar valores monetarios
 
 ## 10. Historico de Atualizacoes
 
@@ -381,6 +382,7 @@ A adega e representada como um **grid de slots** (8 fileiras x 12 slots). Cada s
 | 2026-09-25 | Grids impares: ultimo card ocupa largura total no mobile (Dashboard, Movimentacoes, Relatorios, Wishlist) |
 | 2026-09-25 | Sistema de notificacoes RFID: sininho com painel lateral, confirmar/rejeitar deteccoes, hook addFromSensor pronto para integracao |
 | 2026-09-25 | Transformacao dashboard → app mobile: sidebar removida, bottom tab bar com FAB central (+), header de app (logo/titulo + sininho), sheets para acoes rapidas e menu completo, meta tags PWA, scrollbar oculta no mobile, safe-area insets, paginas sem headers redundantes, grids otimizados para mobile |
+| 2026-09-25 | Olhinho bancario no patrimonio (Eye/EyeOff toggle), card de patrimonio movido para logo abaixo da saudacao na home |
 
 ## 11. Como Continuar o Desenvolvimento
 
