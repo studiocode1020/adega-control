@@ -22,14 +22,25 @@ npx vercel --prod --yes --scope studiocode1020-3488s-projects  # Deploy na Verce
 - Deploy na Vercel: https://adega-control.vercel.app
 - Repo: https://github.com/studiocode1020/adega-control
 
+## Navegação
+
+- **NÃO usa sidebar** - navegação por **bottom tab bar** (estilo app mobile)
+- 5 tabs: Início, Vinhos, (+) Ação Rápida, Adega, Menu
+- Tab "+" (center FAB): abre sheet com Entrada, Saída, Cadastrar Vinho, Scan
+- Tab "Menu": abre sheet com todas as demais páginas organizadas por categoria
+- Header de app: logo+título na home, título da página nas demais, sininho de notificações à direita
+- Componentes: `bottom-nav.tsx` (navegação), `header.tsx` (header de app)
+
 ## Regras Importantes
 
 - Tema escuro fixo (sem toggle light/dark) - cores de vinho (bordô #722F37, dourado #C9A84C, background #0f0a0a)
 - Fonte Playfair Display para títulos, Inter para corpo e valores numéricos
 - Público-alvo: dono de adega PESSOAL (colecionador), não apenas comercial
-- **MOBILE-FIRST** - app será usado no celular dentro da adega. Cards em vez de tabelas, botões grandes, touch-friendly
+- **MOBILE-FIRST** - interface de APLICATIVO, não dashboard. Bottom tab bar, cards, botões grandes, touch-friendly
 - Dados mockados realistas com vinhos brasileiros, portugueses, argentinos, chilenos, franceses, italianos
 - Versão inicial do `localStorage` usa key `adega-initialized-v2` - ao mudar estrutura de dados, incrementar versão
 - Logo personalizada em `public/logo.png` - usar `next/image` para renderizar
 - **SEM conceito de localização fixa** - adega usa slots organizados por tipo de vinho
 - Campo `location` no modelo Wine é legado e NÃO aparece na UI
+- Páginas NÃO repetem títulos h1 — o header de app já mostra o título da página
+- Content area tem `pb-24` para dar espaço à bottom nav

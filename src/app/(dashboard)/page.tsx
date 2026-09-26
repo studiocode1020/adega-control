@@ -12,6 +12,8 @@ import {
   TrendingDown,
   History,
   Gem,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -116,6 +118,7 @@ const exitReasonLabels: Record<string, string> = {
 export default function DashboardPage() {
   const [kpis, setKpis] = useState<KpiData | null>(null);
   const [activeKpi, setActiveKpi] = useState<string | null>(null);
+  const [showValues, setShowValues] = useState(true);
 
   useEffect(() => {
     const wines = getWines();
@@ -342,14 +345,24 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
+      {/* Greeting */}
+      <div>
+        <h2 className="font-[family-name:var(--font-heading)] text-xl font-bold text-foreground">
+          Olá, Administrador
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          Sua adega em dia
+        </p>
+      </div>
+
       {/* KPI Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 gap-3">
         {kpiCards.map((kpi, index) => (
           <Card
             key={kpi.title}
-            className={`border-border/50 cursor-pointer hover:bg-muted/30 transition-all active:scale-[0.98] ${
-              kpiCards.length % 2 !== 0 && index === kpiCards.length - 1 ? "col-span-2 sm:col-span-1" : ""
+            className={`border-border/50 cursor-pointer hover:bg-muted/30 transition-all active:scale-[0.97] ${
+              kpiCards.length % 2 !== 0 && index === kpiCards.length - 1 ? "col-span-2" : ""
             }`}
             onClick={() => setActiveKpi(kpi.detailKey)}
           >
@@ -384,18 +397,30 @@ export default function DashboardPage() {
       {/* Patrimônio em Vinhos */}
       <Card className="border-border/50 bg-gradient-to-r from-card to-wine/5">
         <CardContent className="p-4 sm:p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gold/10">
-              <Gem className="h-7 w-7 text-gold" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm text-muted-foreground">Patrimônio Total da Coleção</p>
-              <p className="text-3xl font-bold text-gold">
-                {formatCurrency(kpis.stockValue)}
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                {kpis.totalLabels} rótulos | {kpis.totalBottles} garrafas | Média de {formatCurrency(kpis.totalBottles > 0 ? kpis.stockValue / kpis.totalBottles : 0)} por garrafa
-              </p>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-start gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gold/10">
+                <Gem className="h-6 w-6 text-gold" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <p className="text-sm text-muted-foreground">Patrimônio da Coleção</p>
+                  <button
+                    type="button"
+                    onClick={() => setShowValues(v => !v)}
+                    className="p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/50 active:scale-90 transition-all"
+                    aria-label={showValues ? "Ocultar valores" : "Mostrar valores"}
+                  >
+                    {showValues ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                  </button>
+                </div>
+                <p className="text-3xl font-bold text-gold mt-0.5">
+                  {showValues ? formatCurrency(kpis.stockValue) : "R$ ••••••"}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {kpis.totalLabels} rótulos | {kpis.totalBottles} garrafas{showValues ? ` | Média de ${formatCurrency(kpis.totalBottles > 0 ? kpis.stockValue / kpis.totalBottles : 0)} por garrafa` : ""}
+                </p>
+              </div>
             </div>
             <div className="flex flex-wrap gap-3 text-center">
               {(() => {
@@ -406,7 +431,9 @@ export default function DashboardPage() {
                 return sorted.map(([type, value]) => (
                   <div key={type} className="min-w-[80px]">
                     <p className="text-xs text-muted-foreground">{type}</p>
-                    <p className="text-sm font-semibold text-foreground">{formatCurrency(value)}</p>
+                    <p className="text-sm font-semibold text-foreground">
+                      {showValues ? formatCurrency(value) : "••••"}
+                    </p>
                   </div>
                 ));
               })()}
@@ -415,7 +442,7 @@ export default function DashboardPage() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-5">
         {/* Alertas de Estoque Baixo */}
         <Card className="border-border/50">
           <CardHeader className="pb-3">

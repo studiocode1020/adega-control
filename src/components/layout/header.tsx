@@ -1,9 +1,8 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 import { Bell, ArrowDownCircle, ArrowUpCircle, CheckCircle2, Trash2, Tag } from "lucide-react";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,19 +18,19 @@ import { useNotifications } from "@/hooks/use-notifications";
 import { toast } from "sonner";
 
 const pageTitles: Record<string, string> = {
-  "/": "Dashboard",
+  "/": "",
   "/vinhos": "Vinhos",
-  "/vinhos/novo": "Cadastrar Vinho",
-  "/entradas": "Registro de Entradas",
-  "/saidas": "Registro de Saídas",
+  "/vinhos/novo": "Novo Vinho",
+  "/entradas": "Entrada",
+  "/saidas": "Saída",
   "/movimentacoes": "Movimentações",
-  "/adega": "Mapa da Adega",
+  "/adega": "Minha Adega",
   "/relatorios": "Relatórios",
   "/wishlist": "Lista de Desejos",
-  "/scan": "Escanear Rótulo",
-  "/recomendacoes": "Recomendações IA",
+  "/scan": "Scan IA",
+  "/recomendacoes": "Recomendações",
   "/acordo-perfeito": "Acordo Perfeito",
-  "/degustacao": "Modo Degustação",
+  "/degustacao": "Degustação",
   "/clima": "Clima e Vinho",
 };
 
@@ -47,7 +46,8 @@ function timeAgo(dateStr: string): string {
 
 export function Header() {
   const pathname = usePathname();
-  const title = pageTitles[pathname] || "Adega Control";
+  const title = pageTitles[pathname] ?? "Adega Control";
+  const isHome = pathname === "/";
   const { notifications, pending, confirm, reject, clearResolved } = useNotifications();
 
   const resolvedCount = notifications.filter(n => n.status !== 'pending').length;
@@ -69,17 +69,30 @@ export function Header() {
   };
 
   return (
-    <header className="flex h-14 items-center gap-3 border-b border-border px-4">
-      <SidebarTrigger className="-ml-1 min-h-[44px] min-w-[44px] flex items-center justify-center" />
-      <Separator orientation="vertical" className="!h-5 bg-border/50" />
-      <h2 className="font-[family-name:var(--font-heading)] text-base sm:text-lg font-semibold flex-1 truncate">
-        {title}
-      </h2>
+    <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border/30 bg-card/80 backdrop-blur-lg px-4">
+      {isHome ? (
+        <div className="flex items-center gap-2.5 flex-1 min-w-0">
+          <Image
+            src="/logo.png"
+            alt="Adega Control"
+            width={32}
+            height={32}
+            className="h-8 w-8 object-contain"
+          />
+          <h1 className="font-[family-name:var(--font-heading)] text-lg font-bold text-foreground truncate">
+            Adega Control
+          </h1>
+        </div>
+      ) : (
+        <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold text-foreground flex-1 truncate">
+          {title}
+        </h2>
+      )}
 
       <Sheet>
         <SheetTrigger
           render={
-            <Button variant="ghost" size="icon" className="relative min-h-[44px] min-w-[44px]" />
+            <Button variant="ghost" size="icon" className="relative min-h-[44px] min-w-[44px] shrink-0" />
           }
         >
           <Bell className="h-5 w-5" />

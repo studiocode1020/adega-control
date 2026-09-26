@@ -191,14 +191,14 @@ interface SensorNotification {
 ```
 src/
 ├── app/
-│   ├── layout.tsx              # Layout raiz (fonts, metadata, Toaster, TooltipProvider)
+│   ├── layout.tsx              # Layout raiz (fonts, metadata, viewport, Toaster)
 │   ├── loading.tsx             # Tela de carregamento global com logo
 │   ├── globals.css             # Tema escuro elegante customizado
 │   ├── login/page.tsx
 │   └── (dashboard)/
-│       ├── layout.tsx          # Sidebar + Header
+│       ├── layout.tsx          # Header de app + BottomNav (SEM sidebar)
 │       ├── loading.tsx         # Loading interno com logo
-│       ├── page.tsx            # Dashboard
+│       ├── page.tsx            # Home (dashboard)
 │       ├── vinhos/
 │       │   ├── page.tsx        # Listagem (cards)
 │       │   └── novo/page.tsx   # Cadastro
@@ -215,8 +215,9 @@ src/
 │       └── clima/page.tsx
 ├── components/
 │   ├── layout/
-│   │   ├── app-sidebar.tsx     # 3 grupos: Gestao, Minha Colecao, Experiencia
-│   │   └── header.tsx
+│   │   ├── bottom-nav.tsx     # Bottom tab bar (5 tabs + sheets)
+│   │   ├── header.tsx         # Header de app (titulo + sininho)
+│   │   └── app-sidebar.tsx    # Legado (nao utilizado, mantido para referencia)
 │   └── ui/                     # shadcn/ui (base-ui)
 ├── data/
 │   ├── mock-wines.ts           # 20 vinhos com harmonizacao e descricao
@@ -361,6 +362,10 @@ A adega e representada como um **grid de slots** (8 fileiras x 12 slots). Cada s
 9. **Font Inter para valores**: valores monetarios e KPIs usam Inter (nao Playfair) para melhor legibilidade de numeros
 10. **Sem localizacao fixa**: a adega usa slots organizados por tipo de vinho, sem conceito de "posicao A1"
 11. **Select com span manual**: workaround para bug do base-ui SelectValue que mostra value raw
+12. **Bottom tab bar (nao sidebar)**: navegacao por tabs na parte inferior como apps nativos iOS/Android. 5 tabs: Inicio, Vinhos, (+) FAB, Adega, Menu
+13. **FAB central (+)**: botao elevado no centro da bottom nav para acoes mais frequentes (entrada, saida, cadastro, scan)
+14. **Header de app**: logo + titulo na home, titulo da pagina nas demais. Sem hamburger/sidebar trigger
+15. **Paginas sem h1**: titulo ja esta no header de app, paginas so mostram subtitulo/descricao
 
 ## 10. Historico de Atualizacoes
 
@@ -375,6 +380,7 @@ A adega e representada como um **grid de slots** (8 fileiras x 12 slots). Cada s
 | 2026-09-25 | Textos unicode corrigidos no cadastro (Pais, Regiao, Preco, Minimo), "Safra/Ano" → "Safra" |
 | 2026-09-25 | Grids impares: ultimo card ocupa largura total no mobile (Dashboard, Movimentacoes, Relatorios, Wishlist) |
 | 2026-09-25 | Sistema de notificacoes RFID: sininho com painel lateral, confirmar/rejeitar deteccoes, hook addFromSensor pronto para integracao |
+| 2026-09-25 | Transformacao dashboard → app mobile: sidebar removida, bottom tab bar com FAB central (+), header de app (logo/titulo + sininho), sheets para acoes rapidas e menu completo, meta tags PWA, scrollbar oculta no mobile, safe-area insets, paginas sem headers redundantes, grids otimizados para mobile |
 
 ## 11. Como Continuar o Desenvolvimento
 

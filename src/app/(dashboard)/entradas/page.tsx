@@ -6,7 +6,6 @@ import Link from "next/link";
 import { ArrowDownToLine, Wine as WineIcon } from "lucide-react";
 import { toast } from "sonner";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,6 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
 
 import { Wine } from "@/types";
@@ -81,17 +79,7 @@ export default function EntradasPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <Card className="border-border/50">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-lg font-semibold flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-success/10">
-              <ArrowDownToLine className="h-5 w-5 text-success" />
-            </div>
-            Registrar Entrada
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+    <div>
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Wine Select */}
             <div className="space-y-2">
@@ -214,8 +202,6 @@ export default function EntradasPage() {
               {isSubmitting ? "Registrando..." : "Registrar Entrada"}
             </Button>
           </form>
-        </CardContent>
-      </Card>
     </div>
   );
 }

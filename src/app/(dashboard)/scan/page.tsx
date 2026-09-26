@@ -105,16 +105,9 @@ export default function ScanPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <div className="flex items-center gap-2 mb-1">
-          <Scan className="h-5 w-5 text-wine-light" />
-          <h1 className="text-xl font-bold">Escanear Rótulo</h1>
-        </div>
-        <p className="text-sm text-muted-foreground">
-          Use a câmera ou envie uma foto do rótulo para identificar o vinho
-          automaticamente
-        </p>
-      </div>
+      <p className="text-sm text-muted-foreground">
+        Use a câmera ou envie uma foto do rótulo para identificar o vinho automaticamente
+      </p>
 
       {/* Upload area */}
       {!analyzing && !showResult && (

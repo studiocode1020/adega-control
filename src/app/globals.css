@@ -109,18 +109,41 @@
   100% { transform: translateX(300%); }
 }
 
-/* Scrollbar customizada */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+/* Scrollbar customizada - desktop */
+@media (min-width: 640px) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: oklch(0.12 0.01 15);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: oklch(0.3 0.03 355);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.35 0.04 355);
+  }
 }
-::-webkit-scrollbar-track {
-  background: oklch(0.12 0.01 15);
+
+/* Hide scrollbar on mobile for app feel */
+@media (max-width: 639px) {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
-::-webkit-scrollbar-thumb {
-  background: oklch(0.3 0.03 355);
-  border-radius: 4px;
+
+/* Safe area padding for bottom nav */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
-::-webkit-scrollbar-thumb:hover {
-  background: oklch(0.35 0.04 355);
+
+/* Prevent body scroll when sheet/dialog is open */
+body[data-scroll-locked] {
+  overflow: hidden !important;
 }

@@ -224,18 +224,12 @@ export default function ClimaPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <div className="flex items-center gap-2 mb-1">
-          <CloudSun className="h-5 w-5 text-gold" />
-          <h1 className="text-xl font-bold">Clima e Vinho</h1>
-        </div>
-        <p className="text-sm text-muted-foreground">
-          O tempo lá fora influencia o vinho perfeito. Selecione como está o dia.
-        </p>
-      </div>
+      <p className="text-sm text-muted-foreground">
+        O tempo lá fora influencia o vinho perfeito. Selecione como está o dia.
+      </p>
 
       {/* Weather selection grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 gap-3">
         {WEATHER_OPTIONS.map((option) => {
           const Icon = option.icon;
           const isSelected = selected === option.id;
@@ -295,7 +289,7 @@ export default function ClimaPage() {
           {/* Wine suggestion cards */}
           {suggestions.length > 0 ? (
             <>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               {(showAll ? suggestions : suggestions.slice(0, 3)).map((wine, index) => (
                 <Card
                   key={wine.id}

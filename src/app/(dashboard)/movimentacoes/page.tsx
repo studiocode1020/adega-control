@@ -6,10 +6,9 @@ import {
   TrendingUp,
   TrendingDown,
   Search,
-  Filter,
   History,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -85,7 +84,7 @@ export default function MovimentacoesPage() {
   return (
     <div className="space-y-6">
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 gap-3">
         <Card className="border-border/50">
           <CardContent className="p-4 flex items-center gap-3">
             <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${totalEntradas - totalSaidas >= 0 ? "bg-success/10" : "bg-destructive/10"}`}>
@@ -124,54 +123,46 @@ export default function MovimentacoesPage() {
       </div>
 
       {/* Filters */}
-      <Card className="border-border/50">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base font-medium flex items-center gap-2">
-            <Filter className="h-4 w-4" />
-            Filtros
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Buscar por vinho, fornecedor, NF..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-9"
-              />
-            </div>
-            <Select value={filterType} onValueChange={(v) => setFilterType(v ?? "all")}>
-              <SelectTrigger>
-                <span className="flex flex-1 text-left truncate text-sm">
-                  {filterType === "all" ? "Todos os tipos" : filterType === "entrada" ? "Entradas" : "Saidas"}
-                </span>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos os tipos</SelectItem>
-                <SelectItem value="entrada">Entradas</SelectItem>
-                <SelectItem value="saida">Saidas</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={filterWine} onValueChange={(v) => setFilterWine(v ?? "all")}>
-              <SelectTrigger>
-                <span className="flex flex-1 text-left truncate text-sm">
-                  {filterWine === "all" ? "Todos os vinhos" : (wineMap.get(filterWine)?.name ?? "Vinho")}
-                </span>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos os vinhos</SelectItem>
-                {wines.map((w) => (
-                  <SelectItem key={w.id} value={w.id}>
-                    {w.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="space-y-3">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Buscar..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-9 h-11 rounded-xl bg-muted/40 border-border/30"
+          />
+        </div>
+        <div className="flex gap-2">
+          <Select value={filterType} onValueChange={(v) => setFilterType(v ?? "all")}>
+            <SelectTrigger className="flex-1 rounded-xl bg-muted/40 border-border/30">
+              <span className="flex flex-1 text-left truncate text-sm">
+                {filterType === "all" ? "Tipo" : filterType === "entrada" ? "Entradas" : "Saídas"}
+              </span>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos os tipos</SelectItem>
+              <SelectItem value="entrada">Entradas</SelectItem>
+              <SelectItem value="saida">Saídas</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={filterWine} onValueChange={(v) => setFilterWine(v ?? "all")}>
+            <SelectTrigger className="flex-1 rounded-xl bg-muted/40 border-border/30">
+              <span className="flex flex-1 text-left truncate text-sm">
+                {filterWine === "all" ? "Vinho" : (wineMap.get(filterWine)?.name ?? "Vinho")}
+              </span>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos os vinhos</SelectItem>
+              {wines.map((w) => (
+                <SelectItem key={w.id} value={w.id}>
+                  {w.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
       {/* Movement Cards */}
       <div className="space-y-3">

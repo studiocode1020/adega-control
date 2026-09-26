@@ -98,7 +98,7 @@ export default function RelatoriosPage() {
   return (
     <div className="space-y-6">
       {/* Summary */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 gap-3">
         <Card className="border-border/50">
           <CardContent className="p-4 text-center">
             <p className="text-xs text-muted-foreground">Total de Rótulos</p>
@@ -119,8 +119,8 @@ export default function RelatoriosPage() {
         </Card>
       </div>
 
-      {/* Charts Row 1 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Charts */}
+      <div className="grid grid-cols-1 gap-5">
         {/* Entradas vs Saídas */}
         <Card className="border-border/50">
           <CardHeader className="pb-2">

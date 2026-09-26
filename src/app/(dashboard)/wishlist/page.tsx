@@ -111,23 +111,17 @@ export default function WishlistPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <Heart className="h-6 w-6 text-wine-light" />
-          <div>
-            <h1 className="text-2xl font-bold">Lista de Desejos</h1>
-            <p className="text-sm text-muted-foreground">
-              {items.length} {items.length === 1 ? "vinho" : "vinhos"} na lista
-            </p>
-          </div>
-        </div>
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-sm text-muted-foreground">
+          {items.length} {items.length === 1 ? "vinho" : "vinhos"} na lista
+        </p>
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger
             render={
-              <Button className="bg-wine hover:bg-wine-light text-white w-full sm:w-auto">
+              <Button size="sm" className="bg-wine hover:bg-wine-light text-white">
                 <Plus className="h-4 w-4" />
-                Adicionar Vinho
+                Adicionar
               </Button>
             }
           />
@@ -305,7 +299,7 @@ export default function WishlistPage() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 gap-3">
         <Card className="border-border/50">
           <CardContent className="p-4 text-center">
             <Heart className="h-5 w-5 text-wine-light mx-auto mb-1" />
@@ -349,7 +343,7 @@ export default function WishlistPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 gap-3">
           {items.map((item) => (
             <Card
               key={item.id}

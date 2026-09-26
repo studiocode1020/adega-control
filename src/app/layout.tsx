@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,9 +15,23 @@ const playfair = Playfair_Display({
   weight: ["400", "500", "600", "700"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+  themeColor: "#0f0a0a",
+};
+
 export const metadata: Metadata = {
-  title: "Adega Control - Sistema de Gestão de Adega",
-  description: "Sistema completo de controle de estoque e gestão de vinhos para sua adega",
+  title: "Adega Control",
+  description: "Gestão completa da sua adega de vinhos",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Adega Control",
+  },
 };
 
 export default function RootLayout({
@@ -27,11 +41,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className={`${inter.variable} ${playfair.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col overscroll-none">
         <TooltipProvider>
           {children}
         </TooltipProvider>
-        <Toaster richColors position="top-right" />
+        <Toaster richColors position="top-center" />
       </body>
     </html>
   );

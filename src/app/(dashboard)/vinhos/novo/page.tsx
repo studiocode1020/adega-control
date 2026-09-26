@@ -2,10 +2,9 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, Camera, X } from "lucide-react";
+import { Save, Camera, X } from "lucide-react";
 import { toast } from "sonner";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -108,33 +107,12 @@ export default function NovoVinhoPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => router.back()}
-          aria-label="Voltar"
-          className="min-h-[44px] min-w-[44px]"
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Novo Vinho</h1>
-          <p className="text-sm text-muted-foreground">
-            Cadastre um novo vinho na adega
-          </p>
-        </div>
-      </div>
+    <div className="space-y-5">
+      <p className="text-sm text-muted-foreground">
+        Preencha as informações do vinho
+      </p>
 
-      <Card className="border-border/50">
-        <CardHeader>
-          <CardTitle className="text-base font-medium">
-            Informações do Vinho
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Nome do Vinho */}
               <div className="space-y-2">
@@ -344,30 +322,16 @@ export default function NovoVinhoPage() {
             </div>
 
             {/* Buttons */}
-            <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 pt-4 border-t border-border/50">
-              <Button
-                type="button"
-                variant="outline"
-                size="lg"
-                onClick={() => router.push("/vinhos")}
-                disabled={isSubmitting}
-                className="w-full sm:w-auto"
-              >
-                Cancelar
-              </Button>
-              <Button
-                type="submit"
-                size="lg"
-                className="bg-wine hover:bg-wine-light text-white w-full sm:w-auto"
-                disabled={isSubmitting}
-              >
-                <Save className="h-4 w-4 mr-2" />
-                {isSubmitting ? "Salvando..." : "Salvar"}
-              </Button>
-            </div>
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full bg-wine hover:bg-wine-light text-white"
+              disabled={isSubmitting}
+            >
+              <Save className="h-4 w-4 mr-2" />
+              {isSubmitting ? "Salvando..." : "Salvar Vinho"}
+            </Button>
           </form>
-        </CardContent>
-      </Card>
     </div>
   );
 }

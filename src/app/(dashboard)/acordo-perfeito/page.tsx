@@ -190,15 +190,9 @@ export default function AcordoPerfeitoPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <div className="flex items-center gap-2 mb-1">
-          <UtensilsCrossed className="h-5 w-5 text-gold" />
-          <h1 className="text-xl font-bold">Acordo Perfeito</h1>
-        </div>
-        <p className="text-sm text-muted-foreground">
-          Diga o que você vai preparar e encontramos o vinho ideal da sua adega
-        </p>
-      </div>
+      <p className="text-sm text-muted-foreground">
+        Diga o que você vai preparar e encontramos o vinho ideal da sua adega
+      </p>
 
       {/* Input section */}
       <Card className="border-border/50">

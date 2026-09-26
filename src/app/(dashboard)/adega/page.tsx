@@ -58,7 +58,7 @@ export default function AdegaPage() {
   return (
     <div className="space-y-6">
       {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 gap-3">
         <Card className="border-border/50">
           <CardContent className="p-4 text-center">
             <p className="text-xs text-muted-foreground">Slots Totais</p>

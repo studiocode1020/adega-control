@@ -108,16 +108,9 @@ export default function RecomendacoesPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <div className="flex items-center gap-2 mb-1">
-          <Sparkles className="h-5 w-5 text-gold" />
-          <h1 className="text-xl font-bold">Recomendações IA</h1>
-        </div>
-        <p className="text-sm text-muted-foreground">
-          Baseado nos vinhos da sua coleção, a inteligência artificial sugere
-          novos rótulos para você experimentar
-        </p>
-      </div>
+      <p className="text-sm text-muted-foreground">
+        Baseado na sua coleção, a IA sugere novos rótulos para você
+      </p>
 
       {/* Profile card */}
       <Card className="border-border/50">
@@ -146,8 +139,8 @@ export default function RecomendacoesPage() {
         </CardContent>
       </Card>
 
-      {/* Recommendations grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+      {/* Recommendations */}
+      <div className="grid grid-cols-1 gap-4">
         {RECOMMENDATIONS.map((rec) => (
           <Card key={rec.id} className="border-border/50 active:scale-[0.99] transition-transform">
             <CardHeader>

@@ -109,80 +109,67 @@ export default function VinhosPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Vinhos</h1>
-          <p className="text-sm text-muted-foreground">
-            {filteredWines.length} de {wines.length} rótulos cadastrados
-          </p>
-        </div>
-        <Link href="/vinhos/novo" className="w-full sm:w-auto">
-          <Button className="bg-wine hover:bg-wine/90 text-white w-full sm:w-auto">
-            <Plus className="h-4 w-4 mr-2" />
-            Cadastrar Vinho
-          </Button>
-        </Link>
-      </div>
+      {/* Subtitle */}
+      <p className="text-sm text-muted-foreground">
+        {filteredWines.length} de {wines.length} rótulos
+      </p>
 
       {/* Filters */}
-      <Card className="border-border/50">
-        <CardContent className="p-4">
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Buscar por nome..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-9"
-              />
-            </div>
+      <div className="space-y-3">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Buscar por nome..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-9 h-11 rounded-xl bg-muted/40 border-border/30"
+          />
+        </div>
+        <div className="flex gap-2">
+          <Select value={typeFilter} onValueChange={(v) => setTypeFilter(v ?? "all")}>
+            <SelectTrigger className="flex-1 rounded-xl bg-muted/40 border-border/30">
+              <span className="flex flex-1 text-left truncate text-sm">
+                {typeFilter === "all" ? "Tipo" : typeFilter}
+              </span>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos os tipos</SelectItem>
+              {WINE_TYPES.map((type) => (
+                <SelectItem key={type} value={type}>
+                  {type}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-            <Select value={typeFilter} onValueChange={(v) => setTypeFilter(v ?? "all")}>
-              <SelectTrigger className="w-full sm:w-[180px]">
-                <span className="flex flex-1 text-left truncate text-sm">
-                  {typeFilter === "all" ? "Todos os tipos" : typeFilter}
-                </span>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos os tipos</SelectItem>
-                {WINE_TYPES.map((type) => (
-                  <SelectItem key={type} value={type}>
-                    {type}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <Select value={countryFilter} onValueChange={(v) => setCountryFilter(v ?? "all")}>
+            <SelectTrigger className="flex-1 rounded-xl bg-muted/40 border-border/30">
+              <span className="flex flex-1 text-left truncate text-sm">
+                {countryFilter === "all" ? "País" : countryFilter}
+              </span>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos os países</SelectItem>
+              {countries.map((country) => (
+                <SelectItem key={country} value={country}>
+                  {country}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-            <Select value={countryFilter} onValueChange={(v) => setCountryFilter(v ?? "all")}>
-              <SelectTrigger className="w-full sm:w-[180px]">
-                <span className="flex flex-1 text-left truncate text-sm">
-                  {countryFilter === "all" ? "Todos os países" : countryFilter}
-                </span>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos os países</SelectItem>
-                {countries.map((country) => (
-                  <SelectItem key={country} value={country}>
-                    {country}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {hasActiveFilters && (
-              <Button
-                variant="ghost"
-                onClick={handleClearFilters}
-                className="text-muted-foreground hover:text-foreground min-h-[44px]"
-              >
-                Limpar filtros
-              </Button>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+          {hasActiveFilters && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleClearFilters}
+              className="text-muted-foreground shrink-0 min-h-[44px] min-w-[44px]"
+            >
+              <span className="text-xs">Limpar</span>
+            </Button>
+          )}
+        </div>
+      </div>
 
       {/* Wine Cards */}
       {filteredWines.length === 0 ? (
