@@ -356,45 +356,7 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      {/* KPI Grid */}
-      <div className="grid grid-cols-2 gap-3">
-        {kpiCards.map((kpi, index) => (
-          <Card
-            key={kpi.title}
-            className={`border-border/50 cursor-pointer hover:bg-muted/30 transition-all active:scale-[0.97] ${
-              kpiCards.length % 2 !== 0 && index === kpiCards.length - 1 ? "col-span-2" : ""
-            }`}
-            onClick={() => setActiveKpi(kpi.detailKey)}
-          >
-            <CardContent className="p-3 sm:p-4">
-              <div className="flex items-center gap-3">
-                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${kpi.bgColor}`}>
-                  <kpi.icon className={`h-5 w-5 ${kpi.color}`} />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-xs text-muted-foreground truncate">{kpi.title}</p>
-                  <p className="text-lg font-bold text-foreground truncate">{kpi.value}</p>
-                  {kpi.subtitle && (
-                    <p className="text-xs text-muted-foreground">{kpi.subtitle}</p>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* KPI Detail Dialog */}
-      <Dialog open={activeKpi !== null} onOpenChange={(open) => { if (!open) setActiveKpi(null); }}>
-        <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>{activeKpi ? dialogTitles[activeKpi] : ""}</DialogTitle>
-          </DialogHeader>
-          {renderKpiDialogContent()}
-        </DialogContent>
-      </Dialog>
-
-      {/* Patrimônio em Vinhos */}
+      {/* Patrimônio da Coleção */}
       <Card className="border-border/50 bg-gradient-to-r from-card to-wine/5">
         <CardContent className="p-4 sm:p-6">
           <div className="flex flex-col gap-4">
@@ -441,6 +403,44 @@ export default function DashboardPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* KPI Grid */}
+      <div className="grid grid-cols-2 gap-3">
+        {kpiCards.map((kpi, index) => (
+          <Card
+            key={kpi.title}
+            className={`border-border/50 cursor-pointer hover:bg-muted/30 transition-all active:scale-[0.97] ${
+              kpiCards.length % 2 !== 0 && index === kpiCards.length - 1 ? "col-span-2" : ""
+            }`}
+            onClick={() => setActiveKpi(kpi.detailKey)}
+          >
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex items-center gap-3">
+                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${kpi.bgColor}`}>
+                  <kpi.icon className={`h-5 w-5 ${kpi.color}`} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs text-muted-foreground truncate">{kpi.title}</p>
+                  <p className="text-lg font-bold text-foreground truncate">{kpi.value}</p>
+                  {kpi.subtitle && (
+                    <p className="text-xs text-muted-foreground">{kpi.subtitle}</p>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* KPI Detail Dialog */}
+      <Dialog open={activeKpi !== null} onOpenChange={(open) => { if (!open) setActiveKpi(null); }}>
+        <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{activeKpi ? dialogTitles[activeKpi] : ""}</DialogTitle>
+          </DialogHeader>
+          {renderKpiDialogContent()}
+        </DialogContent>
+      </Dialog>
 
       <div className="grid grid-cols-1 gap-5">
         {/* Alertas de Estoque Baixo */}
