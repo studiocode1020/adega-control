@@ -14,9 +14,9 @@ import {
   Gem,
   Eye,
   EyeOff,
+  ChevronRight,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -169,15 +169,6 @@ export default function DashboardPage() {
       bgColor: "bg-destructive/10",
       detailKey: "exits",
     },
-    {
-      title: "Estoque Baixo",
-      value: kpis.lowStockCount.toString(),
-      subtitle: "rótulos",
-      icon: AlertTriangle,
-      color: kpis.lowStockCount > 0 ? "text-destructive" : "text-success",
-      bgColor: kpis.lowStockCount > 0 ? "bg-destructive/10" : "bg-success/10",
-      detailKey: "lowStock",
-    },
   ];
 
   function renderKpiDialogContent() {
@@ -291,46 +282,6 @@ export default function DashboardPage() {
         );
       }
 
-      case "lowStock": {
-        const wines = kpis.lowStockWines;
-        if (wines.length === 0) {
-          return (
-            <p className="text-sm text-muted-foreground text-center py-4">
-              Todos os vinhos estão com estoque adequado.
-            </p>
-          );
-        }
-        return (
-          <div className="space-y-2 max-h-72 overflow-y-auto">
-            {wines.map((wine) => {
-              const percentage = wine.minStock > 0 ? Math.min((wine.quantity / wine.minStock) * 100, 100) : 0;
-              return (
-                <div key={wine.id} className="p-2.5 rounded-lg bg-muted/30 border border-border/30">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium truncate">{wine.name}</p>
-                    <Badge variant="destructive" className="text-xs shrink-0 ml-2">
-                      {wine.quantity === 0 ? "Esgotado" : "Baixo"}
-                    </Badge>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-0.5">{wine.type} · {wine.country}</p>
-                  <div className="mt-2 flex items-center gap-2">
-                    <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
-                      <div
-                        className={`h-full rounded-full ${wine.quantity === 0 ? "bg-destructive" : "bg-destructive/70"}`}
-                        style={{ width: `${percentage}%` }}
-                      />
-                    </div>
-                    <span className="text-xs font-medium text-destructive shrink-0">
-                      {wine.quantity}/{wine.minStock}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        );
-      }
-
       default:
         return null;
     }
@@ -341,7 +292,6 @@ export default function DashboardPage() {
     bottles: "Garrafas em Estoque",
     entries: "Entradas do Mês",
     exits: "Saídas do Mês",
-    lowStock: "Estoque Baixo",
   };
 
   return (
@@ -442,98 +392,41 @@ export default function DashboardPage() {
         </DialogContent>
       </Dialog>
 
-      <div className="grid grid-cols-1 gap-5">
-        {/* Alertas de Estoque Baixo */}
-        <Card className="border-border/50">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base font-medium flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-destructive" />
-              Alertas de Estoque Baixo
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {kpis.lowStockWines.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-4">
-                Todos os vinhos estão com estoque adequado.
-              </p>
-            ) : (
-              <div className="space-y-3">
-                {kpis.lowStockWines.map((wine) => {
-                  const percentage = wine.minStock > 0 ? Math.min((wine.quantity / wine.minStock) * 100, 100) : 0;
-                  return (
-                    <div key={wine.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/30">
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate">{wine.name}</p>
-                        <p className="text-xs text-muted-foreground">{wine.type} · {wine.country}</p>
-                        <div className="mt-2 flex items-center gap-2">
-                          <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
-                            <div
-                              className={`h-full rounded-full ${wine.quantity === 0 ? "bg-destructive" : "bg-destructive/70"}`}
-                              style={{ width: `${percentage}%` }}
-                            />
-                          </div>
-                          <span className="text-xs font-medium text-destructive shrink-0">{wine.quantity}/{wine.minStock}</span>
-                        </div>
-                      </div>
-                      <Badge variant="destructive" className="text-xs shrink-0">
-                        {wine.quantity === 0 ? "Esgotado" : "Baixo"}
-                      </Badge>
-                    </div>
-                  );
-                })}
+      {/* Links rápidos */}
+      <div className="space-y-3">
+        <Link href="/vinhos" className="block">
+          <Card className="border-border/50 hover:bg-muted/30 active:scale-[0.98] transition-all cursor-pointer">
+            <CardContent className="p-4 flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-destructive/10">
+                <AlertTriangle className="h-5 w-5 text-destructive" />
               </div>
-            )}
-          </CardContent>
-        </Card>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-foreground">Alertas de Estoque Baixo</p>
+                {kpis.lowStockCount > 0 ? (
+                  <p className="text-xs text-destructive">{kpis.lowStockCount} {kpis.lowStockCount === 1 ? "vinho abaixo do mínimo" : "vinhos abaixo do mínimo"}</p>
+                ) : (
+                  <p className="text-xs text-muted-foreground">Estoque adequado</p>
+                )}
+              </div>
+              <ChevronRight className="h-5 w-5 text-muted-foreground shrink-0" />
+            </CardContent>
+          </Card>
+        </Link>
 
-        {/* Movimentações Recentes */}
-        <Card className="border-border/50">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-base font-medium flex items-center gap-2">
-                <History className="h-4 w-4 text-gold" />
-                Movimentações Recentes
-              </CardTitle>
-              <Link
-                href="/movimentacoes"
-                className="text-xs text-wine-light hover:text-wine transition-colors py-2 px-1 min-h-[44px] flex items-center"
-              >
-                Ver todas
-              </Link>
-            </div>
-          </CardHeader>
-          <CardContent>
-            {kpis.recentMovements.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-4">
-                Nenhuma movimentação registrada.
-              </p>
-            ) : (
-              <div className="space-y-3">
-                {kpis.recentMovements.map((mov) => (
-                  <div key={mov.id} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30 border border-border/30 active:scale-[0.99] transition-transform">
-                    <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
-                      mov.type === "entrada" ? "bg-success/15" : "bg-destructive/15"
-                    }`}>
-                      {mov.type === "entrada"
-                        ? <TrendingUp className="h-4 w-4 text-success" />
-                        : <TrendingDown className="h-4 w-4 text-destructive" />
-                      }
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">{mov.wineName}</p>
-                      <p className="text-xs text-muted-foreground">{formatDate(mov.date)}</p>
-                    </div>
-                    <span className={`text-sm font-bold shrink-0 ${
-                      mov.type === "entrada" ? "text-success" : "text-destructive"
-                    }`}>
-                      {mov.type === "entrada" ? "+" : "-"}{mov.quantity}
-                    </span>
-                  </div>
-                ))}
+        <Link href="/movimentacoes" className="block">
+          <Card className="border-border/50 hover:bg-muted/30 active:scale-[0.98] transition-all cursor-pointer">
+            <CardContent className="p-4 flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gold/10">
+                <History className="h-5 w-5 text-gold" />
               </div>
-            )}
-          </CardContent>
-        </Card>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-foreground">Movimentações Recentes</p>
+                <p className="text-xs text-muted-foreground">{kpis.recentMovements.length > 0 ? `${kpis.recentMovements.length} últimas movimentações` : "Nenhuma movimentação"}</p>
+              </div>
+              <ChevronRight className="h-5 w-5 text-muted-foreground shrink-0" />
+            </CardContent>
+          </Card>
+        </Link>
       </div>
     </div>
   );
