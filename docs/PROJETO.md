@@ -235,7 +235,8 @@ src/
 ├── lib/
 │   ├── utils.ts              # cn() do shadcn
 │   ├── storage.ts            # Wrapper localStorage com inicializacao
-│   └── format.ts             # formatCurrency, formatDate, generateId
+│   ├── format.ts             # formatCurrency, formatDate, generateId
+│   └── colors.ts             # Sistema de cores centralizado (tokens, badges, slots, charts)
 ├── public/
 │   └── logo.png              # Logo da aplicacao (garrafa mosaico)
 └── types/
@@ -357,7 +358,7 @@ A adega e representada como um **grid de slots** (8 fileiras x 12 slots). Cada s
 4. **KPIs clicaveis**: 4 KPIs do dashboard (rotulos, garrafas, entradas, saidas) abrem popup com detalhamento. Alertas e movimentacoes sao links compactos com seta que redirecionam para paginas especificas
 5. **Dados mockados realistas**: vinhos que o cliente reconhece (Miolo, Casa Valduga, Casillero del Diablo...)
 6. **Sidebar com 3 grupos**: separa gestao operacional, colecao pessoal e experiencias interativas
-7. **Cores de vinho**: bordo para primaria, dourado para destaques, verde para sucesso, vermelho para alertas
+7. **Cores centralizadas**: todas as cores saem de `src/lib/colors.ts` e tokens CSS em `globals.css`. Bordo para primaria, dourado para destaques, verde para sucesso, vermelho para alertas. 6 cores de tipo de vinho (Tinto, Branco, Rose, Espumante, Sobremesa, Fortificado) com variantes para badges, slots da adega e chart fills
 8. **IA simulada no MVP**: as features de IA (scan, recomendacoes, curiosidades, acordo perfeito) usam dados mockados. Na versao real, conectar com Gemini/GPT
 9. **Font Inter para valores**: valores monetarios e KPIs usam Inter (nao Playfair) para melhor legibilidade de numeros
 10. **Sem localizacao fixa**: a adega usa slots organizados por tipo de vinho, sem conceito de "posicao A1"
@@ -384,6 +385,7 @@ A adega e representada como um **grid de slots** (8 fileiras x 12 slots). Cada s
 | 2026-09-25 | Transformacao dashboard → app mobile: sidebar removida, bottom tab bar com FAB central (+), header de app (logo/titulo + sininho), sheets para acoes rapidas e menu completo, meta tags PWA, scrollbar oculta no mobile, safe-area insets, paginas sem headers redundantes, grids otimizados para mobile |
 | 2026-09-25 | Olhinho bancario no patrimonio (Eye/EyeOff toggle), card de patrimonio movido para logo abaixo da saudacao na home |
 | 2026-09-25 | Dashboard simplificado: alertas de estoque baixo e movimentacoes recentes substituidos por cards compactos com seta (link para /vinhos e /movimentacoes). KPI "Estoque Baixo" removido do grid (agora so aparece no link de alertas). Grid de KPIs: 4 cards (2x2) |
+| 2026-09-27 | Sistema de cores centralizado: criado `src/lib/colors.ts` com WINE_TYPE_HEX, WINE_TYPE_BADGE, WINE_TYPE_SLOT, SEMANTIC_HEX e CHART_STYLE. Adicionados 6 tokens CSS `type-*` para tipos de vinho + tokens `warning`, `info`, `chart-axis`. Eliminadas 4 copias duplicadas de cores espalhadas em 7 arquivos. Header migrado de green-500/red-500 para success/destructive. Fortificado ajustado de #8B6914 para #7B4A2D (melhor distincao de Sobremesa). Olhinho do patrimonio em branco para melhor visibilidade |
 
 ## 11. Como Continuar o Desenvolvimento
 
