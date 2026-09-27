@@ -25,6 +25,7 @@ import {
 import { useWishlist } from "@/hooks/use-wishlist";
 import { formatCurrency } from "@/lib/format";
 import type { WineType, WishlistItem } from "@/types";
+import { WINE_TYPE_BADGE } from "@/lib/colors";
 
 const wineTypes: WineType[] = [
   "Tinto",
@@ -34,15 +35,6 @@ const wineTypes: WineType[] = [
   "Sobremesa",
   "Fortificado",
 ];
-
-const typeColors: Record<WineType, string> = {
-  Tinto: "bg-[#722F37]/40 border-[#722F37] text-[#f0d0d4]",
-  Branco: "bg-[#C9A84C]/30 border-[#C9A84C] text-[#e8dbb0]",
-  Rosé: "bg-[#DB7093]/30 border-[#DB7093] text-[#f0c0d0]",
-  Espumante: "bg-[#A8B5C8]/30 border-[#A8B5C8] text-[#d0d8e4]",
-  Sobremesa: "bg-[#D4A574]/30 border-[#D4A574] text-[#e8d4b8]",
-  Fortificado: "bg-[#8B6914]/30 border-[#8B6914] text-[#d4c080]",
-};
 
 const priorityConfig: Record<
   WishlistItem["priority"],
@@ -367,7 +359,7 @@ export default function WishlistPage() {
                   </div>
                   <div className="flex flex-col items-end gap-1.5 shrink-0">
                     <Badge
-                      className={`border text-xs ${typeColors[item.type]}`}
+                      className={`border text-xs ${WINE_TYPE_BADGE[item.type]}`}
                     >
                       {item.type}
                     </Badge>

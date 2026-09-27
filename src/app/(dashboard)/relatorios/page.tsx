@@ -19,15 +19,7 @@ import {
 import { Wine, Movement } from "@/types";
 import { getWines, getMovements } from "@/lib/storage";
 import { formatCurrency } from "@/lib/format";
-
-const WINE_TYPE_COLORS: Record<string, string> = {
-  Tinto: "#722F37",
-  Branco: "#C9A84C",
-  Rosé: "#DB7093",
-  Espumante: "#A8B5C8",
-  Sobremesa: "#D4A574",
-  Fortificado: "#8B6914",
-};
+import { WINE_TYPE_HEX, CHART_STYLE, SEMANTIC_HEX } from "@/lib/colors";
 
 export default function RelatoriosPage() {
   const [wines, setWines] = useState<Wine[]>([]);
@@ -74,7 +66,7 @@ export default function RelatoriosPage() {
       typeMap.set(w.type, (typeMap.get(w.type) || 0) + w.quantity);
     });
     return Array.from(typeMap.entries())
-      .map(([name, value]) => ({ name, value, color: WINE_TYPE_COLORS[name] || "#666" }))
+      .map(([name, value]) => ({ name, value, color: WINE_TYPE_HEX[name as keyof typeof WINE_TYPE_HEX] || "#666" }))
       .sort((a, b) => b.value - a.value);
   }, [wines]);
 
@@ -133,20 +125,13 @@ export default function RelatoriosPage() {
             <div className="h-[220px] sm:h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={monthlyData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                  <XAxis dataKey="month" tick={{ fill: "#A09090", fontSize: 12 }} />
-                  <YAxis tick={{ fill: "#A09090", fontSize: 12 }} />
-                  <RechartsTooltip
-                    contentStyle={{
-                      backgroundColor: "#1a1015",
-                      border: "1px solid rgba(114,47,55,0.3)",
-                      borderRadius: "8px",
-                      color: "#F5F0EB",
-                    }}
-                  />
+                  <CartesianGrid strokeDasharray="3 3" stroke={CHART_STYLE.gridColor} />
+                  <XAxis dataKey="month" tick={{ fill: CHART_STYLE.axisColor, fontSize: 12 }} />
+                  <YAxis tick={{ fill: CHART_STYLE.axisColor, fontSize: 12 }} />
+                  <RechartsTooltip contentStyle={CHART_STYLE.tooltipStyle} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
-                  <Bar dataKey="entradas" name="Entradas" fill="#2D8B55" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="saidas" name="Saídas" fill="#C53030" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="entradas" name="Entradas" fill={SEMANTIC_HEX.success} radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="saidas" name="Saídas" fill={SEMANTIC_HEX.destructive} radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -181,15 +166,10 @@ export default function RelatoriosPage() {
                   </Pie>
                   <Legend
                     wrapperStyle={{ fontSize: 12 }}
-                    formatter={(value: string) => <span style={{ color: "#A09090" }}>{value}</span>}
+                    formatter={(value: string) => <span style={{ color: CHART_STYLE.legendColor }}>{value}</span>}
                   />
                   <RechartsTooltip
-                    contentStyle={{
-                      backgroundColor: "#1a1015",
-                      border: "1px solid rgba(114,47,55,0.3)",
-                      borderRadius: "8px",
-                      color: "#F5F0EB",
-                    }}
+                    contentStyle={CHART_STYLE.tooltipStyle}
                     formatter={(value) => [`${value} garrafas`, ""]}
                   />
                 </PieChart>
@@ -215,36 +195,31 @@ export default function RelatoriosPage() {
                 layout="vertical"
                 margin={{ left: 20 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                <CartesianGrid strokeDasharray="3 3" stroke={CHART_STYLE.gridColor} />
                 <XAxis
                   type="number"
-                  tick={{ fill: "#A09090", fontSize: 12 }}
+                  tick={{ fill: CHART_STYLE.axisColor, fontSize: 12 }}
                   tickFormatter={(v) => `R$ ${(v / 1000).toFixed(1)}k`}
                 />
                 <YAxis
                   type="category"
                   dataKey="name"
-                  tick={{ fill: "#A09090", fontSize: 10 }}
+                  tick={{ fill: CHART_STYLE.axisColor, fontSize: 10 }}
                   width={120}
                 />
                 <RechartsTooltip
-                  contentStyle={{
-                    backgroundColor: "#1a1015",
-                    border: "1px solid rgba(114,47,55,0.3)",
-                    borderRadius: "8px",
-                    color: "#F5F0EB",
-                  }}
+                  contentStyle={CHART_STYLE.tooltipStyle}
                   formatter={(value) => [formatCurrency(Number(value)), "Valor em Estoque"]}
                   labelFormatter={(label) => {
                     const wine = topWines.find((w) => w.name === label);
                     return wine?.fullName || label;
                   }}
                 />
-                <Bar dataKey="value" fill="#722F37" radius={[0, 4, 4, 0]}>
+                <Bar dataKey="value" fill={WINE_TYPE_HEX.Tinto} radius={[0, 4, 4, 0]}>
                   {topWines.map((_, index) => (
                     <Cell
                       key={index}
-                      fill={index === 0 ? "#C9A84C" : index < 3 ? "#8B3A42" : "#722F37"}
+                      fill={index === 0 ? WINE_TYPE_HEX.Branco : index < 3 ? SEMANTIC_HEX.wineLight : WINE_TYPE_HEX.Tinto}
                     />
                   ))}
                 </Bar>

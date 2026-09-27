@@ -18,15 +18,7 @@ import {
 import { Wine, CellarPosition, WineType } from "@/types";
 import { getWines, getCellarPositions } from "@/lib/storage";
 import { formatCurrency } from "@/lib/format";
-
-const typeColors: Record<WineType, { bg: string; border: string; glow: string; label: string }> = {
-  Tinto: { bg: "bg-[#722F37]/40", border: "border-[#722F37]", glow: "shadow-[0_0_8px_rgba(114,47,55,0.3)]", label: "Tinto" },
-  Branco: { bg: "bg-[#C9A84C]/30", border: "border-[#C9A84C]", glow: "shadow-[0_0_8px_rgba(201,168,76,0.3)]", label: "Branco" },
-  Rosé: { bg: "bg-[#DB7093]/30", border: "border-[#DB7093]", glow: "shadow-[0_0_8px_rgba(219,112,147,0.3)]", label: "Rosé" },
-  Espumante: { bg: "bg-[#A8B5C8]/30", border: "border-[#A8B5C8]", glow: "shadow-[0_0_8px_rgba(168,181,200,0.3)]", label: "Espumante" },
-  Sobremesa: { bg: "bg-[#D4A574]/30", border: "border-[#D4A574]", glow: "shadow-[0_0_8px_rgba(212,165,116,0.3)]", label: "Sobremesa" },
-  Fortificado: { bg: "bg-[#8B6914]/30", border: "border-[#8B6914]", glow: "shadow-[0_0_8px_rgba(139,105,20,0.3)]", label: "Fortificado" },
-};
+import { WINE_TYPE_SLOT, WINE_TYPE_BADGE } from "@/lib/colors";
 
 const rows = ["A", "B", "C", "D", "E", "F", "G", "H"];
 const columns = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -90,7 +82,7 @@ export default function AdegaPage() {
         <CardContent className="p-4">
           <div className="flex flex-wrap items-center gap-4">
             <span className="text-xs text-muted-foreground font-medium">Legenda:</span>
-            {Object.entries(typeColors).map(([type, colors]) => (
+            {Object.entries(WINE_TYPE_SLOT).map(([type, colors]) => (
               <div key={type} className="flex items-center gap-1.5">
                 <div className={`w-4 h-4 rounded ${colors.bg} border ${colors.border}`} />
                 <span className="text-xs text-muted-foreground">{colors.label}</span>
@@ -139,7 +131,7 @@ export default function AdegaPage() {
                     {columns.map((col) => {
                       const pos = positionMap.get(`${row}${col}`);
                       const wine = pos?.wineId ? wineMap.get(pos.wineId) : null;
-                      const colors = wine ? typeColors[wine.type] : null;
+                      const colors = wine ? WINE_TYPE_SLOT[wine.type] : null;
 
                       return (
                         <Tooltip key={`${row}${col}`}>
@@ -201,7 +193,7 @@ export default function AdegaPage() {
                 <div>
                   <p className="text-muted-foreground text-xs">Tipo</p>
                   <Badge
-                    className={`${typeColors[selectedWine.type].bg} ${typeColors[selectedWine.type].border} border text-foreground text-xs`}
+                    className={`${WINE_TYPE_BADGE[selectedWine.type]} border text-xs`}
                   >
                     {selectedWine.type}
                   </Badge>

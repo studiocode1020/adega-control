@@ -118,7 +118,7 @@ export function Header() {
           <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-3">
             {pending.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
-                <CheckCircle2 className="h-12 w-12 mb-3 text-green-500/60" />
+                <CheckCircle2 className="h-12 w-12 mb-3 text-success/60" />
                 <p className="text-sm font-medium">Nenhuma detecção pendente</p>
                 <p className="text-xs mt-1">O sensor RFID está monitorando.</p>
               </div>
@@ -131,9 +131,9 @@ export function Header() {
                   <div className="flex items-start gap-3">
                     <div className="mt-0.5">
                       {notif.type === 'entrada' ? (
-                        <ArrowDownCircle className="h-5 w-5 text-green-500" />
+                        <ArrowDownCircle className="h-5 w-5 text-success" />
                       ) : (
-                        <ArrowUpCircle className="h-5 w-5 text-red-500" />
+                        <ArrowUpCircle className="h-5 w-5 text-destructive" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -149,7 +149,7 @@ export function Header() {
                         }
                       </p>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <span className={`text-xs font-medium ${notif.type === 'entrada' ? 'text-green-500' : 'text-red-500'}`}>
+                        <span className={`text-xs font-medium ${notif.type === 'entrada' ? 'text-success' : 'text-destructive'}`}>
                           {notif.type === 'entrada' ? 'Entrada' : 'Saída'}
                         </span>
                         <span className="text-xs text-muted-foreground">
@@ -164,7 +164,7 @@ export function Header() {
                       <>
                         <Button
                           size="xs"
-                          className="flex-1 bg-green-600 hover:bg-green-700 text-white border-transparent"
+                          className="flex-1 bg-success hover:bg-success-light text-white border-transparent"
                           onClick={() => handleConfirm(notif.id, notif.wineName, notif.type)}
                         >
                           Confirmar

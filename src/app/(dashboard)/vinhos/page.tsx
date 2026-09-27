@@ -37,6 +37,7 @@ import { Wine, WineType } from "@/types";
 import { getWines } from "@/lib/storage";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { wineCuriosities } from "@/data/mock-curiosities";
+import { WINE_TYPE_BADGE } from "@/lib/colors";
 
 const WINE_TYPES: WineType[] = [
   "Tinto",
@@ -46,15 +47,6 @@ const WINE_TYPES: WineType[] = [
   "Sobremesa",
   "Fortificado",
 ];
-
-const WINE_TYPE_COLORS: Record<WineType, string> = {
-  Tinto: "bg-wine/20 text-wine-light",
-  Branco: "bg-gold/20 text-gold",
-  Rosé: "bg-pink-500/20 text-pink-400",
-  Espumante: "bg-amber-500/20 text-amber-400",
-  Sobremesa: "bg-orange-500/20 text-orange-400",
-  Fortificado: "bg-purple-500/20 text-purple-400",
-};
 
 export default function VinhosPage() {
   const [wines, setWines] = useState<Wine[]>([]);
@@ -199,7 +191,7 @@ export default function VinhosPage() {
                       {wine.year} &middot; {wine.country}
                     </p>
                   </div>
-                  <Badge className={`${WINE_TYPE_COLORS[wine.type]} border-0 text-xs shrink-0`}>
+                  <Badge className={`${WINE_TYPE_BADGE[wine.type]} border-0 text-xs shrink-0`}>
                     {wine.type}
                   </Badge>
                 </div>
@@ -237,7 +229,7 @@ export default function VinhosPage() {
                 {/* Type and Status Badges */}
                 <div className="flex items-center gap-2 flex-wrap">
                   <Badge
-                    className={`${WINE_TYPE_COLORS[selectedWine.type]} border-0`}
+                    className={`${WINE_TYPE_BADGE[selectedWine.type]} border-0`}
                   >
                     {selectedWine.type}
                   </Badge>

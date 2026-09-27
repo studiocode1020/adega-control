@@ -45,6 +45,17 @@
   --color-wine-light: #8B3A42;
   --color-success: #2D8B55;
   --color-success-light: #38A169;
+  --color-warning: #D97706;
+  --color-info: #3B82C4;
+  /* Wine type colors — text-readable on dark bg, distinct per type */
+  --color-type-tinto: #C4616B;
+  --color-type-branco: #C9A84C;
+  --color-type-rose: #E09AB0;
+  --color-type-espumante: #B4C1D4;
+  --color-type-sobremesa: #D4A574;
+  --color-type-fortificado: #B87A52;
+  /* Chart utility colors */
+  --color-chart-axis: #A09090;
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);

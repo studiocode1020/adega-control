@@ -24,6 +24,7 @@ import {
 import { getWines } from "@/lib/storage";
 import { formatCurrency } from "@/lib/format";
 import type { Wine, WineType } from "@/types";
+import { WINE_TYPE_BADGE } from "@/lib/colors";
 
 type WeatherType = "hot" | "mild" | "cold" | "special";
 
@@ -126,22 +127,7 @@ function getServingTip(weather: WeatherType, wineType: WineType): string {
 }
 
 function getTypeBadgeClass(wineType: WineType): string {
-  switch (wineType) {
-    case "Tinto":
-      return "bg-red-900/30 text-red-300 border-transparent";
-    case "Branco":
-      return "bg-yellow-900/20 text-yellow-300 border-transparent";
-    case "Ros\u00e9":
-      return "bg-pink-900/20 text-pink-300 border-transparent";
-    case "Espumante":
-      return "bg-emerald-900/20 text-emerald-300 border-transparent";
-    case "Sobremesa":
-      return "bg-amber-900/20 text-amber-300 border-transparent";
-    case "Fortificado":
-      return "bg-orange-900/20 text-orange-300 border-transparent";
-    default:
-      return "bg-muted text-muted-foreground border-transparent";
-  }
+  return WINE_TYPE_BADGE[wineType] ?? "bg-muted text-muted-foreground border-transparent";
 }
 
 function getSuggestions(wines: Wine[], weather: WeatherType): Wine[] {

@@ -361,8 +361,8 @@ export default function DegustacaoPage() {
     <div className="flex min-h-[80vh] items-center justify-center px-4 py-8">
       <Card className="w-full max-w-lg border-border/50 animate-in fade-in-0 slide-in-from-bottom-4 duration-300">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-green-500/10">
-            <CheckCircle className="h-8 w-8 text-green-500" />
+          <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-success/10">
+            <CheckCircle className="h-8 w-8 text-success" />
           </div>
           <CardTitle className="text-2xl text-wine-light">
             Degusta\u00E7\u00E3o Conclu\u00EDda!

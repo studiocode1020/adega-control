@@ -22,6 +22,7 @@ import {
 import { formatCurrency } from "@/lib/format";
 import { getWines } from "@/lib/storage";
 import type { Wine, WineType } from "@/types";
+import { WINE_TYPE_BADGE } from "@/lib/colors";
 
 const QUICK_SUGGESTIONS = [
   "Churrasco",
@@ -45,15 +46,6 @@ const MATCH_LABELS = [
   "Excelente opção",
   "Boa alternativa",
 ];
-
-const TYPE_COLORS: Record<WineType, string> = {
-  Tinto: "bg-red-900/30 text-red-300",
-  Branco: "bg-yellow-900/30 text-yellow-300",
-  "Rosé": "bg-pink-900/30 text-pink-300",
-  Espumante: "bg-amber-900/30 text-amber-300",
-  Sobremesa: "bg-orange-900/30 text-orange-300",
-  Fortificado: "bg-purple-900/30 text-purple-300",
-};
 
 function getTypeExplanation(type: WineType): string {
   switch (type) {
@@ -322,7 +314,7 @@ export default function AcordoPerfeitoPage() {
                             {matchLabel}
                           </Badge>
                           <Badge
-                            className={`border-transparent text-xs font-normal ${TYPE_COLORS[wine.type] ?? "bg-muted text-muted-foreground"}`}
+                            className={`border-transparent text-xs font-normal ${WINE_TYPE_BADGE[wine.type] ?? "bg-muted text-muted-foreground"}`}
                           >
                             {wine.type}
                           </Badge>

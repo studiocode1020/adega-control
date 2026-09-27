@@ -73,7 +73,7 @@ O sistema pode atender perfis comerciais tambem, mas o foco primario e o colecio
 | Rota | Pagina | Descricao |
 |------|--------|-----------|
 | `/login` | Login | Tela visual elegante com logo, sem auth real. Credito "StudioCode" no rodape |
-| `/` | Home | Saudacao, card de patrimonio da colecao com olhinho show/hide (estilo bancario), 5 KPIs clicaveis com popup detalhado, alertas de estoque baixo, movimentacoes recentes |
+| `/` | Home | Saudacao, card de patrimonio da colecao com olhinho show/hide (estilo bancario), 4 KPIs clicaveis com popup detalhado (rotulos, garrafas, entradas, saidas), links rapidos para Alertas de Estoque Baixo e Movimentacoes Recentes (cards compactos com seta → redirecionam para paginas detalhadas) |
 | `/vinhos` | Listagem de Vinhos | Cards mobile-friendly com filtros (busca, tipo, pais). Click abre dialog com detalhes, harmonizacao, curiosidades IA e foto |
 | `/vinhos/novo` | Cadastro de Vinho | Formulario com campos essenciais, upload de foto do rotulo (camera no mobile), harmonizacao e descricao |
 | `/entradas` | Registro de Entradas | Formulario com card de info do vinho selecionado, botao "Cadastrar novo vinho", icone calendario visivel |
@@ -354,7 +354,7 @@ A adega e representada como um **grid de slots** (8 fileiras x 12 slots). Cada s
 1. **Tema escuro obrigatorio**: adegas sao ambientes escuros, tema escuro e mais confortavel de usar la dentro
 2. **Mobile-first**: o dono vai usar dentro da adega com o celular na mao — cards em vez de tabelas, botoes grandes, touch targets de no minimo 44px
 3. **Cards em vez de tabelas**: todas as listagens (vinhos, movimentacoes, alertas) usam cards para melhor leitura no mobile
-4. **KPIs clicaveis**: cada KPI do dashboard abre popup com detalhamento
+4. **KPIs clicaveis**: 4 KPIs do dashboard (rotulos, garrafas, entradas, saidas) abrem popup com detalhamento. Alertas e movimentacoes sao links compactos com seta que redirecionam para paginas especificas
 5. **Dados mockados realistas**: vinhos que o cliente reconhece (Miolo, Casa Valduga, Casillero del Diablo...)
 6. **Sidebar com 3 grupos**: separa gestao operacional, colecao pessoal e experiencias interativas
 7. **Cores de vinho**: bordo para primaria, dourado para destaques, verde para sucesso, vermelho para alertas
@@ -383,6 +383,7 @@ A adega e representada como um **grid de slots** (8 fileiras x 12 slots). Cada s
 | 2026-09-25 | Sistema de notificacoes RFID: sininho com painel lateral, confirmar/rejeitar deteccoes, hook addFromSensor pronto para integracao |
 | 2026-09-25 | Transformacao dashboard → app mobile: sidebar removida, bottom tab bar com FAB central (+), header de app (logo/titulo + sininho), sheets para acoes rapidas e menu completo, meta tags PWA, scrollbar oculta no mobile, safe-area insets, paginas sem headers redundantes, grids otimizados para mobile |
 | 2026-09-25 | Olhinho bancario no patrimonio (Eye/EyeOff toggle), card de patrimonio movido para logo abaixo da saudacao na home |
+| 2026-09-25 | Dashboard simplificado: alertas de estoque baixo e movimentacoes recentes substituidos por cards compactos com seta (link para /vinhos e /movimentacoes). KPI "Estoque Baixo" removido do grid (agora so aparece no link de alertas). Grid de KPIs: 4 cards (2x2) |
 
 ## 11. Como Continuar o Desenvolvimento
 
