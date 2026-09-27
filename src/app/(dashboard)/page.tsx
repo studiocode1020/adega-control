@@ -320,7 +320,7 @@ export default function DashboardPage() {
                   <button
                     type="button"
                     onClick={() => setShowValues(v => !v)}
-                    className="p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/50 active:scale-90 transition-all"
+                    className="p-1.5 rounded-full text-white hover:text-white/80 hover:bg-muted/50 active:scale-90 transition-all"
                     aria-label={showValues ? "Ocultar valores" : "Mostrar valores"}
                   >
                     {showValues ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
