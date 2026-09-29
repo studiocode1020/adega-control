@@ -184,16 +184,11 @@ export default function VinhosPage() {
                 onClick={() => handleRowClick(wine)}
                 className="p-3 rounded-lg bg-muted/30 border border-border/30 cursor-pointer hover:bg-muted/50 transition-colors active:scale-[0.99]"
               >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium truncate">{wine.name}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {wine.year} &middot; {wine.country}
-                    </p>
-                  </div>
-                  <Badge className={`${WINE_TYPE_BADGE[wine.type]} border-0 text-xs shrink-0`}>
-                    {wine.type}
-                  </Badge>
+                <div>
+                  <p className="text-sm font-medium truncate">{wine.name}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {wine.type} &middot; {wine.year} &middot; {wine.country}
+                  </p>
                 </div>
                 <div className="flex items-center justify-between mt-2 pt-2 border-t border-border/20">
                   <span className="text-sm text-gold font-medium">{formatCurrency(wine.price)}</span>

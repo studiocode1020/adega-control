@@ -48,10 +48,10 @@ const WEATHER_OPTIONS: WeatherOption[] = [
     temp: "30\u00b0C+",
     icon: Sun,
     gradient:
-      "bg-gradient-to-br from-amber-500/10 to-orange-500/10",
-    selectedBorder: "ring-2 ring-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.3)]",
-    iconColor: "text-amber-500",
-    bgHover: "hover:from-amber-500/15 hover:to-orange-500/15",
+      "bg-gradient-to-br from-gold/10 to-gold-light/10",
+    selectedBorder: "ring-2 ring-gold shadow-[0_0_20px_rgba(201,168,76,0.3)]",
+    iconColor: "text-gold",
+    bgHover: "hover:from-gold/15 hover:to-gold-light/15",
   },
   {
     id: "mild",
@@ -60,10 +60,10 @@ const WEATHER_OPTIONS: WeatherOption[] = [
     temp: "18-25\u00b0C",
     icon: CloudSun,
     gradient:
-      "bg-gradient-to-br from-sky-500/10 to-blue-400/10",
-    selectedBorder: "ring-2 ring-sky-400 shadow-[0_0_20px_rgba(56,189,248,0.3)]",
-    iconColor: "text-sky-400",
-    bgHover: "hover:from-sky-500/15 hover:to-blue-400/15",
+      "bg-gradient-to-br from-info/10 to-info/5",
+    selectedBorder: "ring-2 ring-info shadow-[0_0_20px_rgba(59,130,196,0.3)]",
+    iconColor: "text-info",
+    bgHover: "hover:from-info/15 hover:to-info/10",
   },
   {
     id: "cold",
@@ -72,10 +72,10 @@ const WEATHER_OPTIONS: WeatherOption[] = [
     temp: "< 18\u00b0C",
     icon: CloudRain,
     gradient:
-      "bg-gradient-to-br from-blue-700/10 to-slate-600/10",
-    selectedBorder: "ring-2 ring-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.3)]",
-    iconColor: "text-blue-600",
-    bgHover: "hover:from-blue-700/15 hover:to-slate-600/15",
+      "bg-gradient-to-br from-wine/15 to-wine-light/10",
+    selectedBorder: "ring-2 ring-wine shadow-[0_0_20px_rgba(114,47,55,0.3)]",
+    iconColor: "text-wine-light",
+    bgHover: "hover:from-wine/20 hover:to-wine-light/15",
   },
   {
     id: "special",
@@ -84,10 +84,10 @@ const WEATHER_OPTIONS: WeatherOption[] = [
     temp: "",
     icon: Moon,
     gradient:
-      "bg-gradient-to-br from-purple-600/10 to-violet-500/10",
-    selectedBorder: "ring-2 ring-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.3)]",
-    iconColor: "text-purple-400",
-    bgHover: "hover:from-purple-600/15 hover:to-violet-500/15",
+      "bg-gradient-to-br from-gold/8 to-wine/10",
+    selectedBorder: "ring-2 ring-gold/70 shadow-[0_0_20px_rgba(201,168,76,0.2)]",
+    iconColor: "text-gold-light",
+    bgHover: "hover:from-gold/12 hover:to-wine/15",
   },
 ];
 
@@ -332,7 +332,7 @@ export default function ClimaPage() {
                     {/* Serving tip */}
                     <div className="bg-muted/40 rounded-lg p-3">
                       <div className="flex items-start gap-2">
-                        <Snowflake className="h-3.5 w-3.5 text-sky-400 shrink-0 mt-0.5" />
+                        <Snowflake className="h-3.5 w-3.5 text-info shrink-0 mt-0.5" />
                         <p className="text-xs text-muted-foreground leading-relaxed">
                           {getServingTip(selected, wine.type)}
                         </p>

@@ -25,9 +25,9 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
       {/* Background com gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#0a0505] via-[#1a0a10] to-[#0d0809]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(114,47,55,0.15)_0%,_transparent_60%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(201,168,76,0.08)_0%,_transparent_60%)]" />
+      <div className="absolute inset-0 bg-gradient-to-br from-background via-wine/5 to-background" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--color-wine)15_0%,_transparent_60%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--color-gold)10_0%,_transparent_60%)]" />
 
       <Card className="relative z-10 w-full max-w-md mx-4 border-wine/20 bg-card/80 backdrop-blur-sm shadow-2xl">
         <CardHeader className="text-center space-y-4 pb-2">
