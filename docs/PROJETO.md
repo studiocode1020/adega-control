@@ -386,6 +386,7 @@ A adega e representada como um **grid de slots** (8 fileiras x 12 slots). Cada s
 | 2026-09-25 | Olhinho bancario no patrimonio (Eye/EyeOff toggle), card de patrimonio movido para logo abaixo da saudacao na home |
 | 2026-09-25 | Dashboard simplificado: alertas de estoque baixo e movimentacoes recentes substituidos por cards compactos com seta (link para /vinhos e /movimentacoes). KPI "Estoque Baixo" removido do grid (agora so aparece no link de alertas). Grid de KPIs: 4 cards (2x2) |
 | 2026-09-27 | Sistema de cores centralizado: criado `src/lib/colors.ts` com WINE_TYPE_HEX, WINE_TYPE_BADGE, WINE_TYPE_SLOT, SEMANTIC_HEX e CHART_STYLE. Adicionados 6 tokens CSS `type-*` para tipos de vinho + tokens `warning`, `info`, `chart-axis`. Eliminadas 4 copias duplicadas de cores espalhadas em 7 arquivos. Header migrado de green-500/red-500 para success/destructive. Fortificado ajustado de #8B6914 para #7B4A2D (melhor distincao de Sobremesa). Olhinho do patrimonio em branco para melhor visibilidade |
+| 2026-09-28 | Auditoria completa de cores: clima substituiu 17 cores Tailwind default (amber, sky, blue, purple, violet) por tokens do sistema (gold, info, wine). Login trocou hex/rgba hardcoded por CSS custom properties. Vinhos removeu badges coloridos por tipo na lista (poluicao visual no mobile) — tipo integrado na linha de detalhes como texto neutro (Tinto · 2020 · Brasil), badges coloridos mantidos apenas no dialog de detalhes |
 
 ## 11. Como Continuar o Desenvolvimento
 
@@ -396,4 +397,4 @@ A adega e representada como um **grid de slots** (8 fileiras x 12 slots). Cada s
 5. Para limpar dados mockados e re-seed: abrir DevTools > Application > Local Storage > limpar tudo e recarregar
 6. Sempre testar responsivo (mobile) antes de aprovar
 7. Angelo aprova localmente antes de subir para Vercel
-8. Deploy: `npx vercel --prod --yes --scope studiocode1020-3488s-projects`
+8. Deploy automatico via push no GitHub (Vercel conectada ao repo)

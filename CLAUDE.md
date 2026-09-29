@@ -9,7 +9,7 @@ Leia este documento E o `docs/PROJETO.md` para entender completamente o projeto 
 ```bash
 npm run dev          # Dev server em localhost:3000
 npm run build        # Build de produção
-npx vercel --prod --yes --scope studiocode1020-3488s-projects  # Deploy na Vercel
+git push origin master  # Deploy automático na Vercel via push
 ```
 
 ## Stack
@@ -34,7 +34,8 @@ npx vercel --prod --yes --scope studiocode1020-3488s-projects  # Deploy na Verce
 ## Sistema de Cores
 
 - **NUNCA usar hex hardcoded ou cores Tailwind default (red-500, green-600, etc.) para cores do app**
-- Todas as cores de tipo de vinho saem de `src/lib/colors.ts`: `WINE_TYPE_BADGE` (badges), `WINE_TYPE_SLOT` (adega grid), `WINE_TYPE_HEX` (Recharts)
+- Todas as cores de tipo de vinho saem de `src/lib/colors.ts`: `WINE_TYPE_BADGE` (badges — usar apenas em dialogs/detalhes, NÃO em listas), `WINE_TYPE_SLOT` (adega grid), `WINE_TYPE_HEX` (Recharts)
+- **Listas/cards de vinhos**: tipo de vinho como texto neutro (`text-muted-foreground`), NÃO badge colorido — evita poluição visual no mobile
 - Cores semânticas para Recharts: usar `SEMANTIC_HEX` e `CHART_STYLE` de `src/lib/colors.ts`
 - Tokens CSS em `globals.css`: `wine`, `wine-light`, `gold`, `gold-light`, `success`, `success-light`, `destructive`, `warning`, `info`, `type-tinto`, `type-branco`, `type-rose`, `type-espumante`, `type-sobremesa`, `type-fortificado`, `chart-axis`
 - Tema escuro fixo (sem toggle light/dark) - background #0f0a0a
