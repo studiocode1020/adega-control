@@ -17,7 +17,7 @@ git push origin master  # Deploy automático na Vercel via push
 - Next.js 16 (App Router) + TypeScript + TailwindCSS v4
 - shadcn/ui baseado em **base-ui** (NÃO radix) - `Select` onValueChange passa `string | null`, `Button` NÃO tem `asChild`, Tooltip usa `render` prop
 - **BUG SelectValue**: usar `<span>` manual dentro de `SelectTrigger` em vez de `<SelectValue>` — base-ui exibe value raw em vez do label
-- localStorage para persistência (sem backend no MVP)
+- **Supabase** (Postgres + Auth) para persistência - ver `docs/PROJETO.md` seção 7.2. Estrutura em `supabase/migrations/`, RLS por `owner_id`
 - Recharts para gráficos
 - Deploy na Vercel: https://adega-control.vercel.app
 - Repo: https://github.com/studiocode1020/adega-control
@@ -47,7 +47,8 @@ git push origin master  # Deploy automático na Vercel via push
 - Público-alvo: dono de adega PESSOAL (colecionador), não apenas comercial
 - **MOBILE-FIRST** - interface de APLICATIVO, não dashboard. Bottom tab bar, cards, botões grandes, touch-friendly
 - Dados mockados realistas com vinhos brasileiros, portugueses, argentinos, chilenos, franceses, italianos
-- Versão inicial do `localStorage` usa key `adega-initialized-v2` - ao mudar estrutura de dados, incrementar versão
+- Mudou a estrutura dos dados? Nova migration numerada em `supabase/migrations/` (rodada no SQL Editor) + mapeamento em `src/lib/storage.ts`
+- `supabase/import/` tem dados de cliente e está no `.gitignore` - o repo é PÚBLICO, nunca commitar
 - Logo personalizada em `public/logo.png` - usar `next/image` para renderizar
 - **SEM conceito de localização fixa** - adega usa slots organizados por tipo de vinho
 - Campo `location` no modelo Wine é legado e NÃO aparece na UI

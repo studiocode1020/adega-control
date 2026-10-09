@@ -3,19 +3,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { SensorNotification } from '@/types';
 import { getNotifications, setNotifications, getWines, setWines, getMovements, setMovements } from '@/lib/storage';
 import { generateId } from '@/lib/format';
-import { mockNotifications } from '@/data/mock-notifications';
-
-const NOTIF_INITIALIZED_KEY = 'adega-notifications-initialized';
 
 export function useNotifications() {
   const [notifications, setNotificationsState] = useState<SensorNotification[]>([]);
 
   useEffect(() => {
-    // Seed mock notifications if first time
-    if (typeof window !== 'undefined' && !localStorage.getItem(NOTIF_INITIALIZED_KEY)) {
-      setNotifications(mockNotifications);
-      localStorage.setItem(NOTIF_INITIALIZED_KEY, 'true');
-    }
     setNotificationsState(getNotifications());
   }, []);
 

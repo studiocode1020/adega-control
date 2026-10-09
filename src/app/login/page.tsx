@@ -1,25 +1,35 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { getSupabase } from "@/lib/supabase/client";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [erro, setErro] = useState<string | null>(null);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const form = new FormData(e.currentTarget);
     setLoading(true);
-    setTimeout(() => {
-      router.push("/");
-    }, 800);
+    setErro(null);
+    const { error } = await getSupabase().auth.signInWithPassword({
+      email: String(form.get("email")).trim(),
+      password: String(form.get("password")),
+    });
+    if (error) {
+      setErro(error.status === 400 ? "E-mail ou senha incorretos." : "Não foi possível entrar. Confira a internet.");
+      setLoading(false);
+      return;
+    }
+    // Recarrega a página inteira para o proxy ver o cookie da sessão nova
+    window.location.assign("/");
   };
 
   return (
@@ -57,9 +67,11 @@ export default function LoginPage() {
               <Label htmlFor="email">E-mail</Label>
               <Input
                 id="email"
+                name="email"
                 type="email"
-                placeholder="admin@adega.com"
-                defaultValue="admin@adega.com"
+                autoComplete="email"
+                required
+                placeholder="seu@email.com"
                 className="bg-background/50"
               />
             </div>
@@ -68,9 +80,11 @@ export default function LoginPage() {
               <div className="relative">
                 <Input
                   id="password"
+                  name="password"
                   type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  required
                   placeholder="••••••••"
-                  defaultValue="123456"
                   className="bg-background/50 pr-10"
                 />
                 <button
@@ -82,6 +96,9 @@ export default function LoginPage() {
                 </button>
               </div>
             </div>
+            {erro && (
+              <p role="alert" className="text-sm text-destructive">{erro}</p>
+            )}
             <Button
               type="submit"
               className="w-full bg-wine hover:bg-wine-light text-white font-medium h-11 transition-all"
@@ -97,11 +114,6 @@ export default function LoginPage() {
               )}
             </Button>
           </form>
-
-          <p className="text-center text-xs text-muted-foreground mt-6">
-            Desenvolvido por{" "}
-            <span className="text-gold font-medium">StudioCode</span>
-          </p>
         </CardContent>
       </Card>
     </div>

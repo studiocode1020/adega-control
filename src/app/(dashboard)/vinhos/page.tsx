@@ -48,11 +48,55 @@ const WINE_TYPES: WineType[] = [
   "Fortificado",
 ];
 
+const PRICE_RANGES = [
+  { value: "ate-200", label: "Até R$ 200", min: 0, max: 200 },
+  { value: "200-500", label: "R$ 200 a 500", min: 200, max: 500 },
+  { value: "500-1000", label: "R$ 500 a 1.000", min: 500, max: 1000 },
+  { value: "acima-1000", label: "Acima de R$ 1.000", min: 1000, max: Infinity },
+];
+
+const SORT_OPTIONS = [
+  { value: "padrao", label: "Ordem de cadastro" },
+  { value: "maior-valor", label: "Maior valor" },
+  { value: "menor-valor", label: "Menor valor" },
+  { value: "mais-garrafas", label: "Mais garrafas" },
+  { value: "menos-garrafas", label: "Menos garrafas" },
+  { value: "safra-antiga", label: "Safra mais antiga" },
+  { value: "safra-nova", label: "Safra mais nova" },
+  { value: "nome", label: "Nome (A–Z)" },
+];
+
+// Vinhos sem safra vão para o fim nas duas ordenações por safra
+function compareYear(a: Wine, b: Wine, direction: 1 | -1) {
+  const ya = parseInt(a.year) || null;
+  const yb = parseInt(b.year) || null;
+  if (ya === yb) return 0;
+  if (ya === null) return 1;
+  if (yb === null) return -1;
+  return (ya - yb) * direction;
+}
+
+function sortWines(list: Wine[], sort: string) {
+  const sorted = [...list];
+  switch (sort) {
+    case "maior-valor": return sorted.sort((a, b) => b.price - a.price);
+    case "menor-valor": return sorted.sort((a, b) => a.price - b.price);
+    case "mais-garrafas": return sorted.sort((a, b) => b.quantity - a.quantity);
+    case "menos-garrafas": return sorted.sort((a, b) => a.quantity - b.quantity);
+    case "safra-antiga": return sorted.sort((a, b) => compareYear(a, b, 1));
+    case "safra-nova": return sorted.sort((a, b) => compareYear(a, b, -1));
+    case "nome": return sorted.sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+    default: return sorted;
+  }
+}
+
 export default function VinhosPage() {
   const [wines, setWines] = useState<Wine[]>([]);
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [countryFilter, setCountryFilter] = useState<string>("all");
+  const [priceFilter, setPriceFilter] = useState<string>("all");
+  const [sort, setSort] = useState<string>("padrao");
   const [selectedWine, setSelectedWine] = useState<Wine | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -66,16 +110,20 @@ export default function VinhosPage() {
   }, [wines]);
 
   const filteredWines = useMemo(() => {
-    return wines.filter((wine) => {
+    const filtered = wines.filter((wine) => {
       const matchesSearch = wine.name
         .toLowerCase()
         .includes(search.toLowerCase());
       const matchesType = typeFilter === "all" || wine.type === typeFilter;
       const matchesCountry =
         countryFilter === "all" || wine.country === countryFilter;
-      return matchesSearch && matchesType && matchesCountry;
+      const range = PRICE_RANGES.find((r) => r.value === priceFilter);
+      const matchesPrice =
+        !range || (wine.price >= range.min && wine.price < range.max);
+      return matchesSearch && matchesType && matchesCountry && matchesPrice;
     });
-  }, [wines, search, typeFilter, countryFilter]);
+    return sortWines(filtered, sort);
+  }, [wines, search, typeFilter, countryFilter, priceFilter, sort]);
 
   const handleRowClick = (wine: Wine) => {
     setSelectedWine(wine);
@@ -86,15 +134,20 @@ export default function VinhosPage() {
     setSearch("");
     setTypeFilter("all");
     setCountryFilter("all");
+    setPriceFilter("all");
+    setSort("padrao");
   };
 
   const hasActiveFilters =
-    search !== "" || typeFilter !== "all" || countryFilter !== "all";
+    search !== "" || typeFilter !== "all" || countryFilter !== "all" ||
+    priceFilter !== "all" || sort !== "padrao";
 
   if (wines.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="h-8 w-8 border-2 border-wine/30 border-t-wine rounded-full animate-spin" />
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <WineIcon className="h-12 w-12 text-muted-foreground/40 mb-4" />
+        <p className="text-sm font-medium text-muted-foreground">Nenhum vinho cadastrado</p>
+        <Link href="/vinhos/novo" className="text-sm text-gold mt-2">Cadastrar o primeiro</Link>
       </div>
     );
   }
@@ -150,6 +203,39 @@ export default function VinhosPage() {
             </SelectContent>
           </Select>
 
+        </div>
+        <div className="flex gap-2">
+          <Select value={priceFilter} onValueChange={(v) => setPriceFilter(v ?? "all")}>
+            <SelectTrigger className="flex-1 rounded-xl bg-muted/40 border-border/30">
+              <span className="flex flex-1 text-left truncate text-sm">
+                {PRICE_RANGES.find((r) => r.value === priceFilter)?.label ?? "Preço"}
+              </span>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos os preços</SelectItem>
+              {PRICE_RANGES.map((range) => (
+                <SelectItem key={range.value} value={range.value}>
+                  {range.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={sort} onValueChange={(v) => setSort(v ?? "padrao")}>
+            <SelectTrigger className="flex-1 rounded-xl bg-muted/40 border-border/30">
+              <span className="flex flex-1 text-left truncate text-sm">
+                {sort === "padrao" ? "Ordenar" : SORT_OPTIONS.find((o) => o.value === sort)?.label}
+              </span>
+            </SelectTrigger>
+            <SelectContent>
+              {SORT_OPTIONS.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
           {hasActiveFilters && (
             <Button
               variant="ghost"
@@ -187,13 +273,13 @@ export default function VinhosPage() {
                 <div>
                   <p className="text-sm font-medium truncate">{wine.name}</p>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    {wine.type} &middot; {wine.year} &middot; {wine.country}
+                    {[wine.type, wine.year, wine.country].filter(Boolean).join(" · ")}
                   </p>
                 </div>
                 <div className="flex items-center justify-between mt-2 pt-2 border-t border-border/20">
                   <span className="text-sm text-gold font-medium">{formatCurrency(wine.price)}</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-muted-foreground">{wine.quantity} garrafas</span>
+                    <span className="text-xs text-muted-foreground">{wine.quantity} {wine.quantity === 1 ? "garrafa" : "garrafas"}</span>
                     <Badge className={`${isLowStock ? 'bg-destructive/20 text-destructive' : 'bg-success/20 text-success'} border-0 text-xs`}>
                       {isLowStock ? "Baixo" : "OK"}
                     </Badge>

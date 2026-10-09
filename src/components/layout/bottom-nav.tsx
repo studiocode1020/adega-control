@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { getSupabase } from "@/lib/supabase/client";
 import {
   LayoutDashboard,
   Wine,
@@ -235,14 +236,18 @@ export function BottomNav() {
 
             {/* Logout */}
             <div className="pt-2 border-t border-border/50">
-              <Link
-                href="/login"
-                onClick={() => setMenuOpen(false)}
+              <button
+                onClick={async () => {
+                  setMenuOpen(false);
+                  await getSupabase().auth.signOut();
+                  // Recarga completa para limpar o cache de vinhos da memória
+                  window.location.assign("/login");
+                }}
                 className="flex items-center gap-3 w-full rounded-xl p-3.5 text-muted-foreground hover:bg-muted/50 transition-all active:scale-[0.98]"
               >
                 <LogOut className="h-5 w-5" />
                 <span className="text-sm font-medium">Sair</span>
-              </Link>
+              </button>
             </div>
           </div>
         </SheetContent>

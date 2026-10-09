@@ -52,7 +52,7 @@ O sistema pode atender perfis comerciais tambem, mas o foco primario e o colecio
 | Estilizacao | TailwindCSS v4 |
 | Componentes UI | shadcn/ui (base-ui, NAO radix) |
 | Graficos | Recharts |
-| Persistencia | localStorage (MVP) |
+| Persistencia | Supabase (Postgres + Auth, RLS por usuario) |
 | Deploy | Vercel (CLI manual) |
 | Repositorio | github.com/studiocode1020/adega-control |
 | URL producao | https://adega-control.vercel.app |
@@ -227,14 +227,14 @@ src/
 │   ├── mock-curiosities.ts   # 3 curiosidades por vinho
 │   └── mock-notifications.ts # 4 deteccoes RFID simuladas
 ├── hooks/
-│   ├── use-wines.ts           # CRUD vinhos (localStorage)
+│   ├── use-wines.ts           # CRUD vinhos
 │   ├── use-movements.ts      # CRUD movimentacoes + atualiza quantidade
 │   ├── use-cellar.ts         # Gestao dos slots
 │   ├── use-wishlist.ts       # CRUD wishlist
 │   └── use-notifications.ts  # Notificacoes do sensor RFID (confirm/reject/addFromSensor)
 ├── lib/
 │   ├── utils.ts              # cn() do shadcn
-│   ├── storage.ts            # Wrapper localStorage com inicializacao
+│   ├── storage.ts            # Cache em memoria sincronizado com o Supabase
 │   ├── format.ts             # formatCurrency, formatDate, generateId
 │   └── colors.ts             # Sistema de cores centralizado (tokens, badges, slots, charts)
 ├── public/
@@ -294,13 +294,17 @@ Este projeto usa a versao mais recente do shadcn/ui que e baseada em **base-ui**
 - `SidebarMenuButton`: usa prop `render={<Link href="..." />}` em vez de `asChild`
 - `Dialog` DialogTrigger: usar prop `render` em vez de `asChild`
 
-### 7.2 localStorage
+### 7.2 Supabase
 
-- Chaves: `adega-wines`, `adega-movements`, `adega-cellar`, `adega-wishlist`
-- Inicializacao controlada por `adega-initialized-v2`
-- Ao mudar estrutura de dados, incrementar versao para forcar re-seed
-- Funcao `initializeData()` e chamada automaticamente nos getters
-- Checagem `isClient()` para SSR safety
+- Projeto `adega-banco` (regiao Sao Paulo). Variaveis: `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (no `.env.local` e na Vercel)
+- Tabelas: `wines`, `movements`, `cellar_slots`, `wishlist` - estrutura em `supabase/migrations/0001_inicial.sql`
+- Cada linha tem `owner_id`; o RLS so deixa o usuario logado ver/alterar as proprias linhas. O projeto nao expoe tabelas novas sozinho: toda tabela nova precisa de GRANT + policy
+- `src/lib/storage.ts`: `carregarDados()` traz tudo para um cache em memoria ao abrir o app (`DataGate` segura as telas ate la); os `set*` enviam ao banco so o que mudou, em fila
+- Login: Supabase Auth com e-mail e senha. Cadastro publico DESLIGADO - contas sao criadas pelo painel (Authentication > Users)
+- `src/proxy.ts` (o antigo middleware) manda quem nao esta logado para `/login`
+- Notificacoes do sensor ainda ficam no localStorage (sao simuladas ate o portal RFID existir)
+- Importar planilha de cliente: `tools/importar-planilha.py` gera SQL em `supabase/import/` (gitignored). Scripts de admin em `supabase/admin/` (criar grade, transferir adega entre contas)
+- A grade da adega e criada/redimensionada pela propria tela Adega
 
 ### 7.3 Deploy
 

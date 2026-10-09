@@ -44,3 +44,6 @@ next-env.d.ts
 
 # diagnostico de bancada RFID (estado regeneravel)
 tools/rfid/assinaturas.json
+
+# Importações com dados de clientes (repo é público)
+supabase/import/
