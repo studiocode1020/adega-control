@@ -400,7 +400,7 @@ A adega e representada como um **grid de slots** (8 fileiras x 12 slots). Cada s
 2. `npm install` para garantir dependencias
 3. `npm run dev` para rodar localmente
 4. Testar no navegador em `localhost:3000`
-5. Para limpar dados mockados e re-seed: abrir DevTools > Application > Local Storage > limpar tudo e recarregar
+5. Os dados vem do Supabase: e preciso entrar com uma conta criada no painel (Authentication > Users)
 6. Sempre testar responsivo (mobile) antes de aprovar
 7. Angelo aprova localmente antes de subir para Vercel
-8. Deploy automatico via push no GitHub (Vercel conectada ao repo)
+8. Deploy pela CLI (`npx vercel --prod --yes`) - a Vercel NAO esta conectada ao repo, push nao publica
