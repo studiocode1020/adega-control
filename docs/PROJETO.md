@@ -310,6 +310,8 @@ Este projeto usa a versao mais recente do shadcn/ui que e baseada em **base-ui**
 
 ```bash
 # Vercel CLI (deploy manual - NAO tem auto-deploy via GitHub)
+# O .vercelignore impede que firmware/, supabase/ e tools/ subam: a CLI envia
+# a pasta inteira, inclusive arquivos que o git ignora (secrets.h, importacoes)
 npx vercel --prod --yes --scope studiocode1020-3488s-projects
 ```
 

@@ -9,7 +9,7 @@ Leia este documento E o `docs/PROJETO.md` para entender completamente o projeto 
 ```bash
 npm run dev          # Dev server em localhost:3000
 npm run build        # Build de produção
-git push origin master  # Deploy automático na Vercel via push
+npx vercel --prod --yes  # Deploy (a Vercel NÃO está ligada ao GitHub: push não publica)
 ```
 
 ## Stack

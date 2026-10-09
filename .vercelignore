@@ -1,0 +1,7 @@
+# O deploy pela CLI envia a pasta inteira, inclusive o que o git ignora.
+# Nada daqui vai para a Vercel: segredos, dados de cliente e a parte física.
+/firmware/
+/supabase/
+/tools/
+/docs/
+.env*
