@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Copy, KeyRound, Plus, ShieldCheck, UserRound } from "lucide-react";
+import { ArrowRightLeft, Check, Copy, KeyRound, Plus, ShieldCheck, UserRound } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -36,6 +36,8 @@ export default function ClientesPage() {
   const [trocar, setTrocar] = useState<Cliente | null>(null);
   const [ocupado, setOcupado] = useState(false);
   const [acesso, setAcesso] = useState<Acesso | null>(null);
+  const [passar, setPassar] = useState<Cliente | null>(null);
+  const [destino, setDestino] = useState<Cliente | null>(null);
 
   const carregar = useCallback(() => {
     chamar<{ clientes: Cliente[] }>("/api/admin/clientes")
@@ -84,6 +86,33 @@ export default function ClientesPage() {
       setOcupado(false);
     }
   }
+
+  function abrirPassar(c: Cliente) {
+    setDestino(null);
+    setPassar(c);
+  }
+
+  async function passarVinhos() {
+    if (!passar || !destino) return;
+    setOcupado(true);
+    try {
+      const r = await chamar<{ vinhos: number }>(`/api/admin/clientes/${passar.id}/transferir`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ para: destino.id }),
+      });
+      toast.success(`${r.vinhos} vinhos passados para ${destino.email}`);
+      setPassar(null);
+      carregar();
+    } catch (e) {
+      toast.error((e as Error).message);
+    } finally {
+      setOcupado(false);
+    }
+  }
+
+  // só contas vazias recebem: a função do banco recusa destino com vinhos
+  const destinos = passar ? (clientes ?? []).filter((c) => c.id !== passar.id && c.vinhos === 0) : [];
 
   async function copiar(texto: string, aviso: string) {
     try {
@@ -152,6 +181,13 @@ export default function ClientesPage() {
                   <p className="text-xs text-muted-foreground">garrafas</p>
                 </div>
               </div>
+
+              {!!c.vinhos && (
+                <Button variant="outline" className="h-11 w-full" onClick={() => abrirPassar(c)}>
+                  <ArrowRightLeft className="h-4 w-4" />
+                  Passar vinhos para outra conta
+                </Button>
+              )}
 
               {!c.admin && (
                 <div className="grid grid-cols-2 gap-2">
@@ -225,6 +261,55 @@ export default function ClientesPage() {
               {ocupado ? "Gerando…" : "Gerar"}
             </Button>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Passar a adega inteira para outra conta */}
+      <Dialog open={!!passar} onOpenChange={(aberto) => !aberto && setPassar(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Passar vinhos</DialogTitle>
+            <DialogDescription>
+              Os {passar?.vinhos} vinhos de {passar?.email} vão inteiros para a conta escolhida, com movimentações,
+              posições na adega e lista de desejos. A conta de origem fica vazia.
+            </DialogDescription>
+          </DialogHeader>
+          {destinos.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Nenhuma conta vazia para receber. Crie o cliente em Novo cliente primeiro.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Para</p>
+                {destinos.map((d) => {
+                  const escolhido = destino?.id === d.id;
+                  return (
+                    <button
+                      key={d.id}
+                      type="button"
+                      onClick={() => setDestino(d)}
+                      className={`flex w-full items-center gap-3 rounded-xl border p-3.5 text-left transition-all active:scale-[0.98] ${
+                        escolhido ? "border-wine-light bg-wine/10" : "border-border/50 bg-muted/30"
+                      }`}
+                    >
+                      <UserRound className="h-5 w-5 shrink-0 text-muted-foreground" />
+                      <span className="min-w-0 flex-1 truncate text-sm font-medium">{d.email}</span>
+                      {escolhido && <Check className="h-4 w-4 shrink-0 text-wine-light" />}
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <Button variant="outline" className="h-11" onClick={() => setPassar(null)} disabled={ocupado}>
+                  Cancelar
+                </Button>
+                <Button className="h-11" onClick={passarVinhos} disabled={!destino || ocupado}>
+                  {ocupado ? "Passando…" : "Passar"}
+                </Button>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 
