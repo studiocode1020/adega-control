@@ -59,6 +59,7 @@ export async function POST(request: Request) {
     email: limpo,
     password: senha,
     email_confirm: true,
+    user_metadata: { trocar_senha: true }, // no 1º acesso o cliente cria a senha dele
   });
   if (error) {
     const msg = error.code === 'email_exists' ? 'Já existe uma conta com esse e-mail.' : error.message;

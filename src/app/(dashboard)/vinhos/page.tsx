@@ -359,6 +359,14 @@ export default function VinhosPage() {
                   />
                 </div>
 
+                {/* Prateleiras e expositores da planilha, que não cabem na grade */}
+                {selectedWine.location && (
+                  <div className="pt-2 border-t border-border/50">
+                    <p className="text-xs text-muted-foreground mb-1 font-medium">Outros lugares</p>
+                    <p className="text-sm text-foreground/80">{selectedWine.location}</p>
+                  </div>
+                )}
+
                 {/* Descrição */}
                 {selectedWine.description && (
                   <div className="pt-2 border-t border-border/50">

@@ -318,7 +318,7 @@ export default function ClientesPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{acesso?.novo ? "Conta criada" : "Senha trocada"}</DialogTitle>
-            <DialogDescription>Anote ou envie agora: esta senha não aparece de novo.</DialogDescription>
+            <DialogDescription>Anote ou envie agora: esta senha não aparece de novo. No primeiro acesso o cliente cria a senha dele.</DialogDescription>
           </DialogHeader>
           {acesso && (
             <div className="space-y-4">
@@ -336,7 +336,7 @@ export default function ClientesPage() {
                 className="h-11 w-full"
                 onClick={() =>
                   copiar(
-                    `Seu acesso ao Adega Control\n${URL_APP}\nLogin: ${acesso.email}\nSenha: ${acesso.senha}`,
+                    `Seu acesso ao Adega Control\n${URL_APP}\nLogin: ${acesso.email}\nSenha provisória: ${acesso.senha}\nNo primeiro acesso o app pede para você criar a sua senha.`,
                     "Login e senha copiados",
                   )
                 }

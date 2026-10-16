@@ -16,7 +16,10 @@ export async function POST(_req: NextRequest, ctx: RouteContext<'/api/admin/clie
   }
 
   const senha = gerarSenha();
-  const { error } = await supabase.auth.admin.updateUserById(id, { password: senha });
+  const { error } = await supabase.auth.admin.updateUserById(id, {
+    password: senha,
+    user_metadata: { ...data.user.user_metadata, trocar_senha: true },
+  });
   if (error) return Response.json({ erro: error.message }, { status: 500 });
   return Response.json({ email: data.user.email, senha });
 }

@@ -117,7 +117,7 @@ interface Wine {
   minStock: number;
   imageUrl: string | null;
   imageData: string | null; // base64 da foto do rotulo
-  location: string | null;  // campo legado, nao mais usado na UI
+  location: string | null;  // lugares fora da grade (prateleira, expositor); so no detalhe do vinho
   pairingFood: string[];    // harmonizacao
   description: string | null;
   createdAt: string;
@@ -301,6 +301,7 @@ Este projeto usa a versao mais recente do shadcn/ui que e baseada em **base-ui**
 - Cada linha tem `owner_id`; o RLS so deixa o usuario logado ver/alterar as proprias linhas. O projeto nao expoe tabelas novas sozinho: toda tabela nova precisa de GRANT + policy
 - `src/lib/storage.ts`: `carregarDados()` traz tudo para um cache em memoria ao abrir o app (`DataGate` segura as telas ate la); os `set*` enviam ao banco so o que mudou, em fila
 - Login: Supabase Auth com e-mail e senha. Cadastro publico DESLIGADO - contas sao criadas pela tela `/clientes` (ou pelo painel do Supabase, Authentication > Users)
+- Primeiro acesso: conta criada ou senha gerada pelo admin ganha `user_metadata.trocar_senha = true`, e o proxy (`src/proxy.ts`) prende o cliente em `/trocar-senha` ate ele criar a senha dele. Conta antiga: marcar no SQL Editor com `update auth.users set raw_user_meta_data = coalesce(raw_user_meta_data, '{}') || '{"trocar_senha": true}' where email = '...'`
 - Tela `/clientes` (Menu > Administracao, so aparece para o admin): lista as contas com vinhos/garrafas, cria cliente, gera senha nova e passa a adega inteira de uma conta para outra vazia (funcao `transferir_adega`, migration `0003_transferir_adega.sql`). Senhas NAO ficam guardadas (o Supabase so tem o hash): a senha gerada aparece uma vez so. Rotas em `src/app/api/admin/`, que usam `SUPABASE_SECRET_KEY` e `ADMIN_EMAIL` (so no servidor; precisam existir na Vercel) e a migration `0002_painel_admin.sql`
 - `src/proxy.ts` (o antigo middleware) manda quem nao esta logado para `/login` (as rotas `/api/` respondem 401 sozinhas)
 - Notificacoes do sensor ainda ficam no localStorage (sao simuladas ate o portal RFID existir)
@@ -318,7 +319,7 @@ npx vercel --prod --yes --scope studiocode1020-3488s-projects
 
 ### 7.4 Conceito de Adega
 
-A adega e representada como um **grid de slots** (8 fileiras x 12 slots). Cada slot pode conter um vinho ou estar vazio. Os slots sao organizados por tipo de vinho (cor visual). **NAO existe conceito de "localizacao" fixa** — o campo `location` no modelo Wine e legado e nao aparece na UI.
+A adega e representada como um **grid de slots** (8 fileiras x 12 slots). Cada slot pode conter um vinho ou estar vazio. Os slots sao organizados por tipo de vinho (cor visual). A grade guarda uma garrafa por slot. Lugares com varias garrafas (prateleiras, expositores da planilha do cliente) ficam em texto no campo `location` do vinho, mostrado no detalhe como "Outros lugares". As posicoes da planilha entram pela grade via `tools/importar-posicoes.py`.
 
 ## 8. O Que Pode Ser Implementado (Roadmap)
 

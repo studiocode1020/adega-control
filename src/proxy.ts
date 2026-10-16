@@ -35,7 +35,24 @@ export async function proxy(request: NextRequest) {
   if (logado && naLogin) {
     return NextResponse.redirect(new URL('/', request.url));
   }
+
+  // Conta criada ou com senha gerada pelo admin: primeiro troca a senha
+  const trocarSenha = data?.claims?.user_metadata?.trocar_senha === true;
+  const naTroca = request.nextUrl.pathname.startsWith('/trocar-senha');
+  if (logado && trocarSenha && !naTroca && !naApi) {
+    return redirecionar('/trocar-senha', request, response);
+  }
+  if (logado && !trocarSenha && naTroca) {
+    return redirecionar('/', request, response);
+  }
   return response;
+}
+
+// Leva junto os cookies da sessão renovada, senão o navegador fica com o token velho
+function redirecionar(caminho: string, request: NextRequest, response: NextResponse) {
+  const destino = NextResponse.redirect(new URL(caminho, request.url));
+  response.cookies.getAll().forEach((c) => destino.cookies.set(c));
+  return destino;
 }
 
 export const config = {

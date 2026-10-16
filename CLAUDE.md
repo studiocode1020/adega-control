@@ -51,6 +51,6 @@ npx vercel --prod --yes  # Deploy (a Vercel NÃO está ligada ao GitHub: push n�
 - `supabase/import/` tem dados de cliente e está no `.gitignore` - o repo é PÚBLICO, nunca commitar
 - Logo personalizada em `public/logo.png` - usar `next/image` para renderizar
 - **SEM conceito de localização fixa** - adega usa slots organizados por tipo de vinho
-- Campo `location` no modelo Wine é legado e NÃO aparece na UI
+- Campo `location` no modelo Wine guarda lugares fora da grade (prateleiras, expositores vindos da planilha) e só aparece no detalhe do vinho, como "Outros lugares"
 - Páginas NÃO repetem títulos h1 — o header de app já mostra o título da página
 - Content area tem `pb-24` para dar espaço à bottom nav
