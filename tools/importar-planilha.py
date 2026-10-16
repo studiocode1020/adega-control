@@ -17,6 +17,7 @@ Formato esperado da planilha (tabela de preços "Finos"):
 Formato com estoque (2º cliente, out/2026), reconhecido pela coluna Q (= N x O):
   - O = quantidade, P = posições na adega (texto livre, vai para source_note), Q = total
   - linha sem O é vinho do catálogo que o cliente não tem: fica de fora
+  - o cabeçalho pode dividir a linha com um vinho (ALAM NEGRA na versão final): vale o O
   - depois dos tintos vem um bloco com o nome em B (B = nome, O = quantidade, P = preço),
     aberto por uma linha só com o título em B (CHAMPAGNE, VINHOS TRANQUILO BRANCO)
 
@@ -126,7 +127,7 @@ def vinhos(linhas):
         if chave_pais in PAISES and not c.get('N'):
             pais = PAISES[chave_pais]
             continue
-        if n < 5:  # data e cabeçalho
+        if n < 5 and not com_estoque:  # data e cabeçalho
             continue
         if com_estoque and not inteiro(c.get('O')):  # do catálogo, mas o cliente não tem
             continue
