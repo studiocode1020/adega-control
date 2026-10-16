@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { getSupabase } from "@/lib/supabase/client";
@@ -20,6 +20,7 @@ import {
   UtensilsCrossed,
   GlassWater,
   CloudSun,
+  Users,
   LogOut,
   X,
 } from "lucide-react";
@@ -71,11 +72,27 @@ const menuSections = [
   },
 ];
 
+const adminSection = {
+  title: "Administração",
+  items: [{ href: "/clientes", icon: Users, label: "Clientes" }],
+};
+
 export function BottomNav() {
   const pathname = usePathname();
   const router = useRouter();
   const [quickOpen, setQuickOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Quem é admin é decidido no servidor (ADMIN_EMAIL), sem expor o e-mail no app
+  useEffect(() => {
+    fetch("/api/admin")
+      .then((res) => (res.ok ? res.json() : { admin: false }))
+      .then((r) => setIsAdmin(r.admin === true))
+      .catch(() => setIsAdmin(false));
+  }, []);
+
+  const sections = isAdmin ? [...menuSections, adminSection] : menuSections;
 
   function isActive(href: string): boolean {
     if (href === "/") return pathname === "/";
@@ -83,7 +100,7 @@ export function BottomNav() {
   }
 
   // Check if current page is one from the menu (to highlight Menu tab)
-  const menuPaths = menuSections.flatMap(s => s.items.map(i => i.href));
+  const menuPaths = sections.flatMap(s => s.items.map(i => i.href));
   const isMenuPageActive = menuPaths.some(p => pathname.startsWith(p));
 
   return (
@@ -200,7 +217,7 @@ export function BottomNav() {
             <SheetDescription>Todas as funcionalidades</SheetDescription>
           </SheetHeader>
           <div className="space-y-5 px-4">
-            {menuSections.map((section) => (
+            {sections.map((section) => (
               <div key={section.title}>
                 <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
                   {section.title}

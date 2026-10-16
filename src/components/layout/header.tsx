@@ -32,6 +32,7 @@ const pageTitles: Record<string, string> = {
   "/acordo-perfeito": "Acordo Perfeito",
   "/degustacao": "Degustação",
   "/clima": "Clima e Vinho",
+  "/clientes": "Clientes",
 };
 
 function timeAgo(dateStr: string): string {

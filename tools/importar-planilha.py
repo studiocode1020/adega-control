@@ -14,6 +14,12 @@ Formato esperado da planilha (tabela de preços "Finos"):
   - linha só com o nome do país em A abre uma seção (ARGENTINA, CHILE, ...)
   - A = nome, B = uva(s), C = safra, D = preço "De", N = preço "Por", O = nº sem significado conhecido
 
+Formato com estoque (2º cliente, out/2026), reconhecido pela coluna Q (= N x O):
+  - O = quantidade, P = posições na adega (texto livre, vai para source_note), Q = total
+  - linha sem O é vinho do catálogo que o cliente não tem: fica de fora
+  - depois dos tintos vem um bloco com o nome em B (B = nome, O = quantidade, P = preço),
+    aberto por uma linha só com o título em B (CHAMPAGNE, VINHOS TRANQUILO BRANCO)
+
 A saída contém dados do cliente: NUNCA commitar (supabase/import/ está no .gitignore).
 Só usa a biblioteca padrão do Python, para rodar sem instalar nada.
 """
@@ -39,8 +45,13 @@ PAISES = {
 UVAS = {
     'syrha': 'Syrah', 'tanat': 'Tannat', 'carnenere': 'Carmenere', 'tpuriga franca': 'Touriga Franca',
     'ancelota': 'Ancellotta', 'game': 'Gamay', 'cabernet sauvignon': 'Cabernet Sauvignon',
-    'zinfandel': 'Zinfandel',
+    'zinfandel': 'Zinfandel', 'pinit noir': 'Pinot Noir', 'tempranilo': 'Tempranillo',
+    'tempranilho': 'Tempranillo', 'nebiolo': 'Nebbiolo', 'pinotagem': 'Pinotage',
+    'primitivo': 'Primitivo', 'carmenere': 'Carmenere',
 }
+
+# Títulos do bloco de brancos/espumantes (coluna B) -> tipo do vinho
+BLOCOS_B = {'CHAMPAGNE': 'Espumante', 'VINHOS TRANQUILO BRANCO': 'Branco'}
 
 # Textos da coluna B que não são uvas
 UVA_INVALIDA = re.compile(r'mostro|agiorgitiko 2023', re.I)
@@ -88,11 +99,27 @@ def uvas(s):
     return ', '.join(UVAS.get(p.lower(), p) for p in partes)
 
 
+def inteiro(s):
+    n = numero(s)
+    return int(n) if n else 0
+
+
 def vinhos(linhas):
+    com_estoque = any('Q' in c for _, c in linhas)
     pais = None
+    tipo_b = None  # bloco com o nome na coluna B (só no formato com estoque)
     vistos = {}
     for n, c in linhas:
         nome = limpar(c.get('A'))
+        if com_estoque and not nome and limpar(c.get('B')):
+            titulo = sem_acento(limpar(c['B'])).upper()
+            if titulo in BLOCOS_B:
+                tipo_b = BLOCOS_B[titulo]
+                continue
+            if tipo_b and inteiro(c.get('O')):
+                adicionar(vistos, n, nome=limpar(c['B']), tipo=tipo_b, pais='', uva='', safra='',
+                          preco=numero(c.get('P')) or 0, qtd=inteiro(c['O']), nota=[])
+            continue
         if not nome:
             continue
         chave_pais = sem_acento(nome).upper()
@@ -101,25 +128,36 @@ def vinhos(linhas):
             continue
         if n < 5:  # data e cabeçalho
             continue
+        if com_estoque and not inteiro(c.get('O')):  # do catálogo, mas o cliente não tem
+            continue
         safra = limpar(c.get('C'))
         safra = str(int(float(safra))) if numero(safra) else ''
         uva = uvas(c.get('B'))
-        chave = (nome.upper(), uva, safra)
-        if chave in vistos:  # linha repetida = mais uma garrafa
-            vistos[chave]['quantity'] += 1
-            continue
-        nota = [f'linha {n} da planilha']
+        nota = []
         if numero(c.get('D')):
             nota.append(f'preço De: {c["D"]}')
-        if limpar(c.get('O')):
+        if com_estoque:
+            if limpar(c.get('P')):
+                nota.append(f'posições: {limpar(c["P"])}')
+        elif limpar(c.get('O')):
             nota.append(f'coluna O: {c["O"]}')
         if limpar(c.get('B')) and not uva:
             nota.append(f'coluna B original: {limpar(c["B"])}')
-        vistos[chave] = {
-            'name': nome, 'year': safra, 'country': pais or '', 'grape': uva,
-            'price': numero(c.get('N')) or 0, 'quantity': 1, 'source_note': '; '.join(nota),
-        }
+        adicionar(vistos, n, nome=nome, tipo='Tinto', pais=pais or '', uva=uva, safra=safra,
+                  preco=numero(c.get('N')) or 0, qtd=inteiro(c['O']) if com_estoque else 1, nota=nota)
     return list(vistos.values())
+
+
+def adicionar(vistos, n, nome, tipo, pais, uva, safra, preco, qtd, nota):
+    chave = (nome.upper(), tipo, uva, safra)
+    if chave in vistos:  # linha repetida = mais garrafas
+        vistos[chave]['quantity'] += qtd
+        vistos[chave]['source_note'] += f' | linha {n}' + ''.join(f'; {x}' for x in nota)
+        return
+    vistos[chave] = {
+        'name': nome, 'year': safra, 'type': tipo, 'country': pais, 'grape': uva,
+        'price': preco, 'quantity': qtd, 'source_note': '; '.join([f'linha {n} da planilha'] + nota),
+    }
 
 
 def sql_str(s):
@@ -152,7 +190,7 @@ def main():
 
     out.write('insert into public.wines (owner_id, name, year, type, country, grape, price, quantity, min_stock, source_note) values\n')
     valores = [
-        f"  ((select id from _dono), {sql_str(v['name'])}, {sql_str(v['year'])}, 'Tinto', "
+        f"  ((select id from _dono), {sql_str(v['name'])}, {sql_str(v['year'])}, {sql_str(v['type'])}, "
         f"{sql_str(v['country'])}, {sql_str(v['grape'])}, {v['price']}, {v['quantity']}, 0, {sql_str(v['source_note'])})"
         for v in lista
     ]

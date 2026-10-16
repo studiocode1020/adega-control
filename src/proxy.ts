@@ -26,8 +26,10 @@ export async function proxy(request: NextRequest) {
   const { data } = await supabase.auth.getClaims();
   const logado = !!data?.claims;
   const naLogin = request.nextUrl.pathname.startsWith('/login');
+  // As rotas /api respondem 401 por conta própria; redirecionar devolveria HTML
+  const naApi = request.nextUrl.pathname.startsWith('/api/');
 
-  if (!logado && !naLogin) {
+  if (!logado && !naLogin && !naApi) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
   if (logado && naLogin) {
