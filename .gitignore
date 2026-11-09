@@ -47,3 +47,7 @@ tools/rfid/assinaturas.json
 
 # Importações com dados de clientes (repo é público)
 supabase/import/
+
+# Credenciais do firmware (WiFi e chave do aparelho do portal)
+firmware/**/secrets.h
+firmware/**/build/

@@ -1,5 +1,5 @@
 import { toast } from 'sonner';
-import { Wine, Movement, CellarPosition, WishlistItem, SensorNotification } from '@/types';
+import { Wine, Movement, CellarPosition, WishlistItem, Bottle } from '@/types';
 import { getSupabase } from '@/lib/supabase/client';
 
 // Os dados moram no Supabase. Ao abrir o app, carregarDados() traz tudo para
@@ -7,23 +7,24 @@ import { getSupabase } from '@/lib/supabase/client';
 // com o localStorage. Cada set* compara com o cache anterior e envia ao banco
 // só o que mudou, em fila, para respeitar a ordem (vinho antes do movimento).
 //
-// Notificações do sensor ainda ficam no localStorage: são simuladas até o
-// portal RFID existir.
-
-const NOTIFICATIONS_KEY = 'adega-sensor-notifications'; // chave nova: a antiga tinha as notificações de demonstração
+// As garrafas etiquetadas (portal RFID) entram no cache só para leitura: quem
+// muda o estado delas são as funções portal_* do banco, chamadas pelo sininho.
+// Depois de cada uma, recarregarEstoque() traz de volta o que mudou.
 
 const cache = {
   wines: [] as Wine[],
   movements: [] as Movement[],
   cellar: [] as CellarPosition[],
   wishlist: [] as WishlistItem[],
+  bottles: [] as Bottle[],
+  // false enquanto a migration 0004 não tiver sido rodada no Supabase
+  portal: false,
 };
 
-let fila: Promise<void> = Promise.resolve();
+/** Disparado quando dados mudaram fora das telas (confirmação no sininho). */
+export const EVENTO_DADOS = 'adega:dados';
 
-function isClient() {
-  return typeof window !== 'undefined';
-}
+let fila: Promise<void> = Promise.resolve();
 
 // --- conversão entre o app (camelCase) e o banco (snake_case) ---
 
@@ -69,6 +70,13 @@ function movementFromRow(r: Row): Movement {
   };
 }
 
+function bottleFromRow(r: Row): Bottle {
+  return {
+    id: r.id as string, wineId: r.wine_id as string, epc: r.epc as string,
+    status: r.status as Bottle['status'], createdAt: r.created_at as string,
+  };
+}
+
 function wishlistToRow(i: WishlistItem): Row {
   return {
     id: i.id, name: i.name, year: i.year, type: i.type, country: i.country,
@@ -93,14 +101,20 @@ function wishlistFromRow(r: Row): WishlistItem {
 
 export async function carregarDados() {
   const supabase = getSupabase();
-  const [wines, movements, cellar, wishlist] = await Promise.all([
+  const [wines, movements, cellar, wishlist, bottles] = await Promise.all([
     supabase.from('wines').select('*').order('created_at'),
     supabase.from('movements').select('*').order('created_at', { ascending: false }),
     supabase.from('cellar_slots').select('row, column, wine_id').order('row').order('column'),
     supabase.from('wishlist').select('*').order('created_at', { ascending: false }),
+    supabase.from('bottles').select('id, wine_id, epc, status, created_at').order('created_at'),
   ]);
   const erro = wines.error ?? movements.error ?? cellar.error ?? wishlist.error;
   if (erro) throw erro;
+
+  // As garrafas não seguram o app: sem a tabela (migration 0004 ainda não
+  // rodada), o resto funciona igual e as telas do portal se escondem.
+  cache.portal = !bottles.error;
+  cache.bottles = bottles.error ? [] : bottles.data.map(bottleFromRow);
 
   cache.wines = wines.data.map(wineFromRow);
   cache.movements = movements.data.map(movementFromRow);
@@ -233,13 +247,40 @@ export function setWishlist(items: WishlistItem[]) {
   sincronizar('wishlist', antes, items, wishlistToRow);
 }
 
-export function getNotifications(): SensorNotification[] {
-  if (!isClient()) return [];
-  const data = localStorage.getItem(NOTIFICATIONS_KEY);
-  return data ? JSON.parse(data) : [];
+// --- portal RFID ---
+
+export function portalDisponivel(): boolean {
+  return cache.portal;
 }
 
-export function setNotifications(notifications: SensorNotification[]) {
-  if (!isClient()) return;
-  localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(notifications));
+export function getBottles(): Bottle[] {
+  return cache.bottles;
+}
+
+// Traz de novo o que as funções do portal mudaram no banco (estoque,
+// movimentos, estado das garrafas) e avisa as telas abertas. Espera a fila de
+// envio esvaziar antes, para não ler o banco no meio de uma gravação nossa.
+export async function recarregarEstoque() {
+  await fila;
+  const supabase = getSupabase();
+  const [wines, movements, bottles] = await Promise.all([
+    supabase.from('wines').select('*').order('created_at'),
+    supabase.from('movements').select('*').order('created_at', { ascending: false }),
+    supabase.from('bottles').select('id, wine_id, epc, status, created_at').order('created_at'),
+  ]);
+  const erro = wines.error ?? movements.error ?? bottles.error;
+  if (erro) throw erro;
+  cache.wines = wines.data.map(wineFromRow);
+  cache.movements = movements.data.map(movementFromRow);
+  cache.bottles = bottles.data.map(bottleFromRow);
+  window.dispatchEvent(new Event(EVENTO_DADOS));
+}
+
+// Tira a etiqueta da garrafa. O estoque do vinho não muda: a garrafa continua
+// lá, só deixa de ser rastreada pela porta.
+export async function desvincularGarrafa(id: string) {
+  const { error } = await getSupabase().from('bottles').delete().eq('id', id);
+  if (error) throw error;
+  cache.bottles = cache.bottles.filter((b) => b.id !== id);
+  window.dispatchEvent(new Event(EVENTO_DADOS));
 }

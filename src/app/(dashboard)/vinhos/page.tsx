@@ -38,6 +38,8 @@ import { getWines } from "@/lib/storage";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { wineCuriosities } from "@/data/mock-curiosities";
 import { WINE_TYPE_BADGE } from "@/lib/colors";
+import { useVersaoDados } from "@/hooks/use-dados";
+import { EtiquetasDoVinho } from "@/components/portal/etiquetas-do-vinho";
 
 const WINE_TYPES: WineType[] = [
   "Tinto",
@@ -100,9 +102,14 @@ export default function VinhosPage() {
   const [selectedWine, setSelectedWine] = useState<Wine | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
+  const versao = useVersaoDados();
+
+  // Relê quando o sininho confirma uma saída: o estoque do vinho aberto muda
   useEffect(() => {
-    setWines(getWines());
-  }, []);
+    const atuais = getWines();
+    setWines(atuais);
+    setSelectedWine((sel) => (sel ? atuais.find((w) => w.id === sel.id) ?? null : sel));
+  }, [versao]);
 
   const countries = useMemo(() => {
     const unique = [...new Set(wines.map((w) => w.country))];
@@ -366,6 +373,8 @@ export default function VinhosPage() {
                     <p className="text-sm text-foreground/80">{selectedWine.location}</p>
                   </div>
                 )}
+
+                <EtiquetasDoVinho wineId={selectedWine.id} quantidade={selectedWine.quantity} />
 
                 {/* Descrição */}
                 {selectedWine.description && (

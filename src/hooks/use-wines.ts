@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Wine } from '@/types';
 import { getWines, setWines } from '@/lib/storage';
 import { generateId } from '@/lib/format';
+import { useAoMudarDados } from './use-dados';
 
 export function useWines() {
   const [wines, setWinesState] = useState<Wine[]>([]);
@@ -14,6 +15,7 @@ export function useWines() {
   const refresh = useCallback(() => {
     setWinesState(getWines());
   }, []);
+  useAoMudarDados(refresh);
 
   const addWine = useCallback((wine: Omit<Wine, 'id' | 'createdAt'>) => {
     const current = getWines();

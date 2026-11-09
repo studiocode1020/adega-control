@@ -161,17 +161,27 @@ interface WishlistItem {
   createdAt: string;
 }
 
-// Notificacao do sensor RFID
-interface SensorNotification {
+// Garrafa etiquetada (portal RFID) - subconjunto de Wine.quantity
+interface Bottle {
   id: string;
-  tagId: string;           // ID da tag RFID
-  wineId: string | null;   // vinho mapeado (null se tag desconhecida)
-  wineName: string | null;
-  type: 'entrada' | 'saida';
-  quantity: number;         // sempre 1 (deteccao individual)
+  wineId: string;
+  epc: string;              // codigo da etiqueta UHF
+  status: 'na_adega' | 'fora';
+  createdAt: string;
+}
+
+// Passagem pela porta que virou aviso no sininho
+interface PortalEvent {
+  id: string;
+  epc: string;
+  bottleId: string | null;
+  wineId: string | null;
+  kind: 'saida' | 'entrada' | 'etiqueta_nova';
+  confidence: 'alta' | 'media' | 'baixa';
+  reason: string;           // explicacao legivel do sentido deduzido
   detectedAt: string;
   status: 'pending' | 'confirmed' | 'rejected';
-  confirmedAt: string | null;
+  resolvedAt: string | null;
 }
 ```
 
@@ -183,7 +193,6 @@ interface SensorNotification {
 - **Mapa da adega** 8x12 com ~55% de ocupacao
 - **Curiosidades** 3 por vinho, com informacoes reais e interessantes
 - **4 vinhos com estoque abaixo do minimo** para demonstrar alertas
-- **4 notificacoes do sensor** mockadas (3 vinhos conhecidos + 1 tag desconhecida)
 - Fornecedores mockados: "Distribuidora Grand Cru", "Wine Imports BR", "Porto Direct", etc.
 
 ### 5.6 Estrutura de Pastas
@@ -225,13 +234,13 @@ src/
 │   ├── mock-cellar.ts         # Grid 8x12
 │   ├── mock-wishlist.ts       # 5 itens
 │   ├── mock-curiosities.ts   # 3 curiosidades por vinho
-│   └── mock-notifications.ts # 4 deteccoes RFID simuladas
 ├── hooks/
 │   ├── use-wines.ts           # CRUD vinhos
 │   ├── use-movements.ts      # CRUD movimentacoes + atualiza quantidade
 │   ├── use-cellar.ts         # Gestao dos slots
 │   ├── use-wishlist.ts       # CRUD wishlist
-│   └── use-notifications.ts  # Notificacoes do sensor RFID (confirm/reject/addFromSensor)
+│   ├── use-portal.ts         # Deteccoes do portal RFID (confirmar/recusar/vincular, ao vivo)
+│   └── use-dados.ts          # Avisa as telas quando o estoque muda por fora (sininho)
 ├── lib/
 │   ├── utils.ts              # cn() do shadcn
 │   ├── storage.ts            # Cache em memoria sincronizado com o Supabase
@@ -243,36 +252,20 @@ src/
     └── index.ts              # Wine, Movement, CellarPosition, WishlistItem
 ```
 
-## 6. Sistema Embarcado RFID (Em Desenvolvimento)
+## 6. Portal RFID
 
-### 6.1 Visao Geral
+Um leitor UHF (Fonkan FM-50X) ligado a um ESP32-S3 fica na porta da adega. Cada
+garrafa etiquetada que passa por ela aparece no **sininho** do app, e o dono
+confirma com um toque. **Detalhes, decisões e o porquê em `docs/PORTAL-RFID.md`.**
 
-A interface web sera conectada a um **sistema embarcado** com sensor RFID que detecta automaticamente a entrada e saida de vinhos na adega. Cada garrafa tera uma **tag RFID** associada.
+Resumo do fluxo:
 
-### 6.2 Fluxo de Funcionamento
+1. Garrafa etiquetada passa pela porta → ESP32 manda a passagem para `/api/portal/leituras`
+2. O servidor decide o sentido pelo status da garrafa (estava na adega = saindo; estava fora = voltando) e cria um evento pendente
+3. O sininho recebe ao vivo (Supabase Realtime): **Confirmar saída** (com motivo) / **Não saiu**, **Confirmar volta** / **Não voltou**, ou **Vincular** uma etiqueta nova a um vinho
+4. Confirmado: a função do banco muda garrafa, estoque e movimento juntos
 
-1. Sensor RFID detecta uma tag (garrafa entrando ou saindo)
-2. Sistema envia notificacao para a plataforma web
-3. **Sininho** no header mostra notificacao pendente
-4. Usuario abre o painel de notificacoes e ve a deteccao
-5. Usuario clica **"Confirmar"** ou **"Rejeitar"**
-6. Se confirmado: cria movimentacao, atualiza estoque, adega, relatorios
-7. Se rejeitado: descarta a deteccao
-
-### 6.3 O Que Ja Esta Pronto (Frontend)
-
-- **Tipo `SensorNotification`**: com tagId, wineId, status (pending/confirmed/rejected)
-- **Hook `useNotifications`**: confirm(), reject(), clearResolved(), **addFromSensor()** - esta ultima sera chamada pela conexao com o sensor
-- **Painel do sininho**: Sheet lateral com lista de notificacoes pendentes, botoes confirmar/rejeitar, toast de feedback
-- **4 notificacoes mockadas** para demonstracao
-- **Ao confirmar**: automaticamente cria Movement e atualiza quantidade do vinho
-
-### 6.4 O Que Falta (Backend/Hardware - Matheus)
-
-- Definir protocolo de comunicacao sensor → web (WebSocket, API REST, MQTT)
-- Mapear tags RFID para vinhos no cadastro
-- Implementar endpoint/listener que chama `addFromSensor()` quando sensor envia dados
-- Leitor RFID FM-50X ja tem ferramentas de bancada em `tools/rfid/`
+Telas: sininho (`components/portal/sininho-portal.tsx`), Menu → **Portal RFID** (`/portal`: aparelho, chave, histórico) e a seção **Etiquetas RFID** no detalhe do vinho. Estrutura no banco: migration `0004_portal_rfid.sql`.
 
 ## 7. Detalhes Tecnicos Importantes
 
@@ -304,7 +297,7 @@ Este projeto usa a versao mais recente do shadcn/ui que e baseada em **base-ui**
 - Primeiro acesso: conta criada ou senha gerada pelo admin ganha `user_metadata.trocar_senha = true`, e o proxy (`src/proxy.ts`) prende o cliente em `/trocar-senha` ate ele criar a senha dele. Conta antiga: marcar no SQL Editor com `update auth.users set raw_user_meta_data = coalesce(raw_user_meta_data, '{}') || '{"trocar_senha": true}' where email = '...'`
 - Tela `/clientes` (Menu > Administracao, so aparece para o admin): lista as contas com vinhos/garrafas, cria cliente, gera senha nova e passa a adega inteira de uma conta para outra vazia (funcao `transferir_adega`, migration `0003_transferir_adega.sql`). Senhas NAO ficam guardadas (o Supabase so tem o hash): a senha gerada aparece uma vez so. Rotas em `src/app/api/admin/`, que usam `SUPABASE_SECRET_KEY` e `ADMIN_EMAIL` (so no servidor; precisam existir na Vercel) e a migration `0002_painel_admin.sql`
 - `src/proxy.ts` (o antigo middleware) manda quem nao esta logado para `/login` (as rotas `/api/` respondem 401 sozinhas)
-- Notificacoes do sensor ainda ficam no localStorage (sao simuladas ate o portal RFID existir)
+- Portal RFID: tabelas `bottles`, `portal_devices`, `portal_reads`, `portal_events` (migration `0004_portal_rfid.sql`). A rota `/api/portal/leituras` usa a `SUPABASE_SECRET_KEY` e autentica o aparelho pela chave dele (hash SHA-256 em `portal_devices`)
 - Importar planilha de cliente: `tools/importar-planilha.py` gera SQL em `supabase/import/` (gitignored). Scripts de admin em `supabase/admin/` (criar grade, transferir adega entre contas)
 - A grade da adega e criada/redimensionada pela propria tela Adega
 
@@ -394,6 +387,7 @@ A adega e representada como um **grid de slots** (8 fileiras x 12 slots). Cada s
 | 2026-09-25 | Olhinho bancario no patrimonio (Eye/EyeOff toggle), card de patrimonio movido para logo abaixo da saudacao na home |
 | 2026-09-25 | Dashboard simplificado: alertas de estoque baixo e movimentacoes recentes substituidos por cards compactos com seta (link para /vinhos e /movimentacoes). KPI "Estoque Baixo" removido do grid (agora so aparece no link de alertas). Grid de KPIs: 4 cards (2x2) |
 | 2026-09-27 | Sistema de cores centralizado: criado `src/lib/colors.ts` com WINE_TYPE_HEX, WINE_TYPE_BADGE, WINE_TYPE_SLOT, SEMANTIC_HEX e CHART_STYLE. Adicionados 6 tokens CSS `type-*` para tipos de vinho + tokens `warning`, `info`, `chart-axis`. Eliminadas 4 copias duplicadas de cores espalhadas em 7 arquivos. Header migrado de green-500/red-500 para success/destructive. Fortificado ajustado de #8B6914 para #7B4A2D (melhor distincao de Sobremesa). Olhinho do patrimonio em branco para melhor visibilidade |
+| 2026-11-09 | Portal RFID ligado ao app: tabelas de garrafas/aparelho/eventos (migration 0004), rota `/api/portal/leituras` para o ESP32, sininho com deteccoes reais ao vivo (confirmar saida/volta, vincular etiqueta nova), tela Portal RFID, etiquetas no detalhe do vinho. Notificacoes simuladas removidas. Firmware envia as passagens por HTTPS |
 | 2026-09-28 | Auditoria completa de cores: clima substituiu 17 cores Tailwind default (amber, sky, blue, purple, violet) por tokens do sistema (gold, info, wine). Login trocou hex/rgba hardcoded por CSS custom properties. Vinhos removeu badges coloridos por tipo na lista (poluicao visual no mobile) — tipo integrado na linha de detalhes como texto neutro (Tinto · 2020 · Brasil), badges coloridos mantidos apenas no dialog de detalhes |
 
 ## 11. Como Continuar o Desenvolvimento

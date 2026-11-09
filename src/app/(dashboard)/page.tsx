@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/dialog";
 import { Wine as WineType, Movement } from "@/types";
 import { getWines, getMovements } from "@/lib/storage";
+import { useVersaoDados } from "@/hooks/use-dados";
 import { formatCurrency, formatDate } from "@/lib/format";
 
 interface KpiData {
@@ -120,11 +121,13 @@ export default function DashboardPage() {
   const [activeKpi, setActiveKpi] = useState<string | null>(null);
   const [showValues, setShowValues] = useState(true);
 
+  const versao = useVersaoDados();
+
   useEffect(() => {
     const wines = getWines();
     const movements = getMovements();
     setKpis(computeKpis(wines, movements));
-  }, []);
+  }, [versao]);
 
   if (!kpis) {
     return (

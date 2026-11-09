@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Movement } from '@/types';
 import { getMovements, setMovements, getWines, setWines } from '@/lib/storage';
 import { generateId } from '@/lib/format';
+import { useAoMudarDados } from './use-dados';
 
 export function useMovements() {
   const [movements, setMovementsState] = useState<Movement[]>([]);
@@ -14,6 +15,7 @@ export function useMovements() {
   const refresh = useCallback(() => {
     setMovementsState(getMovements());
   }, []);
+  useAoMudarDados(refresh);
 
   const addMovement = useCallback((movement: Omit<Movement, 'id' | 'createdAt'>) => {
     const currentMovements = getMovements();

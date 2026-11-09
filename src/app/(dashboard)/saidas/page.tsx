@@ -18,6 +18,7 @@ import {
 
 import { Wine, ExitReason } from "@/types";
 import { getWines } from "@/lib/storage";
+import { useVersaoDados } from "@/hooks/use-dados";
 import { useMovements } from "@/hooks/use-movements";
 
 const EXIT_REASONS: { value: ExitReason; label: string }[] = [
@@ -39,9 +40,11 @@ export default function SaidasPage() {
   const [notes, setNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const versao = useVersaoDados();
+
   useEffect(() => {
     setWines(getWines());
-  }, []);
+  }, [versao]);
 
   const selectedWine = useMemo(
     () => wines.find((w) => w.id === wineId) ?? null,

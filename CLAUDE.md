@@ -41,6 +41,16 @@ npx vercel --prod --yes  # Deploy (a Vercel NÃO está ligada ao GitHub: push n�
 - Tema escuro fixo (sem toggle light/dark) - background #0f0a0a
 - Entrada/positivo = `success` | Saída/negativo = `destructive` | NUNCA usar green-500 ou red-500
 
+## Portal RFID
+
+- Lógica e decisões em `docs/PORTAL-RFID.md`; firmware e fiação em `firmware/README.md`
+- O leitor diz QUAL garrafa passou; o SENTIDO vem do status da garrafa (`na_adega` → saindo, `fora` → voltando). Nada muda no estoque sem o dono confirmar no sininho
+- Cérebro puro e testado em `src/lib/portal/decidir.ts` (`npm run test:portal`); rota do aparelho em `src/app/api/portal/leituras/` (autentica pela chave do aparelho, NÃO por sessão)
+- Confirmar/recusar/vincular são funções do banco (`portal_confirmar`, `portal_recusar`, `portal_vincular`), tudo ou nada — não reimplementar no cliente
+- `wines.quantity` continua sendo o estoque; `bottles` são as garrafas etiquetadas, um subconjunto
+- O app tolera a migration 0004 não rodada (`portalDisponivel()` em `storage.ts`): telas do portal se escondem
+- `firmware/**/secrets.h` tem senha de WiFi e a chave do aparelho: está no `.gitignore`, nunca commitar
+
 ## Regras Importantes
 
 - Fonte Playfair Display para títulos, Inter para corpo e valores numéricos

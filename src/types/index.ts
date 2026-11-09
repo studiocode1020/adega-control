@@ -57,15 +57,41 @@ export interface WishlistItem {
   createdAt: string;
 }
 
-// Sensor notification - detection from RFID sensor
-export interface SensorNotification {
+// --- Portal RFID (tabelas da migration 0004) ---
+
+export type BottleStatus = 'na_adega' | 'fora';
+
+// Uma garrafa com etiqueta RFID. Wine.quantity continua sendo o estoque; as
+// garrafas etiquetadas são um subconjunto dele.
+export interface Bottle {
   id: string;
-  tagId: string;           // RFID tag ID (will be mapped to wine later)
-  wineId: string | null;   // mapped wine ID (null if unknown tag)
-  wineName: string | null;  // wine name for display
-  type: 'entrada' | 'saida'; // detected direction
-  quantity: number;         // always 1 (individual detection)
-  detectedAt: string;       // ISO timestamp
+  wineId: string;
+  epc: string;
+  status: BottleStatus;
+  createdAt: string;
+}
+
+export type PortalEventKind = 'saida' | 'entrada' | 'etiqueta_nova';
+
+// Uma passagem pela porta que virou aviso no sininho. Só mexe no estoque
+// quando o dono confirma.
+export interface PortalEvent {
+  id: string;
+  epc: string;
+  bottleId: string | null;
+  wineId: string | null;
+  kind: PortalEventKind;
+  confidence: 'alta' | 'media' | 'baixa';
+  reason: string;
+  detectedAt: string;
   status: 'pending' | 'confirmed' | 'rejected';
-  confirmedAt: string | null;
+  resolvedAt: string | null;
+}
+
+export interface PortalDevice {
+  id: string;
+  name: string;
+  firmware: string | null;
+  lastSeenAt: string | null;
+  createdAt: string;
 }

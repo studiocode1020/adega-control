@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Wine, Movement } from "@/types";
 import { getWines, getMovements } from "@/lib/storage";
+import { useVersaoDados } from "@/hooks/use-dados";
 import { formatDate } from "@/lib/format";
 
 export default function MovimentacoesPage() {
@@ -28,10 +29,12 @@ export default function MovimentacoesPage() {
   const [filterWine, setFilterWine] = useState<string>("all");
   const [search, setSearch] = useState("");
 
+  const versao = useVersaoDados();
+
   useEffect(() => {
     setMovements(getMovements());
     setWines(getWines());
-  }, []);
+  }, [versao]);
 
   const wineMap = useMemo(
     () => new Map(wines.map((w) => [w.id, w])),

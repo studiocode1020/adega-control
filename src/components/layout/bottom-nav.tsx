@@ -23,6 +23,7 @@ import {
   Users,
   LogOut,
   X,
+  RadioTower,
 } from "lucide-react";
 import {
   Sheet,
@@ -53,6 +54,7 @@ const menuSections = [
     items: [
       { href: "/movimentacoes", icon: History, label: "Movimentações" },
       { href: "/relatorios", icon: BarChart3, label: "Relatórios" },
+      { href: "/portal", icon: RadioTower, label: "Portal RFID" },
     ],
   },
   {
